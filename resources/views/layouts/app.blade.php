@@ -10,8 +10,10 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Scripts -->
+     @vite(['resources/css/app.css'])
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Tailwind CSS CDN (if not using Vite) -->
@@ -37,13 +39,16 @@
     
     @stack('styles')
 </head>
-<body class="font-sans antialiased">
+<body class="font-poppins">
     <div class="min-h-screen flex">
         <!-- Sidebar -->
         @include('components.sidebar')
+
         
         <!-- Main Content Area -->
         <div class="flex-1">
+            @include('components.navbar')
+
             @yield('content')
         </div>
     </div>
