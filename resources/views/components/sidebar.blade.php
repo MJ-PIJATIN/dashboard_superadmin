@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="sidebar bg-teal-500 text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
+<div class="sidebar bg-teal-600 text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
     <!-- Logo Header -->
     <div class="p-4">
         <div class="flex justify-center">
