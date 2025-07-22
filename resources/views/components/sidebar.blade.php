@@ -1,9 +1,9 @@
 <!-- Sidebar -->
-<div class="sidebar bg-teal-500 text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
+<div class="sidebar text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto" style="background-color: #469D89;">
     <!-- Logo Header -->
     <div class="p-4">
         <div class="flex justify-center">
-            <img src="{{ asset('images/Logo_Aplikasi.svg') }}" alt="Logo" class="h-15 w-60 mt-1">
+            <img src="{{ asset('images/Logo_Aplikasi.svg') }}" alt="Logo" class="h-15 w-40 mt-1">
         </div>
     </div>
 
