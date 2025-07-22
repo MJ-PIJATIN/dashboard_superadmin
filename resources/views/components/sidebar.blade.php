@@ -1,16 +1,12 @@
-<!-- Sidebar -->
-<div class="sidebar text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto" style="background-color: #469D89;">
-    <!-- Logo Header -->
+<div class="sidebar bg-teal-600 text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
     <div class="p-4">
         <div class="flex justify-center">
-            <img src="{{ asset('images/Logo_Aplikasi.svg') }}" alt="Logo" class="h-15 w-40 mt-1">
+            <img src="{{ asset('images/Logo_Aplikasi.svg') }}" alt="Logo" class="h-15 w-60 mt-1">
         </div>
     </div>
 
-    <!-- Navigation Menu -->
     <nav class="mt-1">
         <ul class="space-y-0.1 px-2.5">
-            <!-- Dashboard -->
             <li>
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -20,7 +16,6 @@
                 </a>
             </li>
 
-            <!-- Layanan -->
             <li>
                 <a href="{{ route('layanan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('layanan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -30,7 +25,6 @@
                 </a>
             </li>
 
-            <!-- Pesanan -->
             <li>
                 <a href="{{ route('pesanan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('pesanan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -40,7 +34,6 @@
                 </a>
             </li>
 
-            <!-- Cabang -->
             <li>
                 <a href="{{ route('cabang') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('cabang*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -50,7 +43,6 @@
                 </a>
             </li>
 
-            <!-- Karyawan -->
             <li>
                 <a href="{{ route('karyawan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('karyawan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -60,7 +52,6 @@
                 </a>
             </li>
 
-            <!-- Pelanggan -->
             <li>
                 <a href="{{ route('pelanggan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('pelanggan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -70,7 +61,6 @@
                 </a>
             </li>
 
-            <!-- Terapis -->
             <li>
                 <a href="{{ route('terapis') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('terapis*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">
@@ -80,7 +70,6 @@
                 </a>
             </li>
 
-            <!-- Penangguhan -->
             <li>
                 <a href="{{ route('penangguhan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('penangguhan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-current">
@@ -90,7 +79,6 @@
                 </a>
             </li>
 
-            <!-- Aduan Pelanggan -->
             <li>
                 <a href="{{ route('aduan-pelanggan') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('aduan-pelanggan*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg class="w-5 h-5 fill-none stroke-current" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
@@ -101,7 +89,6 @@
                 </a>
             </li>
 
-            <!-- FAQ -->
             <li>
                 <a href="{{ route('faq') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('faq*') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg class="w-5 h-5 fill-current" viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
@@ -114,7 +101,6 @@
         </ul>
     </nav>
 
-    <!-- Logout Button at Bottom -->
     <div class="absolute bottom-4 w-full px-4">
         <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 w-full">
             <img src="{{ asset('images/logout.svg') }}" alt="Logout Icon" class="w-5 h-5">
