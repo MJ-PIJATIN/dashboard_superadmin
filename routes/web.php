@@ -42,3 +42,19 @@ Route::get('/aduan-pelanggan', function () {
 Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');
+
+// Page Cabang
+// Halaman Tambah Cabang
+Route::get('/cabang/tambah', function () {
+    return view('pages.SuperAdminTambahCabang');
+})->name('cabang.tambah');
+
+// Halaman Detail Cabang
+Route::get('/cabang/{id}', function ($id) {
+    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.detail');
+
+// Halaman Edit Cabang
+Route::get('/cabang/{id}/edit', function ($id) {
+    return view('pages.SuperAdminEditCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.edit');
