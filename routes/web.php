@@ -43,18 +43,18 @@ Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');
 
-Route::get('/superadmin/karyawan/detail-akun', function () {
-    return view('pages.SuperAdminKaryawanDetailAkun');
-});
+// Page Cabang
+// Halaman Tambah Cabang
+Route::get('/cabang/tambah', function () {
+    return view('pages.SuperAdminTambahCabang');
+})->name('cabang.tambah');
 
-Route::get('/superadmin/karyawan/detail-akunFinance', function () {
-    return view('pages.SuperAdminKaryawanDetailAkunFinance');
-});
+// Halaman Detail Cabang
+Route::get('/cabang/{id}', function ($id) {
+    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.detail');
 
-Route::get('/superadmin/karyawan/create', function () {
-    return view('pages.SuperAdminKaryawanBuatAkun');
-});
-
-Route::get('/superadmin/pelanggan/detail-akun', function () {
-    return view('pages.SuperAdminPelangganDetailAkun');
-});
+// Halaman Edit Cabang
+Route::get('/cabang/{id}/edit', function ($id) {
+    return view('pages.SuperAdminEditCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.edit');
