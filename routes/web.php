@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SuspendedAccountController;
 
 // Routing Sidebar Super Admin
 Route::get('/', function () {
@@ -31,9 +32,7 @@ Route::get('/terapis', function () {
     return view('pages.SuperAdminTerapis');
 })->name('terapis');
 
-Route::get('/penangguhan', function () {
-    return view('pages.SuperAdminPenangguhan');
-})->name('penangguhan');
+Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
 
 Route::get('/aduan-pelanggan', function () {
     return view('pages.SuperAdminAduanPelanggan');
@@ -42,6 +41,45 @@ Route::get('/aduan-pelanggan', function () {
 Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');
+
+Route::get('/detil', function () {
+    return view('pages.SuperAdminDetailPenangguhan');
+})->name('detil');
+
+Route::prefix('admin')->group(function () {
+    
+    // Routes untuk akun ditangguhkan
+    Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function () {
+
+        // Halaman detail akun ditangguhkan
+        Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
+            ->name('detail')
+            ->where('id', '[0-9]+'); // Hanya menerima ID berupa angka
+        
+        // API untuk memulihkan akun (AJAX)
+        Route::post('/{id}/restore', [SuspendedAccountController::class, 'restore'])
+            ->name('restore')
+            ->where('id', '[0-9]+');
+        
+        // API untuk pencarian akun
+        Route::get('/search', [SuspendedAccountController::class, 'search'])
+            ->name('search');
+    });
+});
+
+// Alternative routes (jika tidak menggunakan admin prefix)
+Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function () {
+
+    // Halaman detail akun ditangguhkan  
+    Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
+        ->name('detail.alt')
+        ->where('id', '[0-9]+');
+    
+    // API untuk memulihkan akun
+    Route::post('/{id}/restore', [SuspendedAccountController::class, 'restore'])
+        ->name('restore.alt')
+        ->where('id', '[0-9]+');
+});
 
 // Page Cabang
 // Halaman Tambah Cabang
