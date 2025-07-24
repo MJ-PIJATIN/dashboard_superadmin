@@ -6,7 +6,7 @@
 @section('navtitle', 'Cabang')
 
 @section('content')
-    <div class="ml-64 px-6 pt-28 pb-8 space-y-6">
+    <div class="px-6 pt-28 pb-8 space-y-6">
 
         {{-- Header --}}
         <div class="flex items-center justify-between">

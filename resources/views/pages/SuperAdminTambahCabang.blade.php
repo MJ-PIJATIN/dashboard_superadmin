@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  <div class="ml-64 px-6 pt-28 pb-10 space-y-6">
+  <div class="px-6 pt-28 pb-10 space-y-6">
 
     {{-- Header --}}
     <div class="flex justify-between items-center">
