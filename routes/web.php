@@ -46,7 +46,6 @@ Route::get('/detil', function () {
     return view('pages.SuperAdminDetailPenangguhan');
 })->name('detil');
 
-
 Route::prefix('admin')->group(function () {
     
     // Routes untuk akun ditangguhkan
@@ -81,3 +80,19 @@ Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function (
         ->name('restore.alt')
         ->where('id', '[0-9]+');
 });
+
+// Page Cabang
+// Halaman Tambah Cabang
+Route::get('/cabang/tambah', function () {
+    return view('pages.SuperAdminTambahCabang');
+})->name('cabang.tambah');
+
+// Halaman Detail Cabang
+Route::get('/cabang/{id}', function ($id) {
+    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.detail');
+
+// Halaman Edit Cabang
+Route::get('/cabang/{id}/edit', function ($id) {
+    return view('pages.SuperAdminEditCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.edit');
