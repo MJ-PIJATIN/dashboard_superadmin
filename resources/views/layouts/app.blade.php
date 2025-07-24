@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Pijat.in') }} - @yield('title', 'Dashboard')</title>
+    <title>Pijat.in</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -46,7 +46,7 @@
 
         
         <!-- Main Content Area -->
-        <div class="flex-1">
+        <div class="flex-1 pl-64">
             @include('components.navbar')
 
             @yield('content')
