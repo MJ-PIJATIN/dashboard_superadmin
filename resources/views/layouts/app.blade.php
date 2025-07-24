@@ -48,6 +48,7 @@
         <!-- Main Content Area -->
         <div class="flex-1">
             @include('components.navbar')
+            @yield('scripts')
 
             @yield('content')
         </div>
