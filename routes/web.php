@@ -42,3 +42,19 @@ Route::get('/aduan-pelanggan', function () {
 Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');
+
+Route::get('/superadmin/karyawan/detail-akun', function () {
+    return view('pages.SuperAdminKaryawanDetailAkun');
+});
+
+Route::get('/superadmin/karyawan/detail-akunFinance', function () {
+    return view('pages.SuperAdminKaryawanDetailAkunFinance');
+});
+
+Route::get('/superadmin/karyawan/create', function () {
+    return view('pages.SuperAdminKaryawanBuatAkun');
+});
+
+Route::get('/superadmin/pelanggan/detail-akun', function () {
+    return view('pages.SuperAdminPelangganDetailAkun');
+});
