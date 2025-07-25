@@ -8,8 +8,8 @@
 
     @section('content')
     <div class="bg-gray-100 min-h-screen">
-        <div class="max-w-screen-xl" style="margin-left: 290px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
-            <h1 class="text-xxl font-bold text-gray-700 mb-4">Data Akun Ditangguhkan</h1>
+        <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
+            <h1 class="text-2xl font-bold text-gray-700 mb-4">Data Akun Ditangguhkan</h1>
 
             <!-- Main Container -->
             <div class="w-full bg-white rounded-lg shadow-sm">

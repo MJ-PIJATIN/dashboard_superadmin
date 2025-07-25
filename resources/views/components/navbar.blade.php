@@ -1,7 +1,7 @@
 <!-- Navbar -->
 <nav class="bg-white border-b border-gray-200 fixed top-0 left-64 right-0 z-40 h-20 flex items-center justify-between px-6 shadow-sm">
     <!-- Judul Dinamis -->
-    <div class="text-gray-700 text-xl font-semibold">
+    <div class="text-gray-700 text-base font-semibold ml-[25px]">
         @hasSection('navtitle')
             @yield('navtitle')
         @else
