@@ -6,12 +6,12 @@
 @section('navtitle', 'FAQ')
 
 @section('content')
-<div class="p-28 pl-72 bg-gray-100 min-h-screen">
-    <div class="max-w-6xl mx-auto">
+<div class="p-28 pl-50 bg-gray-100 min-h-screen ml-[-50px]">
+    <div class="max-w-12xl mx-auto">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-semibold text-gray-800">Daftar Pertanyaan</h1>
             <button onclick="openModal('modalTambah')" 
-                class="text-white px-4 py-2 rounded transition flex items-center gap-2 bg-[#2196F3] hover:bg-[#1976D2]">
+                class="absolute right-14 text-white px-4 py-2 rounded transition flex items-center gap-2 bg-[#2196F3] hover:bg-[#1976D2]">
                 <img src="{{ asset('images/plus.svg') }}" alt="Tambah" class="h-5 w-5">
                 Tambah Pertanyaan Baru
             </button>

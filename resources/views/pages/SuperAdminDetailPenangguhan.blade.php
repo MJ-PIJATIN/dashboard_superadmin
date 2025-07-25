@@ -3,7 +3,14 @@
 @section('title', 'Detail Akun Ditangguhkan')
 @section('page-title', 'Detail Akun Ditangguhkan')
 @section('page-description', 'Informasi lengkap akun yang ditangguhkan')
-@section('navtitle', 'Penangguhan')
+@section('navtitle')
+    <div class="text-base text-gray-700 flex items-center gap-2">
+        <span>Penangguhan</span>
+        <span class="text-green-600 font-semibold">&gt;</span>
+        <span class="text-green-600 font-semibold">Detail Akun</span>
+    </div>
+@endsection
+
 @section('navsubtitle', 'Detail Akun Ditangguhkan')
 
 @section('content')
@@ -17,7 +24,7 @@
     </div>
 </div>
 <div class="bg-gray-100 min-h-screen">
-    <div class="max-w-screen-xl" style="margin-left: 290px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
+    <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
         
         <!-- Header dengan tombol kembali -->
         <div class="flex items-center mb-6">
@@ -25,7 +32,7 @@
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
-            <span class="font-bold">Detail Akun Ditangguhkan</span>
+            <span class="font-bold text-2xl">Detail Akun Ditangguhkan</span>
         </button>
         </div>
 
