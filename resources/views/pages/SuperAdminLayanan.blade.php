@@ -5,7 +5,7 @@
 @section('page-description', 'Ringkasan statistik dan aktivitas terkini sistem Pijat.in')
 @section('navtitle', 'Manajemen Layanan')
 @section('content')
-<div class="max-w-screen-xl" style="margin-left: 290px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
+<div class="max-w-screen-xl" style="margin-left: 40px; padding-top: 115px; padding-bottom: 100px; padding-right: 25px;">
 
     <!-- Layanan Utama Section -->
     <div class="mb-8">
@@ -94,7 +94,7 @@
 
     <!-- Layanan Tambahan Section -->
     <div>
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-4 mt-10">
             <h2 class="text-xl font-semibold text-gray-900">Daftar Layanan Tambahan</h2>
             <button id="open-additional-service-btn" class="bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm">
                 <img src="{{ asset('images/add.svg') }}" alt="Add" class="h-4.5 w-4.5 mr-2">
