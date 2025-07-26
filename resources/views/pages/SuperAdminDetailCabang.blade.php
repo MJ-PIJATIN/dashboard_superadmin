@@ -1,7 +1,14 @@
 @extends('layouts.app')
+@section('navtitle')
+    <div class="text-base text-gray-700 flex items-center gap-2">
+        <span>Cabang</span>
+        <span class="text-gray-700 font-semibold">&gt;</span>
+        <span class="text-[#469D89] font-semibold">Detail Cabang</span>
+    </div>
+@endsection
 
 @section('content')
-  <div class="px-6 pt-28 pb-10 space-y-6">
+  <div class="ml-[60px] px-6 pt-[100px] pb-10 space-y-6"">
 
 {{-- Header --}}
   <div class="flex justify-between items-center">
@@ -13,7 +20,7 @@
             fill="#454545" />
         </svg>
       </a>
-      <h2 class="text-2xl font-semibold text-gray-800">Detail Cabang</h2>
+      <h2 class="text-xl font-bold text-gray-700">Detail Cabang</h2>
     </div>
 
     <a href="{{ route('cabang.edit', ['id' => $id]) }}"
@@ -29,7 +36,7 @@
 
     {{-- Kota dan Status --}}
     <div>
-    <h3 class="text-2xl font-semibold text-teal-500">Kota Yogyakarta</h3>
+    <h3 class="text-2xl font-semibold text-[#469D89] mt-10">Kota Yogyakarta</h3>
     <p class="text-base font-regular text-teal-600 mt-1">
       Status Cabang:
       <span
@@ -41,7 +48,7 @@
     </div>
 
     {{-- Informasi Cabang --}}
-    <div class="border border-gray-300 rounded-lg p-6">
+    <div class="border border-gray-300 rounded-lg p-6 mt-6">
     <h4 class="text-2xl font-semibold text-gray-800 mb-6">Informasi Cabang</h4>
 
     <div class="space-y-5 text-sm text-gray-700 max-w-2xl">

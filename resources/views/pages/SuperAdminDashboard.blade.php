@@ -10,6 +10,7 @@
 @endpush
 
 @section('content')
+<div class="bg-gray-100 min-h-screen">
 <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
     <h1 class="text-xl font-semibold text-gray-700 mb-4">Ringkasan</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
