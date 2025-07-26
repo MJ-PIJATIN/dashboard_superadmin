@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
-    <h1 class="text-xl font-bold text-gray-700 mb-4">Ringkasan</h1>
+    <h1 class="text-xl font-semibold text-gray-700 mb-4">Ringkasan</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         @php
             $cards = [
@@ -96,7 +96,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="lg:col-span-2 bg-white rounded-md p-4 shadow-md border">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-xl font-bold text-gray-700">Chart Pemesanan Tahunan</h3>
+                <h3 class="text-xl font-semibold text-gray-700">Chart Pemesanan Tahunan</h3>
                 <select class="border border-gray-300 rounded px-2 py-1 text-xs">
                     <option>2023</option>
                     <option>2022</option>
@@ -110,7 +110,7 @@
 
         <div class="bg-white rounded-md p-4 shadow-md border">
             <div class="flex items-center justify-between mb-10">
-                <h3 class="text-xl font-bold text-gray-700">Layanan Terpopuler</h3>
+                <h3 class="text-xl font-semibold text-gray-700">Layanan Terpopuler</h3>
                 <span class="font-semibold text-xs text-gray-700">Okt 2023</span>
             </div>
             <div class="space-y-10 text-md">
@@ -128,7 +128,7 @@
     </div>
 
     <div class="bg-white rounded-md p-4 shadow-md border mt-6 text-sm">
-        <h3 class="text-xl font-bold text-gray-700 mb-4">Pesanan Terkini</h3>
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Pesanan Terkini</h3>
         <div class="overflow-x-auto">
         <table class="min-w-full table-auto border border-gray-200 text-sm">
                 <thead>
