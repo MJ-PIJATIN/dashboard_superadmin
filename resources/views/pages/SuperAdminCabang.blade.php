@@ -6,11 +6,11 @@
 @section('navtitle', 'Cabang')
 
 @section('content')
-    <div class="px-6 pt-28 pb-8 space-y-6">
+    <div class="ml-[25px] px-6 pt-[100px] pb-8 space-y-6">
 
         {{-- Header --}}
-        <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-semibold text-gray-800">Data Cabang</h2>
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-700">Data Cabang</h2>
             <a href="/cabang/tambah">
                 <button
                     class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold rounded-lg shadow">
@@ -26,20 +26,23 @@
 
         {{-- Section Search dan Filter --}}
         <div class="flex items-center justify-between">
-            <div class="flex w-full max-w-lg">
-                <input type="text"
-                    class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-200"
-                    placeholder="Cari nomor id, nama, kota, dll">
-                <button class="bg-teal-400 hover:bg-teal-400 text-white px-4 py-2 rounded-r-lg">
-                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div class="flex w-[300px] max-w-2xl">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Cari nomor id, nama, kota, dll"
+                        class="flex-grow px-4 py-2.5 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-200"/>
+                    <button onclick="performSearch()" class="bg-[#469D89] hover:bg-[#378877] text-white px-4 py-2 rounded-r-lg flex items-center justify-center transition-colors">
+                        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 9.7319 14.6427 11.3219 13.6295 12.5688L18.5303 17.4697C18.8232 17.7626 18.8232 18.2374 18.5303 18.5303C18.2641 18.7966 17.8474 18.8208 17.5538 18.6029L17.4697 18.5303L12.5688 13.6295C11.3219 14.6427 9.7319 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8C0.75 3.99594 3.99594 0.75 8 0.75ZM8 2.25C4.82436 2.25 2.25 4.82436 2.25 8C2.25 11.1756 4.82436 13.75 8 13.75C11.1756 13.75 13.75 11.1756 13.75 8C13.75 4.82436 11.1756 2.25 8 2.25Z"
-                            fill="white" />
-                    </svg>
-                    <i class="fas fa-search"></i>
-                </button>
-            </div>
-        </div>
+                            fill="white"
+                        />
+                        </svg>
+                        <i class="fas fa-search ml-1"></i>
+                    </button>
+                    </div>
+                </div>
 
         {{-- Table Section --}}
         <div class="overflow-x-auto">
@@ -108,4 +111,38 @@
             </div>
         </div>
     </div>
+
+<script>
+    // Fungsi untuk pencarian
+    function performSearch() {
+        const query = document.getElementById('searchInput').value;
+        
+        if (query.trim() === '') {
+            // Jika kosong, reload halaman untuk menampilkan semua data
+            window.location.reload();
+            return;
+        }
+        
+        // AJAX request untuk pencarian
+        fetch("{{ route('suspended-account.search') }}?q=" + encodeURIComponent(query), {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateTable(data.data);
+            } else {
+                console.error('Search failed:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+        });
+    }
+</script>
+
 @endsection

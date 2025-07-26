@@ -1,7 +1,14 @@
 @extends('layouts.app')
+@section('navtitle')
+    <div class="text-base text-gray-700 flex items-center gap-2">
+        <span>Cabang</span>
+        <span class="text-gray-700 font-semibold">&gt;</span>
+        <span class="text-[#469D89] font-semibold">Edit Cabang</span>
+    </div>
+@endsection
 
 @section('content')
-  <div class="px-6 pt-28 pb-10 space-y-6">
+  <div class="ml-[60px] px-6 pt-[100px] pb-10 space-y-6">
 
     {{-- Header --}}
     <div class="flex justify-between items-center">
@@ -13,15 +20,15 @@
         fill="#454545" />
       </svg>
       </a>
-      <h2 class="text-2xl font-semibold text-gray-800">Edit Cabang</h2>
+      <h2 class="text-xl font-bold text-gray-700">Edit Cabang</h2>
     </div>
 
     <div class="w-[160px] h-10"></div>
     </div>
 
     {{-- Form Edit Cabang --}}
-    <div class="max-w-xl">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Edit Cabang</h2>
+    <div class="px-6 py-4 bg-white max-w-xl">
+    <h2 class="text-xl font-bold text-gray-700 mb-6">Edit Cabang</h2>
 
     <form action="#" method="POST" class="space-y-5">
       @csrf
@@ -65,9 +72,9 @@
         placeholder="Penulisan dibatasi hingga 512 karakter"></textarea>
       </div>
 
-      <div class="pt-2">
+      <div class="pt-2 flex justify-end">
       <button type="submit"
-        class="bg-teal-500 hover:bg-teal-600 text-white px-5 py-2 rounded-md text-base font-medium shadow">
+        class="bg-[#3FC1C0] hover:bg-[#35adae] text-white px-5 py-2 rounded-md text-base font-medium shadow">
         Tambahkan
       </button>
       </div>

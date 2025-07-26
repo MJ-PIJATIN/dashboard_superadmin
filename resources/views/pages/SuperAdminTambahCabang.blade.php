@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  <div class="px-6 pt-28 pb-10 space-y-6">
+  <div class="ml-[25px] px-6 pt-[100px] pb-8 space-y-6">
 
     {{-- Header --}}
     <div class="flex justify-between items-center">
@@ -13,7 +13,7 @@
         fill="#454545" />
       </svg>
       </a>
-      <h2 class="text-2xl font-semibold text-gray-800">Tambahkan Cabang</h2>
+      <h2 class="text-xl font-bold text-gray-700">Tambahkan Cabang</h2>
     </div>
 
     <div class="w-[160px] h-10"></div>
@@ -21,7 +21,7 @@
 
     {{-- Form Tambah Cabang --}}
     <div class="max-w-xl">
-    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Buat Cabang Baru</h3>
+    <h3 class="text-xl font-bold text-gray-700 mb-4">Buat Cabang Baru</h3>
 
     <form action="#" method="POST" class="space-y-5">
       @csrf

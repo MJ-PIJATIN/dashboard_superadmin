@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuspendedAccountController;
+use App\Http\Controllers\AduanController;
 
 // Routing Sidebar Super Admin
 Route::get('/', function () {
@@ -33,19 +34,6 @@ Route::get('/terapis', function () {
 })->name('terapis');
 
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
-
-Route::get('/aduan-pelanggan', function () {
-    return view('pages.SuperAdminAduanPelanggan');
-})->name('aduan-pelanggan');
-
-Route::get('/faq', function () {
-    return view('pages.SuperAdminFAQ');
-})->name('faq');
-
-Route::get('/detil', function () {
-    return view('pages.SuperAdminDetailPenangguhan');
-})->name('detil');
-
 Route::prefix('admin')->group(function () {
     
     // Routes untuk akun ditangguhkan
@@ -67,19 +55,18 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-// Alternative routes (jika tidak menggunakan admin prefix)
-Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function () {
 
-    // Halaman detail akun ditangguhkan  
-    Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
-        ->name('detail.alt')
-        ->where('id', '[0-9]+');
-    
-    // API untuk memulihkan akun
-    Route::post('/{id}/restore', [SuspendedAccountController::class, 'restore'])
-        ->name('restore.alt')
-        ->where('id', '[0-9]+');
-});
+Route::get('/detil', function () {
+    return view('pages.SuperAdminDetailPenangguhan');
+})->name('detil');
+
+Route::get('/aduan-pelanggan', function () {
+    return view('pages.SuperAdminAduanPelanggan');
+})->name('aduan-pelanggan');
+
+Route::get('/faq', function () {
+    return view('pages.SuperAdminFAQ');
+})->name('faq');
 
 // Page Cabang
 // Halaman Tambah Cabang
