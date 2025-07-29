@@ -34,58 +34,12 @@
                 </div>
             </div>
 
-            <!-- Mobile Cards View (visible on small screens) -->
-            <div class="block lg:hidden px-4 sm:px-6" id="mobileView">
-                <div id="mobileCards">
-                    @forelse($suspendedAccounts ?? [] as $account)
-                    <div class="bg-white border border-gray-200 rounded-lg p-4 mb-4 shadow-sm" 
-                         onclick="navigateToDetail({{ $account['id'] }}, event)">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-gray-900 text-base">{{ $account['nama'] }}</h3>
-                                <p class="text-sm text-gray-500">ID: {{ $account['id'] }}</p>
-                            </div>
-                            <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();" 
-                                class="p-2 text-gray-400 hover:text-[#469D89] transition-colors flex-shrink-0">
-                                <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
-                            </button>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 gap-3 text-sm">
-                            <div>
-                                <span class="text-gray-500">Jenis Kelamin:</span>
-                                <p class="text-gray-900 font-medium">{{ $account['kelamin'] }}</p>
-                            </div>
-                            <div>
-                                <span class="text-gray-500">Kota:</span>
-                                <p class="text-gray-900 font-medium">{{ $account['kota'] }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-3 flex justify-between items-center">
-                            <span class="px-3 py-1 rounded-full text-xs font-medium {{ $account['durasi_class'] }}">
-                                {{ $account['durasi'] }}
-                            </span>
-                            <span class="text-xs text-gray-500">{{ $account['waktu'] }}</span>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="text-center py-12">
-                        <svg class="w-12 h-12 text-gray-300 mb-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                        <p class="text-lg font-medium text-gray-400">Tidak ada akun yang ditangguhkan</p>
-                        <p class="text-sm text-gray-400">Data akun ditangguhkan akan muncul di sini</p>
-                    </div>
-                    @endforelse
-                </div>
-            </div>
-
             <!-- Desktop Table View (hidden on small screens) -->
-            <div class="hidden lg:block overflow-x-auto" id="desktopView">
-                <table class="w-full">
-                    <thead>
-                        <tr class="border-b border-gray-200 bg-gray-50">
+            <div class="bg-white rounded-lg mt-0 shadow-lg">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-gray-700">
+                    <thead class="bg-white">
+                        <tr class="bg-white">
                             <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">No</th>
                             <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">
                                 Nama Lengkap
@@ -105,27 +59,39 @@
                             </th>
                             <th class="px-6 py-4 text-left text-sm font-medium text-gray-700"></th>
                         </tr>
+                        <tr>
+                        <th colspan="6" class="px-1 pt-0 pb-3">
+                            <div class="h-px bg-gray-700 mx-4"></div>
+                        </th>
+                    </tr>
                     </thead>
-                    <tbody class="bg-white" id="tableBody">
+                    <tbody id="tableBody">
                         @forelse($suspendedAccounts ?? [] as $account)
-                        <tr class="border-b border-white group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-white hover:ring-1 hover:ring-gray-400 hover:ring-offset-1 hover:ring-offset-white focus-within:ring-1 focus-within:ring-gray-800 focus-within:ring-offset-1 focus-within:ring-offset-white rounded-xl"
-                            onclick="navigateToDetail({{ $account['id'] }}, event)">
+                        <tr class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail({{ $account['id'] }}, event)">
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['id'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $account['nama'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kelamin'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kota'] }}</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $account['durasi_class'] }}">
-                                    {{ $account['durasi'] }}
-                                </span>
+                                 @php
+                                $durasi = $account['durasi'];
+                                $durasiClass = match($durasi) {
+                                    'Permanen' => 'bg-[#ED555433] text-[#ED5554]',
+                                    '30 Hari', '14 Hari', '7 Hari' => 'bg-[#FF990033] text-[#FF9900]',
+                                    default => 'bg-gray-100 text-gray-600'
+                                };
+                            @endphp
+                                <span class="px-3 py-1 rounded-md text-xs font-medium {{ $durasiClass }}">
+                                {{ $durasi }}
+                            </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 relative">
+                            <td class="px-3 py-4 text-sm text-gray-500 relative">
                                 <!-- Waktu - hilang saat hover -->
                                 <span class="group-hover:opacity-0 transition-opacity duration-200">{{ $account['waktu'] }}</span>
                                 
                                 <!-- Tombol - muncul saat hover -->
                                 <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();" 
-                                    class="opacity-0 group-hover:opacity-100 absolute center top-1/2 -translate-y-1/2 flex items-center justify-center transition-opacity duration-200">
+                                    class="opacity-0 group-hover:opacity-100 absolute center top-1/2 -translate-y-1/2 flex items-center justify-center transition-opacity duration-200 hover:bg-[#85B80433] rounded-md p-1">
                                     <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
                                 </button>
                             </td>
@@ -142,13 +108,12 @@
                                 </div>
                             </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+                </tbody>
+            </table>
 
             <!-- Pagination -->
-            <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-t border-gray-200 gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
                 <span class="text-sm text-gray-600 order-2 sm:order-1">
                     Halaman 1 dari {{ count($suspendedAccounts ?? []) }}
                 </span>
@@ -197,6 +162,30 @@
     </div>
 </div>
 
+<!-- Loading Spinner Drawer -->
+<div id="loading-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center h-full">
+        <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 70.5px;">
+            <div class="flex flex-col items-center mb-4">
+                <img src="{{ asset('images/loading.svg') }}" alt="Loading" class="h-30 w-30 animate-spin" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Drawer -->
+<div id="success-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div id="success-drawer-overlay" class="flex items-center justify-center h-full">
+        <div id="success-drawer-content" class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+            <div class="flex flex-col items-center mb-4">
+                <h2 class="text-2xl font-bold mb-6" style="color: #469D89;">Berhasil!</h2>
+                <img src="{{ asset('images/succed.svg') }}" alt="Success" class="h-30 w-30">
+                <p id="success-message" class="text-gray-700 text-center mt-4">Operasi berhasil dilakukan!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section('scripts')
 <script>
 let currentUserId = null;
@@ -204,6 +193,32 @@ let currentUserName = null;
 
 // CSRF Token
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+// Fungsi untuk menampilkan loading drawer
+function showLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.remove('hidden');
+}
+
+// Fungsi untuk menyembunyikan loading drawer
+function hideLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.add('hidden');
+}
+
+// Fungsi untuk menampilkan success drawer
+function showSuccessDrawer(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-drawer').classList.remove('hidden');
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        hideSuccessDrawer();
+    }, 3000);
+}
+
+// Fungsi untuk menyembunyikan success drawer
+function hideSuccessDrawer() {
+    document.getElementById('success-drawer').classList.add('hidden');
+}
 
 // Fungsi untuk navigasi ke halaman detail
 function navigateToDetail(id, event) {
@@ -233,15 +248,21 @@ function closeModal() {
 
 // Fungsi untuk mengkonfirmasi restore akun
 function confirmRestore() {
-    if (!currentUserId) return;
+    if (!currentUserId) {
+        console.error('No user ID available');
+        return;
+    }
     
-    // Show loading state
-    const restoreButton = document.getElementById('restoreButton');
-    const originalText = restoreButton.textContent;
-    restoreButton.textContent = 'Memulihkan...';
-    restoreButton.disabled = true;
+    // Close modal first
+    closeModal();
     
-    // AJAX request untuk memulihkan akun
+    // Show loading drawer
+    showLoadingDrawer();
+    
+    // Debug log
+    console.log('Attempting to restore account ID:', currentUserId);
+    
+    // AJAX request untuk memulihkan akun - menggunakan hanya ID dari URL parameter
     fetch("{{ route('suspended-account.restore', ['id' => ':id']) }}".replace(':id', currentUserId), {
         method: 'POST',
         headers: {
@@ -250,34 +271,40 @@ function confirmRestore() {
             'Accept': 'application/json'
         },
         body: JSON.stringify({
-            account_id: currentUserId
+            // Tidak perlu mengirim account_id lagi karena sudah ada di URL
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
+        
+        // Hide loading drawer
+        hideLoadingDrawer();
+        
         if (data.success) {
-            alert(`Akun ${currentUserName} berhasil dipulihkan!`);
-            closeModal();
+            // Show success drawer with custom message
+            showSuccessDrawer(`Akun ${currentUserName} berhasil dipulihkan!`);
             
-            // Refresh halaman untuk update data
+            // Refresh halaman untuk update data setelah success drawer hilang
             setTimeout(() => {
                 window.location.reload();
-            }, 1000);
+            }, 3500);
         } else {
-            alert('Gagal memulihkan akun: ' + (data.message || 'Terjadi kesalahan'));
-            
-            // Reset button state
-            restoreButton.textContent = originalText;
-            restoreButton.disabled = false;
+            // Show error in success drawer with different styling
+            showSuccessDrawer('Gagal memulihkan akun: ' + (data.message || 'Terjadi kesalahan'));
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat memulihkan akun. Silakan coba lagi.');
+        console.error('Fetch error:', error);
         
-        // Reset button state
-        restoreButton.textContent = originalText;
-        restoreButton.disabled = false;
+        // Hide loading drawer
+        hideLoadingDrawer();
+        
+        // Show error in success drawer
+        showSuccessDrawer('Terjadi kesalahan saat memulihkan akun. Silakan coba lagi.');
     });
 }
 
@@ -455,10 +482,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Close success drawer when clicking outside
+    document.getElementById('success-drawer').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideSuccessDrawer();
+        }
+    });
+    
     // Close modal with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeModal();
+            hideSuccessDrawer();
         }
     });
     
@@ -466,12 +501,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#restoreModal .bg-white')?.addEventListener('click', function(e) {
         e.stopPropagation();
     });
+    
+    // Prevent success drawer close when clicking inside drawer content
+    document.querySelector('#success-drawer-content')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
 });
 
 // Auto-refresh setiap 5 menit untuk update status real-time
 setInterval(function() {
     // Hanya refresh jika tidak ada modal yang terbuka
-    if (document.getElementById('restoreModal').classList.contains('hidden')) {
+    if (document.getElementById('restoreModal').classList.contains('hidden') && 
+        document.getElementById('loading-drawer').classList.contains('hidden') &&
+        document.getElementById('success-drawer').classList.contains('hidden')) {
         // Bisa diganti dengan AJAX request untuk update data tanpa refresh halaman
         // fetchUpdatedData();
     }

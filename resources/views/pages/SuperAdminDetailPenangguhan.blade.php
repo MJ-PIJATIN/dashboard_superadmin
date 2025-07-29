@@ -82,9 +82,10 @@
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-2 pt-4">
-                    <button class="px-3 py-1 text-sm border border-[#3FC1C0] text-[#3FC1C0] rounded hover:bg-[#E6FAFA] transition-colors font-medium">
+                    <a href="{{ route('aduan-pelanggan') }}"
+                    class="px-3 py-1 text-sm border border-[#3FC1C0] text-[#3FC1C0] rounded hover:bg-[#E6FAFA] transition-colors font-medium">
                     Lihat Aduan
-                </button>
+                    </a>
                     <button onclick="openRestoreModal()" class="px-3 py-1 text-sm bg-lime-600 text-white rounded hover:bg-lime-700 transition-colors font-medium">
                         Pulihkan Akun
                     </button>

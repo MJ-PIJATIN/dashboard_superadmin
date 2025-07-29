@@ -40,49 +40,49 @@
     <p class="text-base font-regular text-teal-600 mt-1">
       Status Cabang:
       <span
-      class="inline-flex items-center gap-2 bg-teal-100 text-teal-600 text-base font-semibold px-3 py-1 rounded-[4px]">
-      <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-      Aktif
-      </span>
+  class="inline-flex items-center gap-2 bg-[#3FC1C033] text-[#3FC1C0] text-base font-semibold px-3 py-1 rounded-[4px]">
+  <span class="w-2 h-2 bg-[#3FC1C0] rounded-full"></span>
+  Aktif
+</span>
     </p>
     </div>
 
     {{-- Informasi Cabang --}}
     <div class="border border-gray-300 rounded-lg p-6 mt-6">
-    <h4 class="text-2xl font-semibold text-gray-800 mb-6">Informasi Cabang</h4>
+    <h4 class="text-2xl font-semibold text-gray-700 mb-6">Informasi Cabang</h4>
 
     <div class="space-y-5 text-sm text-gray-700 max-w-2xl">
       <div>
-      <p class="text-xs text-teal-500">ID Cabang</p>
-      <p class="text-base font-semibold">CTS000234</p>
+      <p class="text-xs text-gray-500">ID Cabang</p>
+      <p class="text-base font-bold">CTS000234</p>
       </div>
       <div>
-      <p class="text-xs text-sm text-teal-500">Jumlah Total Pegawai</p>
-      <p class="text-base font-semibold">70 Pegawai</p>
+      <p class="text-xs text-sm text-gray-500">Jumlah Total Pegawai</p>
+      <p class="text-base font-bold">70 Pegawai</p>
       </div>
       <div>
-      <p class="text-xs text-sm text-teal-500">Jumlah Pegawai Admin</p>
-      <p class="text-base font-semibold">35 Pegawai Admin</p>
+      <p class="text-xs text-sm text-gray-500">Jumlah Pegawai Admin</p>
+      <p class="text-base font-bold">35 Pegawai Admin</p>
       </div>
       <div>
-      <p class="text-xs text-sm text-teal-500">Jumlah Pegawai Finance</p>
-      <p class="text-base font-semibold">35 Pegawai Finance</p>
+      <p class="text-xs text-sm text-gray-500">Jumlah Pegawai Finance</p>
+      <p class="text-base font-bold">35 Pegawai Finance</p>
       </div>
       <div>
-      <p class="text-xs text-teal-500">Jumlah Total Pengguna</p>
-      <p class="text-base font-semibold">100 Pengguna</p>
+      <p class="text-xs text-gray-500">Jumlah Total Pengguna</p>
+      <p class="text-base font-bold">100 Pengguna</p>
       </div>
       <div>
-      <p class="text-xs text-teal-500">Jumlah Pengguna Terapis</p>
-      <p class="text-base font-semibold">45 Terapis</p>
+      <p class="text-xs text-gray-500">Jumlah Pengguna Terapis</p>
+      <p class="text-base font-bold">45 Terapis</p>
       </div>
       <div>
-      <p class="text-xs text-teal-500">Jumlah Pengguna Customer</p>
-      <p class="text-base font-semibold">55 Customer</p>
+      <p class="text-xs text-gray-500">Jumlah Pengguna Customer</p>
+      <p class="text-base font-bold">55 Customer</p>
       </div>
       <div>
-      <p class="text-xs text-teal-500">Lokasi Cabang</p>
-      <p class="text-base font-semibold leading-relaxed">
+      <p class="text-xs text-gray-500">Lokasi Cabang</p>
+      <p class="text-base font-bold leading-relaxed">
         Karangjambe, Gg. Arjuna No.59, Jaranan, Banguntapan, Kec. Banguntapan, Kabupaten Bantul, Daerah Istimewa
         Yogyakarta 55198
       </p>
