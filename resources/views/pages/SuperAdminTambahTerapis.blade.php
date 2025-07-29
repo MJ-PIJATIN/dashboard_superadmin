@@ -12,9 +12,10 @@
 @endsection
 
 @section('content')
-<div class="max-w-screen-xl" style="margin-left: 25px; padding-top: 75px; padding-bottom: 100px; padding-right: 25px;">
+<div class="bg-gray-100 min-h-screen">
+<div class="max-w-screen-xl bg-gray-100 ml-[25px] pt-[70px] pb-[100px] pr-[25px]">
 
-<div class="min-h-screen bg-gray-50 p-6">
+<div class="min-h-screen bg-gray-100 p-6">
     <!-- Header -->
         <div class="flex items-center mb-6">
             <div class="flex items-center text-sm text-gray-700 font-semibold hover:text-gray-800 transition-colors">
@@ -342,8 +343,7 @@
                 <div class="mt-[395px]">
                     <button 
                         type="submit"
-                        class="px-8 py-2.5 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500"
-                    >
+                        class="px-8 py-2.5 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500">
                         Tambah Data
                     </button>
                 </div>

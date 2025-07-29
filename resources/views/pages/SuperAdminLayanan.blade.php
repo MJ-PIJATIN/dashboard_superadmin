@@ -6,7 +6,8 @@
 @section('navtitle', 'Manajemen Layanan')
 @section('content')
 
-<div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 115px; padding-bottom: 100px; padding-right: 25px;">
+<div class="bg-gray-100 min-h-screen">
+<div class="max-w-screen-xl bg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px]">
 
     <!-- Layanan Utama Section -->
     <div class="mb-8">
