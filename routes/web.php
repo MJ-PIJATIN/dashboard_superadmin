@@ -33,6 +33,14 @@ Route::get('/terapis', function () {
     return view('pages.SuperAdminTerapis');
 })->name('terapis');
 
+Route::get('/detail-terapis', function () {
+    return view('pages.SuperAdminDetailTerapis');
+})->name('detail-terapis');
+
+Route::get('/tambah-terapis', function () {
+    return view('pages.SuperAdminTambahTerapis');
+})->name('tambah-terapis');
+
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
 Route::prefix('admin')->group(function () {
     

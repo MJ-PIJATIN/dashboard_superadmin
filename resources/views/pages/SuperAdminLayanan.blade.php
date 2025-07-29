@@ -5,8 +5,8 @@
 @section('page-description', 'Ringkasan statistik dan aktivitas terkini sistem Pijat.in')
 @section('navtitle', 'Manajemen Layanan')
 @section('content')
-<div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px]">
+
+<div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 115px; padding-bottom: 100px; padding-right: 25px;">
 
     <!-- Layanan Utama Section -->
     <div class="mb-8">
@@ -19,31 +19,31 @@
                 Buat Layanan Utama
             </button>
         </div>
-        <div class="bg-white rounded-lg shadow-lg p-4 mt-2">
+        <div class="bg-white rounded-lg shadow-lg p-4 mt-2 border border-gray-200">
             <div class="overflow-x-auto bg-white">
                 <table class="w-full">
                     <thead class="bg-white border-b border-gray-300">
                         <tr>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Nama</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Harga</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Durasi</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">Deskripsi</th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">Status</th>
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Deskripsi</th>
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Status</th>
                             <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
@@ -102,30 +102,30 @@
                 Buat Layanan Tambahan
             </button>
         </div>
-        <div class="bg-white rounded-lg shadow-lg p-4 mt-2">
+        <div class="bg-white rounded-lg shadow-lg p-4 mt-2 border border-gray-200">
             <div class="overflow-x-auto bg-white">
                 <table class="w-full">
                     <thead class="bg-white border-b border-gray-300">
                         <tr>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Nama</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Harga</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Durasi</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </button>
+                                </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-bold text-gray-800">Deskripsi</th>
+                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Deskripsi</th>
                             <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
