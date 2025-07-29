@@ -13,7 +13,7 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[25px] pt-[70px] pb-[100px] pr-[25px]">
+<div class="max-w-screen-xl bg-gray-100 ml-[25px] pt-[90px] pb-[100px] pr-[25px]">
 
 <div class="min-h-screen bg-gray-100 p-6">
     <!-- Header -->
