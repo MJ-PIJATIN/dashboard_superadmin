@@ -1,7 +1,7 @@
 <div class="sidebar bg-[#469D89] text-white h-screen w-64 fixed left-0 top-0 overflow-y-auto">
     <div class="p-4">
         <div class="flex justify-center">
-            <img src="{{ asset('images/Logo_Aplikasi.svg') }}" alt="Logo" class="h-16 w-[200px] mt-1">
+            <img src="{{ asset('images/logo_apl_sidebar.svg') }}" alt="Logo Sidebar" class="h-16 w-[200px] mt-1">
         </div>
     </div>
 
@@ -102,9 +102,12 @@
     </nav>
 
     <div class="absolute bottom-4 w-full px-4">
-        <a href="#" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 w-full">
-            <img src="{{ asset('images/logout.svg') }}" alt="Logout Icon" class="w-5 h-5">
-            <span>Keluar Akun</span>
-        </a>
+        <form action="{{ route('logout') }}" method="POST" class="w-full">
+            @csrf
+            <button type="submit" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-red-500 transition-colors duration-200 w-full">
+                <img src="{{ asset('images/logout.svg') }}" alt="Logout Icon" class="w-5 h-5">
+                <span>Keluar Akun</span>
+            </button>
+        </form>
     </div>
 </div>
