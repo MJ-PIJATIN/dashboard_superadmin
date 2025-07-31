@@ -15,21 +15,18 @@ class SuspendedAccountController extends Controller
     {
         // Data dummy untuk sementara - nanti bisa diganti dengan database
         $suspendedAccounts = [
-            ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'durasi_class' => 'bg-red-100 text-red-600', 'waktu' => '10:20'],
-            ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari', 'durasi_class' => 'bg-orange-100 text-orange-600', 'waktu' => '15:00'],
-            ['id' => 3, 'nama' => 'Santi Martini', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => 'Permanen', 'durasi_class' => 'bg-red-100 text-red-600', 'waktu' => '18:23'],
-            ['id' => 4, 'nama' => 'Tono Winarto', 'kelamin' => 'Laki-Laki', 'kota' => 'Jakarta Selatan', 'durasi' => '30 Hari', 'durasi_class' => 'bg-orange-100 text-orange-600', 'waktu' => '20:10'],
-            ['id' => 5, 'nama' => 'Chandra Utama', 'kelamin' => 'Laki-Laki', 'kota' => 'Pekalongan', 'durasi' => 'Permanen', 'durasi_class' => 'bg-red-100 text-red-600', 'waktu' => '21:45'],
-            ['id' => 6, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'durasi_class' => 'bg-yellow-100 text-yellow-600', 'waktu' => '6 Nov'],
-            ['id' => 7, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'durasi_class' => 'bg-yellow-100 text-yellow-600', 'waktu' => '6 Nov'],
-            ['id' => 8, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'durasi_class' => 'bg-yellow-100 text-yellow-600', 'waktu' => '6 Nov'],
-            ['id' => 9, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'durasi_class' => 'bg-yellow-100 text-yellow-600', 'waktu' => '6 Nov'],
-            ['id' => 10, 'nama' => 'Kamaria Mandasari', 'kelamin' => 'Perempuan', 'kota' => 'Surakarta', 'durasi' => '14 Hari', 'durasi_class' => 'bg-yellow-100 text-yellow-600', 'waktu' => '2 Nov'],
-            ['id' => 11, 'nama' => 'Uda Lazuardi', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'durasi_class' => 'bg-red-100 text-red-600', 'waktu' => '20/12/22'],
+            ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '10:20'],
+            ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari', 'waktu' => '15:00'],
+            ['id' => 3, 'nama' => 'Santi Martini', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => 'Permanen', 'waktu' => '18:23'],
+            ['id' => 4, 'nama' => 'Tono Winarto', 'kelamin' => 'Laki-Laki', 'kota' => 'Jakarta Selatan', 'durasi' => '30 Hari', 'waktu' => '20:10'],
+            ['id' => 5, 'nama' => 'Chandra Utama', 'kelamin' => 'Laki-Laki', 'kota' => 'Pekalongan', 'durasi' => 'Permanen', 'waktu' => '21:45'],
+            ['id' => 6, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
+            ['id' => 7, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
+            ['id' => 8, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
+            ['id' => 9, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
+            ['id' => 10, 'nama' => 'Kamaria Mandasari', 'kelamin' => 'Perempuan', 'kota' => 'Surakarta', 'durasi' => '14 Hari', 'waktu' => '2 Nov'],
+            ['id' => 11, 'nama' => 'Uda Lazuardi', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '20/12/22'],
         ];
-
-        // Debug untuk memastikan data terkirim
-        // dd($suspendedAccounts); // Uncomment untuk debugging
 
         return view('pages.SuperAdminPenangguhan', compact('suspendedAccounts'));
     }
@@ -129,50 +126,85 @@ class SuspendedAccountController extends Controller
     }
 
     /**
-     * Restore a suspended account.
+     * Restore suspended account.
      */
-    public function restore(Request $request, $id): JsonResponse
+    public function restore($id, Request $request): JsonResponse
     {
         try {
-            // Validasi input
-            $request->validate([
-                'account_id' => 'sometimes|integer'
-            ]);
-
-            // Logic untuk memulihkan akun di sini
-            // Contoh: Update status di database
-            // $account = SuspendedAccount::findOrFail($id);
-            // $account->status = 'active';
-            // $account->suspended_until = null;
-            // $account->save();
-
-            // Log aktivitas
-            Log::info("Account restored", [
+            // Log untuk debugging
+            Log::info('Restore attempt', [
                 'account_id' => $id,
-                'restored_by' => auth()->id() ?? 'system',
-                'restored_at' => now()
+                'request_data' => $request->all(),
+                'route_param' => $id
             ]);
-
+            
+            // Convert ID to integer dan validasi
+            $accountId = (int) $id;
+            
+            if ($accountId <= 0) {
+                Log::warning('Invalid account ID provided', ['id' => $id, 'converted_id' => $accountId]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID akun tidak valid'
+                ], 400);
+            }
+            
+            // Data dummy suspended accounts
+            $suspendedAccounts = [
+                1 => 'Karsa Wijaya',
+                2 => 'Dandia Rianti',
+                3 => 'Santi Martini',
+                4 => 'Tono Winarto',
+                5 => 'Chandra Utama',
+                6 => 'Willy Kusuma',
+                7 => 'Willy Kusuma',
+                8 => 'Willy Kusuma',
+                9 => 'Willy Kusuma',
+                10 => 'Kamaria Mandasari',
+                11 => 'Uda Lazuardi'
+            ];
+            
+            // Cek apakah akun dengan ID tersebut ada
+            if (!isset($suspendedAccounts[$accountId])) {
+                Log::warning('Account not found', ['account_id' => $accountId]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akun dengan ID tersebut tidak ditemukan'
+                ], 404);
+            }
+            
+            // Simulasi proses restore
+            $accountName = $suspendedAccounts[$accountId];
+            
+            // Simulasi delay untuk menunjukkan loading
+            sleep(1);
+            
+            // Log sukses
+            Log::info('Account restored successfully', [
+                'account_id' => $accountId,
+                'account_name' => $accountName
+            ]);
+            
             return response()->json([
                 'success' => true,
-                'message' => 'Akun berhasil dipulihkan!',
+                'message' => 'Akun berhasil dipulihkan',
                 'data' => [
-                    'account_id' => (int)$id,
-                    'restored_at' => now()->format('Y-m-d H:i:s')
+                    'account_id' => $accountId,
+                    'account_name' => $accountName,
+                    'restored_at' => now()->toDateTimeString()
                 ]
             ]);
-
+            
         } catch (\Exception $e) {
-            Log::error("Failed to restore account", [
+            Log::error('Restore failed', [
                 'account_id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal memulihkan akun. Silakan coba lagi.',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'message' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
             ], 500);
         }
     }
@@ -185,8 +217,7 @@ class SuspendedAccountController extends Controller
         try {
             $query = $request->get('q', '');
             
-            // Logic pencarian di sini
-            // Untuk sementara return data dummy yang difilter
+            // Data dummy untuk pencarian
             $allAccounts = [
                 ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen'],
                 ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari'],

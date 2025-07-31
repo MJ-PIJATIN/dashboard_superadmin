@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Detail Akun Admin')
-@section('page-title', 'Detail Akun Administrasi')
-
 @section('navtitle')    
     <div class="text-medium text-gray-600 mb-4">
         <a href="#" class="text-gray-800 hover:underline">Karyawan</a>

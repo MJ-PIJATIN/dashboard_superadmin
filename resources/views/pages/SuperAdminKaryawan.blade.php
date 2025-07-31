@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Data Akun Karyawan')
-@section('page-title', 'Data Akun Karyawan')
-@section('page-description', 'Kelola data akun berdasarkan role')
 @section('navtitle', 'Karyawan')
 
 @section('content')

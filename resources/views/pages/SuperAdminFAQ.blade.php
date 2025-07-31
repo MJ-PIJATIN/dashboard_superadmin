@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
-@section('page-description', 'Halaman ini menampilkan daftar pertanyaan yang sering diajukan oleh pengguna.')
 @section('navtitle', 'FAQ')
 
 @section('content')
@@ -196,9 +192,62 @@
   </div>
 </div>
 
+<!-- Loading Spinner Drawer -->
+<div id="loading-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center h-full">
+        <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 70.5px;">
+            <div class="flex flex-col items-center mb-4">
+                <img src="{{ asset('images/loading.svg') }}" alt="Loading" class="h-30 w-30 animate-spin" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Drawer -->
+<div id="success-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div id="success-drawer-overlay" class="flex items-center justify-center h-full">
+        <div id="success-drawer-content" class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+            <div class="flex flex-col items-center mb-4">
+                <h2 class="text-2xl font-bold mb-6" style="color: #469D89;">Berhasil!</h2>
+                <img src="{{ asset('images/succed.svg') }}" alt="Success" class="h-30 w-30">
+                <p id="success-message" class="text-gray-700 text-center mt-4">Operasi berhasil dilakukan!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let faqData = [];
     let nextId = 6;
+
+    // Drawer Manager
+    const drawerManager = {
+        showLoading: function() {
+            document.getElementById('loading-drawer').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        },
+        
+        hideLoading: function() {
+            document.getElementById('loading-drawer').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        },
+        
+        showSuccess: function(message = 'Operasi berhasil dilakukan!') {
+            document.getElementById('success-message').textContent = message;
+            document.getElementById('success-drawer').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Auto hide after 2 seconds
+            setTimeout(() => {
+                this.hideSuccess();
+            }, 2000);
+        },
+        
+        hideSuccess: function() {
+            document.getElementById('success-drawer').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+    };
 
     // Initialize FAQ data from blade template
     document.addEventListener('DOMContentLoaded', function() {
@@ -209,6 +258,24 @@
             const deskripsi = row.querySelector('[data-field="deskripsi"]').getAttribute('data-full-desc');
             faqData.push({ id, judul, deskripsi });
         });
+
+        // Success drawer overlay click handler
+        const successOverlay = document.getElementById('success-drawer-overlay');
+        if (successOverlay) {
+            successOverlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    drawerManager.hideSuccess();
+                }
+            });
+        }
+
+        // Prevent success drawer content clicks from closing drawer
+        const successContent = document.getElementById('success-drawer-content');
+        if (successContent) {
+            successContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
     });
 
     // Function to show full description
@@ -272,17 +339,25 @@
     function confirmDelete() {
         const id = parseInt(document.getElementById('deleteId').value);
         
-        // Remove from array
-        faqData = faqData.filter(faq => faq.id !== id);
-        
-        // Remove from DOM
-        const row = document.querySelector(`tr[data-id="${id}"]`);
-        if (row) {
-            row.remove();
-        }
-
+        // Show loading
+        drawerManager.showLoading();
         closeModal('modalHapus');
-        showNotification('Pertanyaan berhasil dihapus!', 'success');
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            // Remove from array
+            faqData = faqData.filter(faq => faq.id !== id);
+            
+            // Remove from DOM
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (row) {
+                row.remove();
+            }
+
+            // Hide loading and show success
+            drawerManager.hideLoading();
+            drawerManager.showSuccess('Pertanyaan berhasil dihapus!');
+        }, 1000);
     }
 
     // Form validation
@@ -347,15 +422,23 @@
         const judul = document.getElementById('addJudul').value.trim();
         const deskripsi = document.getElementById('addDeskripsi').value.trim();
         
-        // Add to array
-        const newFaq = { id: nextId++, judul, deskripsi };
-        faqData.push(newFaq);
-        
-        // Add to DOM
-        addRowToTable(newFaq);
-        
+        // Show loading
+        drawerManager.showLoading();
         closeModal('modalTambah');
-        showNotification('Pertanyaan berhasil ditambahkan!', 'success');
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            // Add to array
+            const newFaq = { id: nextId++, judul, deskripsi };
+            faqData.push(newFaq);
+            
+            // Add to DOM
+            addRowToTable(newFaq);
+            
+            // Hide loading and show success
+            drawerManager.hideLoading();
+            drawerManager.showSuccess('Pertanyaan berhasil ditambahkan!');
+        }, 1000);
     });
 
     // Edit FAQ form submission
@@ -370,32 +453,40 @@
         const judul = document.getElementById('editJudul').value.trim();
         const deskripsi = document.getElementById('editDeskripsi').value.trim();
         
-        // Update array
-        const faqIndex = faqData.findIndex(faq => faq.id === id);
-        if (faqIndex !== -1) {
-            faqData[faqIndex].judul = judul;
-            faqData[faqIndex].deskripsi = deskripsi;
-        }
-        
-        // Update DOM
-        const row = document.querySelector(`tr[data-id="${id}"]`);
-        if (row) {
-            row.querySelector('[data-field="judul"]').textContent = judul;
-            const descCell = row.querySelector('[data-field="deskripsi"]');
-            descCell.textContent = truncateText(deskripsi, 50);
-            descCell.setAttribute('data-full-desc', deskripsi);
-            descCell.setAttribute('onclick', `showFullDescription('${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}');`);
-            
-            // Update button onclick attributes
-            const editBtn = row.querySelector('button[title="Edit"]');
-            const deleteBtn = row.querySelector('button[title="Hapus"]');
-            
-            editBtn.setAttribute('onclick', `openEditModal(${id}, '${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}')`);
-            deleteBtn.setAttribute('onclick', `openDeleteModal(${id}, '${judul.replace(/'/g, "\\'")}')`);
-        }
-        
+        // Show loading
+        drawerManager.showLoading();
         closeModal('modalEdit');
-        showNotification('Pertanyaan berhasil diubah!', 'success');
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            // Update array
+            const faqIndex = faqData.findIndex(faq => faq.id === id);
+            if (faqIndex !== -1) {
+                faqData[faqIndex].judul = judul;
+                faqData[faqIndex].deskripsi = deskripsi;
+            }
+            
+            // Update DOM
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            if (row) {
+                row.querySelector('[data-field="judul"]').textContent = judul;
+                const descCell = row.querySelector('[data-field="deskripsi"]');
+                descCell.textContent = truncateText(deskripsi, 50);
+                descCell.setAttribute('data-full-desc', deskripsi);
+                descCell.setAttribute('onclick', `showFullDescription('${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}');`);
+                
+                // Update button onclick attributes
+                const editBtn = row.querySelector('button[title="Edit"]');
+                const deleteBtn = row.querySelector('button[title="Hapus"]');
+                
+                editBtn.setAttribute('onclick', `openEditModal(${id}, '${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}')`);
+                deleteBtn.setAttribute('onclick', `openDeleteModal(${id}, '${judul.replace(/'/g, "\\'")}')`);
+            }
+            
+            // Hide loading and show success
+            drawerManager.hideLoading();
+            drawerManager.showSuccess('Pertanyaan berhasil diubah!');
+        }, 1000);
     });
 
     // Add new row to table
@@ -428,30 +519,6 @@
         tbody.appendChild(row);
     }
 
-    // Show notification
-    function showNotification(message, type = 'success') {
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
-        notification.className += type === 'success' ? ' bg-green-500' : ' bg-red-500';
-        notification.textContent = message;
-        
-        document.body.appendChild(notification);
-        
-        // Show notification
-        setTimeout(() => {
-            notification.classList.remove('translate-x-full');
-        }, 100);
-        
-        // Hide notification after 3 seconds
-        setTimeout(() => {
-            notification.classList.add('translate-x-full');
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
-        }, 3000);
-    }
-
     // Close modal when clicking outside
     window.addEventListener('click', function(e) {
         const modals = ['modalTambah', 'modalEdit', 'modalHapus', 'modalDeskripsi'];
@@ -473,6 +540,12 @@
                     closeModal(modalId);
                 }
             });
+            
+            // Also close success drawer with Escape
+            const successDrawer = document.getElementById('success-drawer');
+            if (!successDrawer.classList.contains('hidden')) {
+                drawerManager.hideSuccess();
+            }
         }
     });
 </script>

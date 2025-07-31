@@ -1,7 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Data Akun Pelanggan')
-@section('page-title', 'Data Akun Pelanggan')
 @section('navtitle', 'Pelanggan')
 
 @section('content')

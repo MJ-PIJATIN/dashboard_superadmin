@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Cabang')
-@section('page-title', 'Cabang')
-@section('page-description', 'Data Cabang')
 @section('navtitle', 'Cabang')
 
 @section('content')
@@ -72,12 +68,17 @@
                             </td>
                             <td class="px-6 py-3">{{ now()->subDays($i * 10)->format('d-m-Y') }}</td>
                             <td class="px-6 py-3">
-                                @php $statuses = ['Aktif', 'Tidak Aktif']; @endphp
-                                <div
-                                    class="flex items-center gap-2 bg-teal-100 text-teal-600 text-base font-medium px-3 py-1 rounded-[4px] w-fit">
-                                    <span class="w-2 h-2 rounded-full bg-teal-500"></span>
-                                    {{ $statuses[$i % 2] }}
-                                </div>
+                                @php
+                                $statuses = ['Aktif', 'Tidak Aktif'];
+                                $isActive = $statuses[$i % 2] === 'Aktif';
+                            @endphp
+
+                            <div
+                                class="flex items-center gap-2 text-base font-medium px-3 py-1 rounded-[4px] w-[120px]
+                                    {{ $isActive ? 'bg-teal-100 text-teal-600' : 'bg-[#ED555433] text-[#ED5554]' }}">
+                                <span class="w-2 h-2 rounded-full {{ $isActive ? 'bg-teal-500' : 'bg-[#ED5554]' }}"></span>
+                                {{ $statuses[$i % 2] }}
+                            </div>
                             </td>
                             <td class="px-6 py-3">cabang{{ strtolower($cities[$i - 1]) }}{{ $i + 10 }}@gmail.com</td>
                             <td class="px-6 py-3">

@@ -1,7 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Detail Akun Pelanggan')
-@section('page-title', 'Detail Akun Pelanggan')
 @section('navtitle')    
     <div class="text-medium text-gray-600 mb-4">
         <a href="#" class="text-gray-800 hover:underline">Pelanggan</a>
