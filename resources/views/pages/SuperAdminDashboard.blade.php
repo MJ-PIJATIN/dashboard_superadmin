@@ -2,9 +2,7 @@
 
 @section('title', 'Dashboard')
 @section('page-title', 'Dashboard')
-@section('page-description', 'Ringkasan statistik dan aktivitas terkini sistem Pijat.in')
 
-{{-- Tambahkan Chart.js CDN di head --}}
 @push('styles')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 @endpush

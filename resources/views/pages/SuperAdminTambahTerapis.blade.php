@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Tambah Data Terapis')
-@section('page-title', 'Tambah Data Terapis')
-@section('page-description', 'Form untuk menambahkan data terapis baru ke sistem Pijat.in')
 @section('navtitle')
     <div class="text-base flex items-center gap-2" style="color: #374151;">
         <span>Terapis</span>

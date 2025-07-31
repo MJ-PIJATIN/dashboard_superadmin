@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Detail Akun Ditangguhkan')
-@section('page-title', 'Detail Akun Ditangguhkan')
-@section('page-description', 'Informasi lengkap akun yang ditangguhkan')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Penangguhan</span>
