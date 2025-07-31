@@ -2,16 +2,15 @@
 
 @section('title', 'Dashboard')
 @section('page-title', 'Dashboard')
-@section('page-description', 'Ringkasan statistik dan aktivitas terkini sistem Pijat.in')
 
-{{-- Tambahkan Chart.js CDN di head --}}
 @push('styles')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 @endpush
 
 @section('content')
+<div class="bg-gray-100 min-h-screen">
 <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
-    <h1 class="text-xl font-bold text-gray-700 mb-4">Ringkasan</h1>
+    <h1 class="text-xl font-semibold text-gray-700 mb-4">Ringkasan</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         @php
             $cards = [
@@ -96,7 +95,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="lg:col-span-2 bg-white rounded-md p-4 shadow-md border">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-xl font-bold text-gray-700">Chart Pemesanan Tahunan</h3>
+                <h3 class="text-xl font-semibold text-gray-700">Chart Pemesanan Tahunan</h3>
                 <select class="border border-gray-300 rounded px-2 py-1 text-xs">
                     <option>2023</option>
                     <option>2022</option>
@@ -110,7 +109,7 @@
 
         <div class="bg-white rounded-md p-4 shadow-md border">
             <div class="flex items-center justify-between mb-10">
-                <h3 class="text-xl font-bold text-gray-700">Layanan Terpopuler</h3>
+                <h3 class="text-xl font-semibold text-gray-700">Layanan Terpopuler</h3>
                 <span class="font-semibold text-xs text-gray-700">Okt 2023</span>
             </div>
             <div class="space-y-10 text-md">
@@ -128,31 +127,31 @@
     </div>
 
     <div class="bg-white rounded-md p-4 shadow-md border mt-6 text-sm">
-        <h3 class="text-xl font-bold text-gray-700 mb-4">Pesanan Terkini</h3>
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Pesanan Terkini</h3>
         <div class="overflow-x-auto">
-        <table class="min-w-full table-auto border border-gray-200 text-sm">
+        <table class="min-w-full table-auto border border-gray-400 text-sm">
                 <thead>
                     <tr class="bg-gray-50 text-left text-xs text-gray-800 uppercase">
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-200 bg-gray-50">#</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-200 bg-gray-50">Tanggal</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-200 bg-gray-50">Customer</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-200 bg-gray-50">Status</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-200 bg-gray-50">Aksi</th>
+                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">#</th>
+                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Tanggal</th>
+                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Customer</th>
+                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Status</th>
+                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-400">
                     <tr>
                         <td class="px-3 py-2">1</td>
                         <td class="px-3 py-2">12/10/2023</td>
                         <td class="px-3 py-2">Riano Ah Lupa</td>
-                        <td class="px-3 py-2">
-                            <div class="flex items-center">
-                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold" style="border-radius: 5px; padding: 4px 23px;">
-                                    <span class="w-2 h-2 bg-green-500" style="border-radius: 5px;"></span>
-                                    Selesai
-                                </span>
-                            </div>
-                        </td>
+                            <td class="px-3 py-2">
+                                <div class="flex items-center justify-start">
+                                    <span class="flex items-center justify-start gap-2 bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-[4px] w-[104px]">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Selesai
+                                    </span>
+                                </div>
+                            </td>
                         <td class="px-3 py-2">
                             <button class="text-blue-600 hover:text-blue-900">
                             <div class="flex justify-center">
