@@ -5,8 +5,13 @@ use App\Http\Controllers\SuspendedAccountController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\Auth\LoginController;
 
-// Routing Login dan Logout
+// Routing ke Landing Page
 Route::get('/', function () {
+    return view('pages.SuperAdminLandingPage');
+});
+
+// Routing Login dan Logout
+Route::get('/login', function () {
     return view('pages.SuperAdminLogin');
 })->name('login');
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
