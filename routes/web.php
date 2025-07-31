@@ -3,10 +3,18 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuspendedAccountController;
 use App\Http\Controllers\AduanController;
+use App\Http\Controllers\Auth\LoginController;
 
+// Routing Login dan Logout
+Route::get('/', function () {
+    return view('pages.SuperAdminLogin');
+})->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Routing Sidebar Super Admin
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('pages.SuperAdminDashboard');
 })->name('dashboard');
 
