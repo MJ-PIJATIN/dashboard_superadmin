@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuspendedAccountController;
-use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\Auth\LoginController;
 
@@ -129,13 +128,6 @@ Route::get('/cabang/{id}/edit', function ($id) {
     return view('pages.SuperAdminEditCabang', ['id' => $id]);
 })->where('id', '[0-9]+')->name('cabang.edit');
 
-//Page Pesanan
-Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
-
-Route::get('/pesanan/detail/{tipe}/{id}', [PesananController::class, 'detail'])->name('pesanan.detail');
-
-Route::put('/pesanan/{tipe}/{id}/update-status', [PesananController::class, 'updateStatus'])
-    ->name('pesanan.updateStatus');
 
 //PAGE KARYAWAN
 //tambah karyawan
@@ -152,6 +144,7 @@ Route::get('/karyawan/{id}', function ($id) {
 Route::get('/karyawan/finance/{id}', function ($id) {
     return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
 })->where('id', '[0-9]+')->name('detail.akun.finance');
+
 
 //PAGE PELANGGAN
 // detail akun pelanggan
