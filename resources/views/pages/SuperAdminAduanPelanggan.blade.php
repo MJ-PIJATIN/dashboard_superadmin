@@ -10,17 +10,6 @@
 <div class="bg-gray-100 min-h-screen">
     <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:ml-6 xl:px-6 py-6 sm:py-8 lg:py-16 xl:py-24">
         <h1 class="text-lg sm:text-xl font-bold text-gray-700 mb-4 sm:mb-6">Data Aduan Pelanggan</h1>
-
-        <!-- Search Results Info -->
-        @if(request('search'))
-            <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p class="text-sm text-green-800">
-                    Menampilkan hasil pencarian untuk: <strong>"{{ request('search') }}"</strong>
-                    ({{ $paginationData['total'] }} hasil ditemukan)
-                </p>
-            </div>
-        @endif
-
         <!-- Main Container -->
         <div class="w-full bg-white rounded-lg shadow-sm">
             <!-- Search Section -->
