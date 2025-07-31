@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Cabang')
-@section('page-title', 'Cabang')
-@section('page-description', 'Data Cabang')
 @section('navtitle', 'Cabang')
 
 @section('content')

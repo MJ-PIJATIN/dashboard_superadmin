@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Detail Aduan Pengguna')
-@section('page-title', 'Detail Aduan Pengguna')
-@section('page-description', 'Informasi lengkap aduan dari pengguna')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Aduan</span>
