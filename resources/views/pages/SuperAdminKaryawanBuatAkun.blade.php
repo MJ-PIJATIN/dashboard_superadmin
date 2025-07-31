@@ -11,7 +11,7 @@
 <div class="px-6 py-20">
     <!-- Back -->
     <div class="text-sm text-gray-600 mb-4">
-        <a href="#" class="flex items-center hover:underline">
+        <a href="{{ route('karyawan') }}" title="Kembali ke Data Karyawan" class="hover:text-gray-800">
             <span class="text-2xl font-bold text-[#2A9D8F] mr-2">&larr;</span>
             <span class="text-sm font-medium text-gray-800">Karyawan</span>
         </a>

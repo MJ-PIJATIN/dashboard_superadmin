@@ -111,3 +111,43 @@ Route::get('/aduan/search', [App\Http\Controllers\AduanController::class, 'searc
 Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');
+
+// Page Cabang
+// Halaman Tambah Cabang
+Route::get('/cabang/tambah', function () {
+    return view('pages.SuperAdminTambahCabang');
+})->name('cabang.tambah');
+
+// Halaman Detail Cabang
+Route::get('/cabang/{id}', function ($id) {
+    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.detail');
+
+// Halaman Edit Cabang
+Route::get('/cabang/{id}/edit', function ($id) {
+    return view('pages.SuperAdminEditCabang', ['id' => $id]);
+})->where('id', '[0-9]+')->name('cabang.edit');
+
+
+//PAGE KARYAWAN
+//tambah karyawan
+Route::get('/tambah/karyawan', function () {
+    return view('pages.SuperAdminKaryawanBuatAkun');
+})->name('tambah.karyawan');
+
+// detail karyawan admin
+Route::get('/karyawan/{id}', function ($id) {
+    return view('pages.SuperAdminKaryawanDetailAkun', ['id' => $id]);
+})->where('id', '[0-9]+')->name('detail.karyawan');
+
+// detail karyawan finance 
+Route::get('/karyawan/finance/{id}', function ($id) {
+    return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
+})->where('id', '[0-9]+')->name('detail.akun.finance');
+
+
+//PAGE PELANGGAN
+// detail akun pelanggan
+Route::get('/pelanggan/{id}', function ($id) {
+    return view('pages.SuperAdminPelangganDetailAkun', ['id' => $id]);
+})->where('id', '[0-9]+')->name('detail.akun.pelanggan');
