@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
-@section('page-description', 'Halaman ini menampilkan daftar pertanyaan yang sering diajukan oleh pengguna.')
 @section('navtitle', 'FAQ')
 
 @section('content')

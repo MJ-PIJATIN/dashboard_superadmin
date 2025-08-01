@@ -1,8 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Detail Akun Terapis')
-@section('page-title', 'Detail Akun Terapis')
-@section('page-description', 'Informasi lengkap akun terapis')
 @section('navtitle')
     <div class="text-base flex items-center gap-2" style="color: #374151;">
         <span>Terapis</span>
