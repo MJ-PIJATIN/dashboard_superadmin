@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-  <div class="ml-[60px] px-6 pt-[100px] pb-10 space-y-6">
+  <div class="ml-[26px] mr-[26px] px-6 pt-[101px] pb-[101px] space-y-6">
 
     {{-- Header --}}
     <div class="flex justify-between items-center">
@@ -27,27 +27,27 @@
     </div>
 
     {{-- Form Edit Cabang --}}
-    <div class="px-6 py-4 bg-white max-w-xl">
-    <h2 class="text-xl font-bold text-gray-700 mb-6">Edit Cabang</h2>
+    <div class="max-w-xl">
+    <h3 class="text-xl font-bold text-gray-700 mb-4">Edit Cabang</h3>
 
     <form action="#" method="POST" class="space-y-5">
       @csrf
 
       <div>
-      <label for="provinsi" class="block text-base font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
+      <label for="provinsi" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
       <input type="text" id="provinsi" name="provinsi" maxlength="50"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md" placeholder="Daerah Istimewa Yogyakarta">
+        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Daerah Istimewa Yogyakarta">
       </div>
 
       <div>
-      <label for="kota" class="block text-base font-semibold text-gray-700 mb-1">Kota Cabang</label>
+      <label for="kota" class="block text-sm font-semibold text-gray-700 mb-1">Kota Cabang</label>
       <input type="text" id="kota" name="kota" maxlength="50"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md" placeholder="Yogyakarta">
+        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Yogyakarta">
       </div>
 
       <div>
-      <label for="lokasi" class="block text-base font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
-      <select id="lokasi" name="lokasi" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white">
+      <label for="lokasi" class="block text-sm font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
+      <select id="lokasi" name="lokasi" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
         <option value="">Pilih lokasi cabang</option>
         <option value="Jl. Pahlawan, Kledungsari, No. 32, Yogyakarta">
         Jl. Pahlawan, Kledungsari, No. 32, Yogyakarta
@@ -57,8 +57,8 @@
       </div>
 
       <div>
-      <label for="email" class="block text-base font-semibold text-gray-700 mb-1">Email Cabang</label>
-      <select id="email" name="email" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white">
+      <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Cabang</label>
+      <select id="email" name="email" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
         <option value="">Pilih email cabang</option>
         <option value="pijatinjogja@gmail.com">pijatinjogja@gmail.com</option>
         <option value="admin@pijatin.com">admin@pijatin.com</option>
@@ -66,15 +66,15 @@
       </div>
 
       <div>
-      <label for="deskripsi" class="block text-base font-semibold text-gray-700 mb-1">Deskripsi</label>
+      <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
       <textarea id="deskripsi" name="deskripsi" rows="4" maxlength="512"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md"
+        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
         placeholder="Penulisan dibatasi hingga 512 karakter"></textarea>
       </div>
 
       <div class="pt-2 flex justify-end">
       <button type="submit"
-        class="bg-[#3FC1C0] hover:bg-[#35adae] text-white px-5 py-2 rounded-md text-base font-medium shadow">
+        class="bg-teal-500 hover:bg-[#35adae] text-white px-5 py-2 rounded-md text-sm font-medium shadow">
         Tambahkan
       </button>
       </div>
