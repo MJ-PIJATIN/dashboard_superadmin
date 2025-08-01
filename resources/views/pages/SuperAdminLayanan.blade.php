@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.layanan')
 @section('navtitle', 'Manajemen Layanan')
 @section('content')
 

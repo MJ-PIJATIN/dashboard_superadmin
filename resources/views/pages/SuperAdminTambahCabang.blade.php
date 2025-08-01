@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.cabang')
 
 @section('content')
   <div class="ml-[25px] px-6 pt-[100px] pb-8 space-y-6">
