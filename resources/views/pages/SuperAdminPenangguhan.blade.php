@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.penangguhan')
 @section('navtitle', 'Penangguhan')
 @section('navsubtitle', 'Data Akun Ditangguhkan')
 

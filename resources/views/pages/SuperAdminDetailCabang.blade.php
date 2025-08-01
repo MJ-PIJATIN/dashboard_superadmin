@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.cabang')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Cabang</span>
