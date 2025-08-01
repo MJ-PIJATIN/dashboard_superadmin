@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.pesanan')
 
 @section('content')
     <div class="px-6 py-20 bg-gray-50 space-y-6">
