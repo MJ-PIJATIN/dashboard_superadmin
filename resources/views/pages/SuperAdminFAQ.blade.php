@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.faq')
 @section('navtitle', 'FAQ')
 
 @section('content')

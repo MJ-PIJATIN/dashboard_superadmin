@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.karyawan')
 @section('navtitle')    
     <div class="text-medium text-gray-600 mb-4">
         <a href="#" class="text-gray-800 hover:underline">Karyawan</a>

@@ -1,4 +1,4 @@
-@extends('layouts.login')
+@extends('layouts.landing_page')
 
 @section('content')
     <div class="h-screen w-screen overflow-hidden relative">
@@ -8,6 +8,6 @@
     <script>
         setTimeout(function () {
             window.location.href = "{{ url('/login') }}";
-        }, 2000);
+        }, 5000);
     </script>
 @endsection
