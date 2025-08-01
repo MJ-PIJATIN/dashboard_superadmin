@@ -2,14 +2,14 @@
 @section('navtitle', 'Cabang')
 
 @section('content')
-    <div class="ml-[25px] px-6 pt-[100px] pb-8 space-y-6">
+    <div class="ml-[26px] mr-[26px] px-6 pt-[103px] pb-[103px] space-y-6">
 
         {{-- Header --}}
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-700">Data Cabang</h2>
             <a href="/cabang/tambah">
                 <button
-                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold rounded-lg shadow">
+                    class="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg shadow">
                     <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M9.0013 0.166016C13.6036 0.166016 17.3346 3.89697 17.3346 8.49935C17.3346 13.1017 13.6036 16.8327 9.0013 16.8327C4.39893 16.8327 0.667969 13.1017 0.667969 8.49935C0.667969 3.89697 4.39893 0.166016 9.0013 0.166016ZM9.0013 4.33268C8.68489 4.33268 8.42339 4.56781 8.38197 4.87287L8.3763 4.95768V7.87435H5.45964C5.11446 7.87435 4.83464 8.15418 4.83464 8.49935C4.83464 8.81577 5.06976 9.07727 5.37483 9.11868L5.45964 9.12435H8.3763V12.041C8.3763 12.3862 8.65614 12.666 9.0013 12.666C9.31772 12.666 9.57922 12.4308 9.62064 12.1258L9.6263 12.041V9.12435H12.543C12.8881 9.12435 13.168 8.84452 13.168 8.49935C13.168 8.18293 12.9328 7.92143 12.6278 7.88002L12.543 7.87435H9.6263V4.95768C9.6263 4.61251 9.34647 4.33268 9.0013 4.33268Z"
@@ -42,7 +42,7 @@
 
         {{-- Table Section --}}
         <div class="overflow-x-auto">
-            <table class="min-w-full text-base text-gray-700 border-collapse">
+            <table class="min-w-full text-sm text-gray-700 border-collapse">
                 <thead class="border-b border-gray-300">
                     <tr>
                         <th class="text-left px-6 py-3 font-semibold">#</th>
@@ -74,7 +74,7 @@
                             @endphp
 
                             <div
-                                class="flex items-center gap-2 text-base font-medium px-3 py-1 rounded-[4px] w-[120px]
+                                class="flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-[4px] w-[120px]
                                     {{ $isActive ? 'bg-teal-100 text-teal-600' : 'bg-[#ED555433] text-[#ED5554]' }}">
                                 <span class="w-2 h-2 rounded-full {{ $isActive ? 'bg-teal-500' : 'bg-[#ED5554]' }}"></span>
                                 {{ $statuses[$i % 2] }}
