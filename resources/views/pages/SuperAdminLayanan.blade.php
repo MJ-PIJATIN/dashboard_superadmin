@@ -40,7 +40,7 @@
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Deskripsi</th>
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Status</th>
+                            <th class="px-4 py-2 pl-14 text-left text-sm font-semibold text-gray-800">Status</th>
                             <th class="px-4 py-2"></th>
                         </tr>
                     </thead>
@@ -67,7 +67,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-1">
-                                    <button class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium status-button"
+                                    <button class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium status-button ml-10"
                                             style="background-color: {{ $layanan->status == 'aktif' ? '#E5F9F9' : '#FEF2F2' }};
                                                 color: {{ $layanan->status == 'aktif' ? '#3FC1C0' : '#EF4444' }};"
                                             data-service-id="{{ $layanan->id }}" data-current-status="{{ $layanan->status == 'aktif' ? 'Aktif' : 'Nonaktif' }}">
