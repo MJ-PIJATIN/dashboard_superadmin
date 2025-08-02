@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.pesanan')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Pesanan</span>
@@ -9,7 +9,7 @@
 
 @section('content')
    <div class="w-full min-h-screen bg-gray-50">
-    <div class="ml-[26px] mr-[26px] px-6 pt-[101px] pb-[101px] space-y-6">
+    <div class="ml-[26px] mr-[26px] px-6 pt-[95px] pb-[101px] space-y-6">
 
             <!-- Heading -->
             <div class="flex justify-between items-center">

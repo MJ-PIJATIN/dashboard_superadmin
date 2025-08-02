@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-  <div class="ml-[26px] mr-[26px] px-6 pt-[103px] pb-[103px] space-y-6">
+  <div class="ml-[26px] mr-[26px] px-6 pt-[96px] pb-[103px] space-y-6">
 
 {{-- Header --}}
   <div class="flex justify-between items-center">

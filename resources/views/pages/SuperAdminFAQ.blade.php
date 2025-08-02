@@ -2,7 +2,7 @@
 @section('navtitle', 'FAQ')
 
 @section('content')
-<div class="p-28 pl-50 bg-gray-100 min-h-screen ml-[-60px] pt-[100px]">
+<div class="p-28 pl-50 bg-gray-100 min-h-screen ml-[-60px] pt-[96px]">
     <div class="max-w-12xl mx-auto">
         <div class="flex justify-between items-center mb-4 mt-1">
             <h1 class="text-xl font-bold text-gray-700">Daftar Pertanyaan</h1>

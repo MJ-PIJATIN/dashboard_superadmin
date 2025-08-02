@@ -9,15 +9,17 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[25px] pt-[90px] pb-[100px] pr-[25px]">
+<div class="max-w-screen-xl bg-gray-100 ml-[25px] pt-[76px] pb-[100px] pr-[25px]">
 
 <div class="min-h-screen bg-gray-100 p-6">
     <!-- Header -->
         <div class="flex items-center mb-6">
-            <div class="flex items-center text-sm text-gray-700 font-semibold hover:text-gray-800 transition-colors">
-                <img onclick="goBack()" src="{{ asset('images/back.svg') }}" alt="Back Icon" class="w-4 h-4 mr-2 cursor-pointer">
-                <span class="font-large text-base">Tambah Data Terapis</span>
-            </div>
+            <a href="{{ route('terapis') }}" title="Kembali ke terapis" class="flex items-center text-gray-600 hover:text-gray-700 transition-colors mr-4">
+                <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg" class="mr-2">
+                    <path d="M9.47915 16.9798C9.0833 16.98 8.70301 16.8257 8.41915 16.5498L1.41915 9.54983C0.834242 8.96419 0.834242 8.01546 1.41915 7.42983L8.41915 0.429828C8.79964 0.0511261 9.35326 -0.0958207 9.87147 0.0443407C10.3897 0.184502 10.7937 0.590478 10.9315 1.10934C11.0692 1.6282 10.9196 2.18113 10.5391 2.55983L6.1067 6.99976H17.519C18.3475 6.99976 19.019 7.67133 19.019 8.49976C19.019 9.32818 18.3475 9.99976 17.519 9.99976H6.11161L10.5391 14.4198C10.9676 14.8488 11.0957 15.4935 10.8637 16.0537C10.6318 16.6138 10.0854 16.9793 9.47915 16.9798Z" fill="#454545" />
+                </svg>
+            </a>
+            <h1 class="text-xl font-bold text-gray-700">Tambah Terapis</h1>
         </div>
 
     <!-- Form Content -->
