@@ -8,6 +8,6 @@
     <script>
         setTimeout(function () {
             window.location.href = "{{ url('/login') }}";
-        }, 5000);
+        }, 3000);
     </script>
 @endsection
