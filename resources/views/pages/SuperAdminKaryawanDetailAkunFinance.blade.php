@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.karyawan')
 
 @section('title', 'Detail Akun Finance')
 @section('page-title', 'Detail Akun Finance')
