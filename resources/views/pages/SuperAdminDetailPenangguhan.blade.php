@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-    <div class="wfull" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
+    <div class="" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px; margin-right: 26px;">
         <!-- Header dengan tombol kembali -->
         <div class="flex items-center mb-6">
   <a href="{{ route('penangguhan') }}" title="Kembali ke daftar cabang" class="flex items-center text-gray-600 hover:text-gray-800 transition-colors mr-4">

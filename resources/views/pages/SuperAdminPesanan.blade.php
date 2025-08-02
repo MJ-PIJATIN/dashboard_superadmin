@@ -1,9 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.pesanan')
 @section('navtitle', 'Pesanan')
 
 @section('content')
-<div class="bg-gray-50 min-h-screen">
-    <div class="mt-[28px] ml-[26px] mr-[26px] px-6 py-20 bg-gray-50 w full">
+<div class="bg-gray-100 min-h-screen">
+    <div class="mt-[20px] ml-[26px] mr-[26px] px-6 py-20 bg-gray-100 ">
         <h2 class="text-xl font-bold text-gray-700 mb-6">Data Pemesanan Layanan</h2>
 
         {{-- Tabs --}}
@@ -12,7 +12,7 @@
                 Transfer
             </button>
             <button id="tab-cash-btn"
-                class="w-32 py-3 rounded-t-xl bg-gray-100 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-100 after:z-[-1]">
+                class="w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-100 after:z-[-1]">
                 Cash
             </button>
         </div>
@@ -44,25 +44,25 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Nama Pemesan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Jenis Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Jadwal Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Status Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
@@ -144,25 +144,25 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Nama Pemesan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Jenis Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Jadwal Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-700">
                                     <span>Status Layanan</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </button>
@@ -257,7 +257,7 @@
         <div class="flex items-center justify-center h-full">
             <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
                 <div class="flex flex-col items-center mb-4">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Hapus Data</h2>
+                    <h2 class="text-2xl font-bold text-gray-700 mb-6">Hapus Data</h2>
                     <img src="{{ asset('images/trash can.svg') }}" alt="Hapus" class="h-20 w-20 mb-6" />
                     <p class="text-gray-600 text-center text-base">
                         Apakah Anda yakin ingin menghapus layanan
@@ -291,9 +291,9 @@
                 // Set active tab button styles
                 if (isTransfer) {
                     tabTransferBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative';
-                    tabCashBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-100 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-100 after:z-[-1]';
+                    tabCashBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
                 } else {
-                    tabTransferBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-100 text-gray-400 z-10 relative after:absolute after:top-0 after:right-0 after:w-6 after:h-full after:bg-gray-100 after:z-[-1]';
+                    tabTransferBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 relative after:absolute after:top-0 after:right-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
                     tabCashBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative -ml-6';
                 }
 

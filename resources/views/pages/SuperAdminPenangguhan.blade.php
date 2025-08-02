@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:ml-6 xl:px-6 py-6 sm:py-8 lg:py-16 xl:py-24">
+    <div class="mbg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px] mr-[26px]">
         <h1 class="text-lg sm:text-xl font-bold text-gray-700 mb-4 sm:mb-6">Data Akun Ditangguhkan</h1>
 
         <!-- Main Container -->
@@ -86,8 +86,8 @@
                                 <span class="group-hover:opacity-0 transition-opacity duration-200">{{ $account['waktu'] }}</span>
                                 
                                 <!-- Tombol - muncul saat hover -->
-                                <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();" 
-                                    class="opacity-0 group-hover:opacity-100 absolute center top-1/2 -translate-y-1/2 flex items-center justify-center transition-opacity duration-200 hover:bg-[#85B80433] rounded-md p-1">
+                                <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();"
+                                    class="ml-[4px] absolute inset-0 flex items-center justify-beetween gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                     <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
                                 </button>
                             </td>
@@ -273,26 +273,21 @@ function confirmRestore() {
     .then(response => {
         console.log('Response status:', response.status);
         return response.json();
-    })
-    .then(data => {
-        console.log('Response data:', data);
-        
-        // Hide loading drawer
-        hideLoadingDrawer();
-        
-        if (data.success) {
-            // Show success drawer with custom message
-            showSuccessDrawer(`Akun ${currentUserName} berhasil dipulihkan!`);
-            
-            // Refresh halaman untuk update data setelah success drawer hilang
-            setTimeout(() => {
-                window.location.reload();
-            }, 3500);
-        } else {
-            // Show error in success drawer with different styling
-            showSuccessDrawer('Gagal memulihkan akun: ' + (data.message || 'Terjadi kesalahan'));
-        }
-    })
+    }).then(data => {
+    console.log('Response data:', data);
+    
+    // Hide loading drawer
+    hideLoadingDrawer();
+    
+    // Show success drawer with custom message
+    // showSuccessDrawer(`Akun ${currentUserName} berhasil dipulihkan!`);
+    showSuccessDrawer(`Akun berhasil dipulihkan!`);
+    
+    // Refresh halaman untuk update data setelah success drawer hilang
+    setTimeout(() => {
+        window.location.reload();
+    }, 3500);
+})
     .catch(error => {
         console.error('Fetch error:', error);
         

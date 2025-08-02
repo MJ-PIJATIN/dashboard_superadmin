@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-    <div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px;">
+    <div class="" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 22px; margin-right: 26px;">
         
         <!-- Header dengan tombol kembali -->
         <div class="flex items-center mb-6">

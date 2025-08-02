@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.cabang')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Cabang</span>
@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-<div class="mx-auto max-w-screen-xl px-6 ml-[26px] mr-[26px] pt-[101px] pb-[101px] space-y-6">
+<div class="mx-auto px-6 ml-[26px] mr-[26px] pt-[94px] pb-[101px] space-y-6">
 
     {{-- Header --}}
     <div class="flex justify-between items-center">

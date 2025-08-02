@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="bg-gray-100 min-h-screen">
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 xl:ml-6 xl:px-6 py-6 sm:py-8 lg:py-16 xl:py-24">
+    <div class="bg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px] mr-[26px]">
         <h1 class="text-lg sm:text-xl font-bold text-gray-700 mb-4 sm:mb-6">Data Aduan Pelanggan</h1>
         <!-- Main Container -->
         <div class="w-full bg-white rounded-lg shadow-sm">
@@ -55,7 +55,7 @@
                                         <div class="text-sm text-gray-700">
                                             <span class="font-bold text-gray-600">{{ $adu['jenis_aduan'] }}</span>
                                             <span class="text-gray-700 mx-2">•</span>
-                                            <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 80, '...') }}</span>
+                                            <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 116, '...') }}</span>
                                         </div>
                                     </td>
                                     <td class="px-14 py-4 text-sm text-gray-500 relative">
@@ -66,16 +66,16 @@
                                             </span>
                                             
                                             <!-- Buttons - tersembunyi normal, muncul saat hover -->
-                                            <div class="absolute inset-0 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                                <button onclick="showAlert('peringatan'); event.stopPropagation();"
-                                                    title="Beri Peringatan"
+                                            <div class="ml-[72px] absolute inset-0 flex items-center justify-beetween gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
+                                                    title="Lihat Detail Terapis"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-yellow-200 rounded-md p-1">
-                                                    <img src="/images/peringatan.svg" alt="Peringatan" class="w-4 h-4" />
+                                                    <img src="/images/peringatan.svg" alt="Detail Terapis" class="w-4 h-4" />
                                                 </button>
-                                                <button onclick="showAlert('tangguhkan'); event.stopPropagation();"
-                                                    title="Tangguhkan"
+                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
+                                                    title="Kelola Akun Terapis"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-red-200 rounded-md p-1">
-                                                    <img src="/images/tangguhkan.svg" alt="Tangguhkan" class="w-4 h-4" />
+                                                    <img src="/images/tangguhkan.svg" alt="Kelola Akun" class="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
@@ -177,15 +177,6 @@
 
 @section('scripts')
 <script>
-// Fungsi untuk menampilkan alert
-function showAlert(type) {
-    if (type === 'peringatan') {
-        alert('Fitur peringatan belum tersedia.');
-    } else if (type === 'tangguhkan') {
-        alert('Fitur penangguhan belum tersedia.');
-    }
-}
-
 // Auto-submit form on Enter key
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
