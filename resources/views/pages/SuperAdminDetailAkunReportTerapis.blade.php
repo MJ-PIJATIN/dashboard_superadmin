@@ -178,40 +178,209 @@
     </div>
 </div>
 
-<!-- Modal untuk Konfirmasi Peringatan -->
-<div id="warningModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Peringatan</h3>
-        <p class="text-gray-600 mb-6">Apakah Anda yakin ingin mengirim peringatan kepada {{ $detailTerapis['nama'] }}?</p>
-        <div class="flex justify-end gap-3">
-            <button onclick="closeWarningModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50">
-                Batal
-            </button>
-            <button onclick="confirmWarning()" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-                Kirim Peringatan
-            </button>
+<!-- Modal Pop-up untuk Peringatan Pelanggan -->
+<div id="warningDrawer" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full mx-4" id="warningDrawerContent" style="max-width:500px;">
+        <div class="p-6 max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-700">Peringatan Pelanggan</h3>
+                <button onclick="closeWarningDrawer()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Content -->
+            <div class="space-y-4">
+                <p class="text-gray-600 text-sm">Berikan alasan peringatan kepada akun yang berkaitan.</p>
+                
+                <!-- Textarea -->
+                <div>
+                    <textarea 
+                        id="warningReason" 
+                        placeholder="Penulisan dibatasi hingga 500 karakter." 
+                        class="w-full h-32 px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        maxlength="500"></textarea>
+                    <div class="text-xs text-gray-400 mt-1">
+                        <span id="warningCharCount">0</span>/500 karakter
+                    </div>
+                </div>
+
+                <!-- Duration Selection -->
+                <div>
+                <div class="flex items-center mb-6">
+                <label class="inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="suspendDuration" class="sr-only">
+                    <div class="checkbox-visual w-4 h-4 rounded bg-white border border-gray-300 flex items-center justify-center transition-colors duration-200">
+                        <svg class="checkbox-icon w-3 h-3 text-white opacity-0 transition-opacity duration-200"
+                            fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <span class="ml-3 text-sm text-gray-700">Pilih durasi penangguhan</span>
+                </label>
+            </div>
+                <div class="flex flex-wrap gap-6" id="durationOptions">
+                <style>
+                input[type="radio"] {
+                    accent-color: #0d9488; /* teal-600 */
+                }
+                </style>
+
+                <label class="flex items-center">
+                    <input type="radio" name="duration" value="1" class="mr-2">
+                    <span class="text-sm text-gray-700">1 Hari</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="duration" value="7" class="mr-2">
+                    <span class="text-sm text-gray-700">7 Hari</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="duration" value="14" class="mr-2">
+                    <span class="text-sm text-gray-700">14 Hari</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="duration" value="30" class="mr-2">
+                    <span class="text-sm text-gray-700">30 Hari</span>
+                </label>
+            </div>
+
+            </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button onclick="submitWarning()" class="w-full bg-teal-500 text-white py-3 rounded-lg font-medium hover:bg-teal-600 transition-colors">
+                        Kirim
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal untuk Konfirmasi Penangguhan -->
-<div id="suspendModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Konfirmasi Penangguhan</h3>
-        <p class="text-gray-600 mb-6">Apakah Anda yakin ingin menangguhkan akun {{ $detailTerapis['nama'] }}?</p>
-        <div class="flex justify-end gap-3">
-            <button onclick="closeSuspendModal()" class="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50">
-                Batal
-            </button>
-            <button onclick="confirmSuspend()" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
-                Tangguhkan Akun
-            </button>
+<!-- Modal Pop-up untuk Penangguhan Akun -->
+<div id="suspendDrawer" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4" id="suspendDrawerContent" style="max-width: 500px">
+        <div class="p-6 max-h-[90vh] overflow-y-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-700">Penangguhan Akun</h3>
+                <button onclick="closeSuspendDrawer()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Warning Notice -->
+            <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-3 mb-4 flex items-start gap-3">
+                <div>
+                    <p class="text-sm text-yellow-800">Pastikan anda telah melakukan pertimbangan yang matang sebelum melakukan penangguhan pada akun ini!</p>
+                </div>
+                <div class="text-yellow-600 mt-0.5">
+                    <img src="/images/peringatan.svg" alt="ikon" class="w-18 h-18" />
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="space-y-4">
+                <p class="text-gray-700 font-medium">Pilih alasan penangguhan</p>
+                
+                <!-- Reason Selection -->
+                <div class="space-y-3">
+                    <label class="flex items-start gap-3">
+                        <input type="radio" name="suspendReason" value="sexual" class="mt-1 text-blue-600">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Pelecehan Seksual</div>
+                            <div class="text-xs text-gray-500">Tindakan tidak pantas terkait seksualitas.</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-start gap-3">
+                        <input type="radio" name="suspendReason" value="threats" class="mt-1 text-blue-600">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Penghinaan</div>
+                            <div class="text-xs text-gray-500">Ujaran kasar yang melukai atau mencemarkan nama baik.</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-start gap-3">
+                        <input type="radio" name="suspendReason" value="inappropriate" class="mt-1 text-blue-600">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Perilaku Tidak Sopan</div>
+                            <div class="text-xs text-gray-500">Tindakan tidak mengikuti etika sosial dan sopan santun.</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-start gap-3">
+                        <input type="radio" name="suspendReason" value="violence" class="mt-1 text-blue-600">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Tindak Kekerasan</div>
+                            <div class="text-xs text-gray-500">Ancaman, intimidasi, atau agresi yang mengancang keamanan dan kenyamanan.</div>
+                        </div>
+                    </label>
+                    
+                    <label class="flex items-start gap-3">
+                        <input type="radio" name="suspendReason" value="warning" class="mt-1 text-blue-600">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">Mengabaikan Peringatan</div>
+                            <div class="text-xs text-gray-500">Mengulang perilaku yang telah diingatkan atau diberikan peringatan sebelumnya.</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <p class="text-gray-700 font-medium mb-2">Berikan penjelasan penangguhan pada pengguna yang ditangguhkan.</p>
+                    <textarea 
+                        id="suspendDescription" 
+                        placeholder="Penulisan dibatasi hingga 500 karakter." 
+                        class="w-full h-20 px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                        maxlength="500"></textarea>
+                    <div class="text-xs text-gray-400 mt-1">
+                        <span id="suspendCharCount">0</span>/500 karakter
+                    </div>
+                </div>
+
+                <!-- Duration Selection -->
+                <div>
+  <p class="text-gray-700 font-medium mb-4">Pilih durasi penangguhan</p>
+  <div id="durationOptions" class="flex flex-wrap gap-4">
+    <label class="inline-flex items-center gap-2">
+      <input type="radio" name="duration" value="1" class="text-blue-600">
+      <span class="text-sm text-gray-700">1 Hari</span>
+    </label>
+    <label class="inline-flex items-center gap-2">
+      <input type="radio" name="duration" value="7" class="text-blue-600">
+      <span class="text-sm text-gray-700">7 Hari</span>
+    </label>
+    <label class="inline-flex items-center gap-2">
+      <input type="radio" name="duration" value="14" class="text-blue-600">
+      <span class="text-sm text-gray-700">14 Hari</span>
+    </label>
+    <label class="inline-flex items-center gap-2">
+      <input type="radio" name="duration" value="30" class="text-blue-600">
+      <span class="text-sm text-gray-700">30 Hari</span>
+    </label>
+  </div>
+</div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button onclick="submitSuspension()" class="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition-colors">
+                        Tangguhkan
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal KTP dengan Carousel -->
-<div id="ktpModal" class="fixed inset-0 bg-black bg-opacity-30 z-50 hidden flex items-center justify-center">
+<div id="ktpModal" class="fixed inset-0 bg-black bg-opacity-30 z-50 hidden items-center justify-center">
     <div class="bg-white p-6 rounded-md shadow-lg relative max-w-2xl w-full mx-2">
         <div class="mb-2 relative">
             <h2 id="ktpModalTitle" class="text-lg font-semibold text-gray-700 text-center w-full">Foto KTP</h2>
@@ -239,7 +408,7 @@
 </div>
 
 <!-- Modal SKCK -->
-<div id="skckModal" class="fixed inset-0 hidden bg-black bg-opacity-30 flex items-center justify-center z-50">
+<div id="skckModal" class="fixed inset-0 hidden bg-black bg-opacity-30 items-center justify-center z-50">
     <div class="bg-white p-6 rounded-lg shadow-lg relative max-w-3xl w-full mx-4">
         <div class="flex justify-between items-center mb-4">
             <h4 class="text-lg font-semibold text-gray-700 text-center w-full">Foto SKCK</h4>
@@ -251,39 +420,121 @@
 </div>
 
 <script>
-// Warning Modal functions
+// Warning Drawer functions
 function sendWarning() {
-    document.getElementById('warningModal').classList.remove('hidden');
-    document.getElementById('warningModal').classList.add('flex');
+    const drawer = document.getElementById('warningDrawer');
+    drawer.classList.remove('hidden');
+    drawer.classList.add('flex');
+    
+    // Reset form
+    document.getElementById('warningReason').value = '';
+    document.getElementById('warningCharCount').textContent = '0';
+    document.getElementById('suspendDuration').checked = false;
+    document.querySelectorAll('input[name="duration"]').forEach(radio => {
+        radio.checked = false;
+        radio.disabled = true;
+    });
 }
 
-function closeWarningModal() {
-    document.getElementById('warningModal').classList.add('hidden');
-    document.getElementById('warningModal').classList.remove('flex');
+function closeWarningDrawer() {
+    const drawer = document.getElementById('warningDrawer');
+    drawer.classList.add('hidden');
+    drawer.classList.remove('flex');
 }
 
-function confirmWarning() {
+function submitWarning() {
+    const reason = document.getElementById('warningReason').value;
+    const hasSuspension = document.getElementById('suspendDuration').checked;
+    let duration = null;
+    
+    // Validasi alasan wajib diisi
+    if (!reason.trim()) {
+        alert('Mohon isi alasan peringatan!');
+        return;
+    }
+    
+    // Validasi jika checkbox durasi dicentang, harus pilih hari
+    if (hasSuspension) {
+        const selectedDuration = document.querySelector('input[name="duration"]:checked');
+        if (!selectedDuration) {
+            alert('Mohon pilih durasi penangguhan!');
+            return;
+        }
+        duration = selectedDuration.value;
+    }
+    
     // Logic untuk mengirim peringatan
-    alert('Peringatan berhasil dikirim kepada {{ $detailTerapis['nama'] }}!');
-    closeWarningModal();
+    let message = `Peringatan berhasil dikirim kepada {{ $detailTerapis['nama'] }}!`;
+    if (hasSuspension && duration) {
+        message += ` Akun juga akan ditangguhkan selama ${duration} hari.`;
+    }
+    
+    alert(message);
+    closeWarningDrawer(); // Tutup popup otomatis setelah submit
 }
 
-// Suspend Modal functions
+// Suspend Drawer functions
 function openSuspendModal() {
-    document.getElementById('suspendModal').classList.remove('hidden');
-    document.getElementById('suspendModal').classList.add('flex');
+    const drawer = document.getElementById('suspendDrawer');
+    drawer.classList.remove('hidden');
+    drawer.classList.add('flex');
+    
+    // Reset form
+    document.getElementById('suspendDescription').value = '';
+    document.getElementById('suspendCharCount').textContent = '0';
+    document.querySelectorAll('input[name="suspendReason"]').forEach(radio => radio.checked = false);
+    // PERBAIKAN: Ganti dari 'suspendDuration' menjadi 'duration'
+    document.querySelectorAll('input[name="duration"]').forEach(radio => radio.checked = false);
 }
 
-function closeSuspendModal() {
-    document.getElementById('suspendModal').classList.add('hidden');
-    document.getElementById('suspendModal').classList.remove('flex');
+function closeSuspendDrawer() {
+    const drawer = document.getElementById('suspendDrawer');
+    drawer.classList.add('hidden');
+    drawer.classList.remove('flex');
 }
 
-function confirmSuspend() {
+function submitSuspension() {
+    const reason = document.querySelector('input[name="suspendReason"]:checked');
+    const description = document.getElementById('suspendDescription').value;
+    // PERBAIKAN: Ganti dari 'suspendDuration' menjadi 'duration'
+    const duration = document.querySelector('input[name="duration"]:checked');
+    
+    // Validasi alasan wajib dipilih
+    if (!reason) {
+        alert('Mohon pilih alasan penangguhan!');
+        return;
+    }
+    
+    // Validasi penjelasan wajib diisi
+    if (!description.trim()) {
+        alert('Mohon isi penjelasan penangguhan!');
+        return;
+    }
+    
+    // Validasi durasi wajib dipilih
+    if (!duration) {
+        alert('Mohon pilih durasi penangguhan!');
+        return;
+    }
+    
     // Logic untuk menangguhkan akun
-    alert('Akun {{ $detailTerapis['nama'] }} berhasil ditangguhkan!');
-    closeSuspendModal();
+    const reasonText = reason.nextElementSibling.querySelector('.text-sm.font-medium').textContent;
+    const durationText = duration.value === 'permanent' ? 'permanen' : `${duration.value} hari`;
+    
+    alert(`Akun {{ $detailTerapis['nama'] }} berhasil ditangguhkan!\nAlasan: ${reasonText}\nDurasi: ${durationText}`);
+    closeSuspendDrawer(); // Tutup popup otomatis setelah submit
 }
+
+// Character count for textareas
+document.getElementById('warningReason')?.addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('warningCharCount').textContent = count;
+});
+
+document.getElementById('suspendDescription')?.addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('suspendCharCount').textContent = count;
+});
 
 // KTP Modal functions
 let currentModalSlide = 1;
@@ -353,15 +604,15 @@ function closeSKCKModal() {
 }
 
 // Close modal when clicking outside
-document.getElementById('warningModal')?.addEventListener('click', function(e) {
+document.getElementById('warningDrawer')?.addEventListener('click', function(e) {
     if (e.target === this) {
-        closeWarningModal();
+        closeWarningDrawer();
     }
 });
 
-document.getElementById('suspendModal')?.addEventListener('click', function(e) {
+document.getElementById('suspendDrawer')?.addEventListener('click', function(e) {
     if (e.target === this) {
-        closeSuspendModal();
+        closeSuspendDrawer();
     }
 });
 
@@ -380,12 +631,44 @@ document.getElementById('ktpModal')?.addEventListener('click', function(e) {
 // Close modal with Escape key
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
-        closeWarningModal();
-        closeSuspendModal();
+        closeWarningDrawer();
+        closeSuspendDrawer();
         closeSKCKModal();
         closeKTPModal();
     }
 });
+
+// Checkbox untuk durasi penangguhan di warning modal
+const checkbox = document.getElementById('suspendDuration');
+const radios = document.querySelectorAll('input[name="duration"]');
+
+checkbox.addEventListener('change', () => {
+    radios.forEach(radio => {
+        radio.disabled = !checkbox.checked;
+        if (!checkbox.checked) {
+            radio.checked = false; // Reset pilihan jika checkbox dimatikan
+        }
+    });
+});
+
+// JavaScript untuk solusi 2
+        const checkbox2 = document.getElementById('suspendDuration');
+        const visual2 = checkbox2.nextElementSibling;
+        const icon2 = visual2.querySelector('.checkbox-icon');
+
+        checkbox2.addEventListener('change', function() {
+            if (this.checked) {
+                visual2.classList.add('bg-[#3FC1C0]', 'border-[#3FC1C0]');
+                visual2.classList.remove('border-gray-300');
+                icon2.classList.remove('opacity-0');
+                icon2.classList.add('opacity-100');
+            } else {
+                visual2.classList.remove('bg-[#3FC1C0]', 'border-[#3FC1C0]');
+                visual2.classList.add('border-gray-300');
+                icon2.classList.add('opacity-0');
+                icon2.classList.remove('opacity-100');
+            }
+        });
 </script>
 
 @endsection
