@@ -2,7 +2,7 @@
 @section('navtitle', 'Karyawan')
 
 @section('content')
-<div class="px-6 py-20">
+<div class="px-6 py-20 bg-gray-100 min-h-screen">
     <!-- Header Judul -->
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-700">Data Akun Karyawan</h2>
@@ -20,22 +20,19 @@
         </div>
 
     {{-- Tab Header (Admin & Finance) --}}
-    <div class="flex space-x-3 mb-4">
-        <button id="tab-admin-btn" class="relative -mb-1 tab-button active-tab">
-            <div class="bg-white border border-gray-300 rounded-t-lg px-6 py-2 shadow-md z-10 relative text-sm font-semibold">
+        <div class="flex text-sm font-semibold mb-0 relative z-10">
+            <button id="tab-admin-btn" class="w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative">
                 Admin
-            </div>
-            <div class="h-1 bg-white absolute bottom-0 left-0 right-0 z-20"></div>
-        </button>
-        <button id="tab-finance-btn" class="relative -mb-1 tab-button active-tab">
-            <div class="bg-gray-100 border border-gray-300 rounded-t-lg px-6 py-2 shadow-sm z-0 text-sm text-gray-500">
+            </button>
+            <button id="tab-finance-btn"
+                class="w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-100 after:z-[-1]">
                 Finance
-            </div>
-        </button>
-    </div>
+            </button>
+        </div>
 
     {{-- Card Container --}}
-    <div class="bg-white rounded-2xl shadow-lg p-6">
+    <div class="bg-white border-gray-200 rounded-b-xl rounded-tr-xl overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-lg p-6">
 
         {{-- Section Search dan Filter --}}
         <div class="flex items-center justify-between mb-6">
@@ -98,7 +95,7 @@
                                                 fill="#2196F3" />
                                         </svg>
                                     </a>
-                                    <a href="#" class="text-red-500">
+                                    <a href="#" class="text-red-500 btn-delete" data-nama="{{ $names[$i] }}">
                                         <svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                         </svg>
@@ -109,7 +106,20 @@
                         </tr>
                 </tbody>
             </table>
+        {{-- Pagination Section --}}
+            <div class="flex justify-between items-center">
+                <span class="text-base font-regular text-gray-600">Halaman 1 dari 53</span>
+                <div class="flex space-x-1 text-base font-semibold ">
+                <button class="px-3 py-1 rounded bg-teal-600 text-white">1</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">3</button>
+                <span class="px-2 py-1">...</span>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">53</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</button>
+            </div>
         </div>
+        </div>
+        
 
         <div id="tab-finance" class="tab-content hidden">
             <table class="w-full text-sm text-left">
@@ -151,7 +161,7 @@
                                             fill="#2196F3" />
                                     </svg>
                                 </a>
-                                <a href="#" class="text-red-500">
+                                <a href="#" class="text-red-500 btn-delete" data-nama="{{ $names[$i] }}">
                                     <svg class="w-6 h-6 inline" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
                                     </svg>
@@ -162,39 +172,124 @@
                         </tr>
                 </tbody>
             </table>
+        {{-- Pagination Section --}}
+            <div class="flex justify-between items-center">
+                <span class="text-base font-regular text-gray-600">Halaman 1 dari 53</span>
+                <div class="flex space-x-1 text-base font-semibold ">
+                <button class="px-3 py-1 rounded bg-teal-600 text-white">1</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">3</button>
+                <span class="px-2 py-1">...</span>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">53</button>
+                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</button>
+            </div>
         </div>
     </div>
 </div>
 
+    <!-- Delete Confirmation Drawer -->
+    <div id="delete-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+                <div class="flex flex-col items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Hapus Data</h2>
+                    <img src="{{ asset('images/trash can.svg') }}" alt="Hapus" class="h-20 w-20 mb-6" />
+                    <p class="text-gray-600 text-center text-base">
+                        Apakah Anda yakin ingin menghapus layanan
+                        <br><span id="delete-service-name" class="font-semibold text-red-600"></span>?
+                    </p>
+                </div>
+                <div class="flex justify-center gap-8 mt-8">
+                    <button id="delete-confirm" class="text-white px-6 py-2 rounded-lg hover:opacity-90 transition-colors"
+                        style="background-color: #469D89;">
+                        Hapus
+                    </button>
+                    <button id="delete-cancel"
+                        class="bg-red-500 text-white px-7 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {{-- Script Tab Switching --}}
-<script>
-    const adminBtn = document.getElementById('tab-admin-btn');
-    const financeBtn = document.getElementById('tab-finance-btn');
-    const adminTab = document.getElementById('tab-admin');
-    const financeTab = document.getElementById('tab-finance');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabAdminBtn = document.getElementById('tab-admin-btn');
+            const tabFinanceBtn = document.getElementById('tab-finance-btn');
 
-    const buttons = [adminBtn, financeBtn];
+            function setActiveTab(tab) {
+                const isAdmin = tab === 'admin';
 
-    buttons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            buttons.forEach(b => {
-                b.classList.remove('active-tab');
-                b.children[0].classList.remove('bg-white', 'text-gray-800', 'shadow-md');
-                b.children[0].classList.add('bg-gray-100', 'text-gray-500', 'shadow-sm');
+                // Set active tab button styles
+                if (isAdmin) {
+                    tabAdminBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative';
+                    tabFinanceBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
+                } else {
+                    tabAdminBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 relative after:absolute after:top-0 after:right-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
+                    tabFinanceBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative -ml-6';
+                }
+
+                // Simpan tab yang aktif
+                localStorage.setItem('activeTab', tab);
+
+                // Tampilkan konten tab yang sesuai
+                document.getElementById('tab-admin').classList.toggle('hidden', !isAdmin);
+                document.getElementById('tab-finance').classList.toggle('hidden', isAdmin);
+            }
+
+            // Tombol diklik
+            tabAdminBtn.addEventListener('click', () => setActiveTab('admin'));
+            tabFinanceBtn.addEventListener('click', () => setActiveTab('finance'));
+
+            // Load dari localStorage
+            const savedTab = localStorage.getItem('activeTab') || 'admin';
+            setActiveTab(savedTab);
+
+            const searchInput = document.getElementById('search-input');
+
+            searchInput.addEventListener('input', function () {
+                const filter = this.value.toLowerCase();
+
+                ['admin', 'finance'].forEach(tipe => {
+                    const rows = document.querySelectorAll(`#tab-${tipe} tbody tr`);
+                    rows.forEach(row => {
+                        const textRow = row.textContent.toLowerCase();
+                        row.style.display = textRow.includes(filter) ? '' : 'none';
+                    });
+                });
             });
 
-            btn.classList.add('active-tab');
-            btn.children[0].classList.remove('bg-gray-100', 'text-gray-500', 'shadow-sm');
-            btn.children[0].classList.add('bg-white', 'text-gray-800', 'shadow-md');
 
-            if (btn === adminBtn) {
-                adminTab.classList.remove('hidden');
-                financeTab.classList.add('hidden');
-            } else {
-                financeTab.classList.remove('hidden');
-                adminTab.classList.add('hidden');
-            }
+            const deleteDrawer = document.getElementById('delete-drawer');
+            const deleteServiceName = document.getElementById('delete-service-name');
+            const deleteConfirmBtn = document.getElementById('delete-confirm');
+            const deleteCancelBtn = document.getElementById('delete-cancel');
+
+            let rowToDelete = null;
+
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const nama = this.dataset.nama;
+                    deleteServiceName.textContent = nama;
+                    rowToDelete = this.closest('tr');
+                    deleteDrawer.classList.remove('hidden');
+                });
+            });
+
+            deleteConfirmBtn.addEventListener('click', function () {
+                if (rowToDelete) {
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                }
+                deleteDrawer.classList.add('hidden');
+            });
+
+            deleteCancelBtn.addEventListener('click', function () {
+                deleteDrawer.classList.add('hidden');
+                rowToDelete = null;
+            });
         });
-    });
-</script>
+    </script>
 @endsection
