@@ -22,11 +22,11 @@ class LoginController extends Controller
         ]);
 
         // Mengambil data super admin berdasarkan email
-        $super_admin = SuperAdmin::where('email', $request->email)->first();
+        $super_admins = SuperAdmin::where('email', $request->email)->first();
 
         // Jika super admin ditemukan, bandingkan password secara langsung
-        if ($super_admin && $request->password === $super_admin->password) {
-            Auth::login($super_admin);
+        if ($super_admins && $request->password === $super_admins->password) {
+            Auth::login($super_admins);
             return redirect()->route('dashboard'); // Redirect ke halaman dashboard
         }
 
