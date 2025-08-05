@@ -17,7 +17,6 @@
             </button>
         </div>
 
-
         {{-- Card Wrapper --}}
         <div class="bg-white border-gray-200 rounded-b-xl rounded-tr-xl overflow-hidden">
 
@@ -99,21 +98,21 @@
                                 </td>
                                 <td class="py-2 px-4">{{ $item['layanan'] }}</td>
                                 <td class="py-2 px-4">{{ $item['jadwal'] }}</td>
-                                <td class="py-2 px-4">
+                                <td class="py-2 px-4 font-semibold">
                                     <div
                                         class="flex items-center gap-2 px-3 py-1 rounded-[4px] w-[130px]
-                                                        @if ($item['status'] === 'Menunggu') bg-blue-100 text-blue-600
-                                                        @elseif($item['status'] === 'Pending') bg-blue-100 text-blue-600
-                                                        @elseif($item['status'] === 'Dijadwalkan') bg-teal-100 text-teal-600
-                                                        @elseif($item['status'] === 'Berlangsung') bg-yellow-100 text-yellow-600
-                                                        @elseif($item['status'] === 'Selesai') bg-teal-100 text-teal-600
+                                                        @if ($item['status'] === 'Dijadwalkan') bg-cyan-100 text-cyan-400
+                                                        @elseif($item['status'] === 'Pending') bg-amber-100 text-amber-500
+                                                        @elseif($item['status'] === 'Berlangsung') bg-green-100 text-green-600
+                                                        @elseif($item['status'] === 'Menunggu') bg-yellow-100 text-yellow-400
+                                                        @elseif($item['status'] === 'Selesai') bg-teal-100 text-teal-500
                                                         @elseif($item['status'] === 'Dibatalkan') bg-red-100 text-red-600 @endif">
                                         <span
                                             class="w-2 h-2 rounded-full
-                                                            @if ($item['status'] === 'Menunggu') bg-blue-500
-                                                            @elseif($item['status'] === 'Pending') bg-blue-500
-                                                            @elseif($item['status'] === 'Dijadwalkan') bg-teal-500
-                                                            @elseif($item['status'] === 'Berlangsung') bg-yellow-500
+                                                            @if ($item['status'] === 'Dijadwalkan') bg-cyan-400
+                                                            @elseif($item['status'] === 'Pending') bg-amber-500
+                                                            @elseif($item['status'] === 'Berlangsung') bg-green-600
+                                                            @elseif($item['status'] === 'Menunggu') bg-yellow-400
                                                             @elseif($item['status'] === 'Selesai') bg-teal-500
                                                             @elseif($item['status'] === 'Dibatalkan') bg-red-500 @endif"></span>
                                         <span>{{ $item['status'] }}</span>
@@ -203,21 +202,21 @@
                                 </td>
                                 <td class="py-2 px-4">{{ $item['layanan'] }}</td>
                                 <td class="py-2 px-4">{{ $item['jadwal'] }}</td>
-                                <td class="py-2 px-4">
+                                <td class="py-2 px-4 font-semibold">
                                     <div
                                         class="flex items-center gap-2 px-3 py-1 rounded-[4px] w-[130px]
-                                                        @if ($item['status'] === 'Menunggu') bg-blue-100 text-blue-600
-                                                        @elseif($item['status'] === 'Pending') bg-blue-100 text-blue-600
-                                                        @elseif($item['status'] === 'Dijadwalkan') bg-teal-100 text-teal-600
-                                                        @elseif($item['status'] === 'Berlangsung') bg-yellow-100 text-yellow-600
-                                                        @elseif($item['status'] === 'Selesai') bg-teal-100 text-teal-600
+                                                        @if ($item['status'] === 'Dijadwalkan') bg-cyan-100 text-cyan-400
+                                                        @elseif($item['status'] === 'Pending') bg-amber-100 text-amber-500
+                                                        @elseif($item['status'] === 'Berlangsung') bg-green-100 text-green-600
+                                                        @elseif($item['status'] === 'Menunggu') bg-yellow-100 text-yellow-400
+                                                        @elseif($item['status'] === 'Selesai') bg-teal-100 text-teal-500
                                                         @elseif($item['status'] === 'Dibatalkan') bg-red-100 text-red-600 @endif">
                                         <span
                                             class="w-2 h-2 rounded-full
-                                                            @if ($item['status'] === 'Menunggu') bg-blue-500
-                                                            @elseif($item['status'] === 'Pending') bg-blue-500
-                                                            @elseif($item['status'] === 'Dijadwalkan') bg-teal-500
-                                                            @elseif($item['status'] === 'Berlangsung') bg-yellow-500
+                                                            @if ($item['status'] === 'Dijadwalkan') bg-cyan-400
+                                                            @elseif($item['status'] === 'Pending') bg-amber-500
+                                                            @elseif($item['status'] === 'Berlangsung') bg-green-600
+                                                            @elseif($item['status'] === 'Menunggu') bg-yellow-400
                                                             @elseif($item['status'] === 'Selesai') bg-teal-500
                                                             @elseif($item['status'] === 'Dibatalkan') bg-red-500 @endif"></span>
                                         <span>{{ $item['status'] }}</span>

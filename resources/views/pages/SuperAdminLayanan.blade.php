@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px]">
+<div class="bg-gray-100 ml-[50px] mr-[50px] pt-[100px] pb-[100px]">
 
     <!-- Layanan Utama Section -->
     <div class="mb-8">

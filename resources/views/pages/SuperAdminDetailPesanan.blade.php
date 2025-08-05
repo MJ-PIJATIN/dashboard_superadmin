@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.pesanan')
 @section('navtitle')
     <div class="text-base text-gray-700 flex items-center gap-2">
         <span>Pesanan</span>
@@ -46,131 +46,120 @@
                         </select>
                     </div>
 
-                    <!-- Card Detail -->
-                    <div class="w-full bg-white p-6 rounded-xl shadow-md">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-1">{{ $pesanan['layanan'] }}</h3>
-                        <p class="text-sm font-semibold text-gray-600 mb-4">Pesanan {{ $pesanan['nama'] }}</p>
-                        <div class="text-sm text-gray-700 font-semibold mb-4 grid gap-y-1">
-                            <div class="py-1 grid grid-cols-[290px_1fr] gap-x-2">
-                                <span class="text-green-600">
-                                    Harga Layanan {{ $pesanan['layanan'] }} :
-                                </span>
-                                <span class="text-green-800">
-                                    Rp{{ number_format($pesanan['harga'], 0, ',', '.') }}
-                                </span>
+                        <!-- Card Detail -->
+                        <div class="w-full bg-white p-6 rounded-xl shadow-md">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-1">{{ $pesanan['layanan'] }}</h3>
+                            <p class="text-sm font-semibold text-gray-600 mb-4">Pesanan {{ $pesanan['nama'] }}</p>
+                           <div class="text-sm text-gray-700 font-semibold mb-4 flex flex-col gap-y-3">
+                            @php $labelWidth = 'lg:w-[180px]'; @endphp
+
+                            <div class="flex flex-col lg:flex-row lg:items-start">
+                                <span class="{{ $labelWidth }} text-teal-600 shrink-0">Harga Layanan {{ $pesanan['layanan'] }} :</span>
+                                <span class="text-teal-600">{{ number_format($pesanan['harga'] ?? 0, 0, ',', '.') }}</span>
                             </div>
-                            <div class="py-1 grid grid-cols-[290px_1fr] gap-x-2">
-                                <span>Jadwal Layanan :</span>
+                            <div class="flex flex-col lg:flex-row lg:items-start">
+                                <span class="{{ $labelWidth }} shrink-0">Jadwal Layanan :</span>
                                 <span>{{ $pesanan['jadwal'] ?? '-' }}</span>
                             </div>
-                            <div class="py-1 grid grid-cols-[290px_1fr] gap-x-2">
-                                <span>Tanggal Pemesanan :</span>
-                                <span>{{ $pesanan['tanggal_pemesanan'] ?? ' ' }}</span>
+                            <div class="flex flex-col lg:flex-row lg:items-start">
+                                <span class="{{ $labelWidth }} shrink-0">Tanggal Pemesanan :</span>
+                                <span>{{ $pesanan['tanggal_pemesanan'] ?? '-' }}</span>
                             </div>
-                            <div class="py-1 grid grid-cols-[290px_1fr] gap-x-2 items-start">
-                                <span>Alamat Pemesan :</span>
-                                <span class="max-w-[280px] text-left">{{ $pesanan['alamat'] ?? ' ' }}</span>
+                            <div class="flex flex-col lg:flex-row lg:items-start">
+                                <span class="{{ $labelWidth }} shrink-0">Alamat Pemesan :</span>
+                                <span class="text-left break-words">{{ $pesanan['alamat'] ?? '-' }}</span>
                             </div>
                         </div>
 
                         <hr class="border-t-4 border-black mt-4 mb-5">
 
-                        <table class="text-sm font-semibold mb-4 w-full">
-                            <tbody>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Nama Customer:</td>
-                                    <td class="py-1 text-right text-gray-600 flex justify-end items-center gap-1">
-                                        {{ $pesanan['nama'] ?? '-' }}
-                                            <div class="flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
-                                                @if (($pesanan['gender'] ?? '') === 'male')
-                                                    <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                               d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
-                                                    </svg>
-                                                @elseif (($pesanan['gender'] ?? '') === 'female')
-                                                    <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
-                                                    </svg>
-                                                @endif
-                                            </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Ponsel Customer:</td>
-                                    <td class="py-1 text-right text-gray-600">
-                                        {{ $pesanan['ponsel'] ?? '-' }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Nama Terapis:</td>
-                                    <td class="py-1 text-right text-gray-600 flex justify-end items-center gap-1">
-                                        <span id="terapis-nama"></span>
-                                        <div id="terapis-gender-icon"
-                                            class="invisible flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Ponsel Terapis:</td>
-                                    <td class="py-1 text-right text-gray-600" id="terapis-ponsel"></td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 align-top text-gray-500">Layanan Tambahan:</td>
-                                    <td class="py-1 text-right text-gray-600">
-                                        <ul class="space-y-1">
-                                            @foreach($pesanan['layanan_tambahan'] ?? [] as $tambahan)
-                                                <li>{{ $tambahan }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Harga Layanan:</td>
-                                    <td class="py-1 text-right text-gray-600">
-                                        Rp{{ number_format($pesanan['harga'], 0, ',', '.') }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Durasi:</td>
-                                    <td class="py-1 text-right text-gray-600">{{ $pesanan['durasi'] }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-1 pr-4 text-gray-500 whitespace-nowrap">Total Biaya Layanan:</td>
-                                    <td class="py-1 text-right text-gray-600">
-                                        Rp{{ number_format($pesanan['total_layanan'], 0, ',', '.') }}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <div
-                                            class="flex justify-between items-center text-sm font-semibold text-gray-700 mt-6">
-                                            <div class="flex gap-1">
-                                                <span>Metode:</span>
-                                                <span>{{ $pesanan['metode'] }}</span>
-                                            </div>
-                                            <div class="flex gap-1 text-lg font-bold">
-                                                <span>Total Harga:</span>
-                                                <span class="text-green-800">
-                                                    Rp{{ number_format($pesanan['total_harga'] ?? 0, 2, ',', '.') }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
+                        <div class="text-sm text-gray-800 font-semibold mb-4 grid gap-y-1 max">
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Nama Customer :</span>
+                                <div class="flex items-center gap-2">
+                                <span>{{ $pesanan['nama'] ?? '-' }}</span>
+                                    <div class="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-md">
+                                        @if (($pesanan['gender'] ?? '') === 'male')
+                                            <svg width="16" height="16" fill="#ffffff" viewBox="0 0 16 16"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                        d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                                            </svg>
+                                        @elseif (($pesanan['gender'] ?? '') === 'female')
+                                            <svg width="11" height="16" fill="#ffffff" viewBox="0 0 11 16"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Ponsel Customer :</span>
+                                <span>{{ $pesanan['ponsel'] ?? ' ' }}</span>
+                            </div>
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Nama Terapis :</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-left max-w-[265px]" id="terapis-nama"></span>
+                                    <div id="terapis-gender-icon"
+                                        class="invisible flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Ponsel Terapis :</span>
+                                <span class="text-left max-w-[280px]" id="terapis-ponsel"></span>
+                            </div>
+                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Layanan Tambahan :</span>
+                                <ul class="space-y-1 text-right">
+                                    @foreach($pesanan['layanan_tambahan'] ?? [] as $tambahan)
+                                        <li>{{ $tambahan }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Harga :</span>
+                                <span class="text-left max-w-[280px]">
+                                    Rp{{ number_format($pesanan['harga'] ?? '.') }}
+                                </span>
+                            </div>
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Durasi :</span>
+                                <span class="text-left max-w-[280px]">{{ $pesanan['durasi'] ?? ' ' }}</span>
+                            </div>
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                                <span class="min-w-[265px] pr-2">Total Biaya Layanan :</span>
+                                <span class="text-left max-w-[280px]">
+                                    Rp{{ number_format($pesanan['total_layanan'] ?? '.') }}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap justify-between items-start mt-6 gap-y-1">
+                                <div class="flex gap-1">
+                                    <span>Metode:</span>
+                                    <span>{{ $pesanan['metode'] }}</span>
+                                </div>
+                                <div class="flex gap-1 text-lg font-bold">
+                                    <span>Total Harga:</span>
+                                    <span class="text-green-800">
+                                            Rp{{ number_format($pesanan['total_harga'] ?? 0, 2, ',', '.') }}
+                                    </span>
+                                </div>
+                        </div>
+                    </div>
+                      
                         <hr class="border-t-4 border-black mt-4 mb-5">
 
                         @php
                             $statusClass = match ($pesanan['status']) {
-                                'Menunggu' => 'text-teal-400',
-                                'Selesai' => 'text-teal-400',
-                                'Dibatalkan' => 'text-red-600',
-                                'Pending' => 'text-gray-300',
-                                'Dijadwalkan' => 'text-teal-400',
-                                'Berlangsung' => 'text-yellow-700',
+                                'Djadwalkan' => 'text-cyan-400',
+                                'Selesai' => 'text-teal-500',
+                                'Dibatalkan' => 'text-red-500',
+                                'Pending' => 'text-amber-500',
+                                'Berlangsung' => 'text-green-600',
+                                'Menunggu' => 'text-yellow-400',
                                 default => 'text-teal-400',
                             };
                         @endphp
@@ -205,7 +194,7 @@
 
                                 <!-- List Terapis -->
                                 <div
-                                    class="max-h-[520px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100 space-y-2 max-w-[680px] mx-auto">
+                                    class="max-h-screen overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100 space-y-2 min-w-screen mx-auto">
                                     @foreach($terapisList as $index => $terapis)
                                         <div
                                             class="flex items-center justify-between px-4 py-2 {{ $index % 2 === 1 ? 'bg-teal-100' : 'bg-white' }}">
@@ -241,8 +230,8 @@
                         </div>
                     </div>
                 @endif
+            </div>
         </div>
-    </div>
     </div>
 
     <script>
