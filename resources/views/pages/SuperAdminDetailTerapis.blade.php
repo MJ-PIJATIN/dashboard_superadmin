@@ -10,7 +10,7 @@
 @section('navsubtitle', 'Detail Akun Terapis')
 
 @section('content')
-<div class="max-w-screen-xl" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 25px;">
+<div class="" style="margin-left: 50px; padding-top: 100px; padding-bottom: 100px; padding-right: 25px; margin-right: 26px;">
         
         <!-- Header dengan tombol kembali -->
         <div class="flex items-center mb-6">

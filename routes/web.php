@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\SuspendedAccountController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LayananController;
 
 // Routing ke Landing Page
 Route::get('/', function () {
@@ -25,9 +27,15 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 // Page Layanan
-Route::get('/layanan', function () {
-    return view('pages.SuperAdminLayanan');
-})->name('layanan');
+Route::get('/layanan', [App\Http\Controllers\LayananController::class, 'index'])->name('layanan');
+Route::post('/layanan-utama/update', [App\Http\Controllers\LayananController::class, 'update'])->name('layanan-utama.update');
+Route::post('/layanan-utama/update-status', [App\Http\Controllers\LayananController::class, 'updateStatus'])->name('layanan-utama.updateStatus');
+Route::delete('/layanan-utama/delete', [App\Http\Controllers\LayananController::class, 'destroy'])->name('layanan-utama.delete');
+Route::post('/layanan-utama/store', [App\Http\Controllers\LayananController::class, 'store'])->name('layanan-utama.store');
+
+Route::post('/layanan-tambahan/store', [App\Http\Controllers\LayananController::class, 'storeTambahan'])->name('layanan-tambahan.store');
+Route::post('/layanan-tambahan/update', [App\Http\Controllers\LayananController::class, 'updateTambahan'])->name('layanan-tambahan.update');
+Route::delete('/layanan-tambahan/delete', [App\Http\Controllers\LayananController::class, 'destroyTambahan'])->name('layanan-tambahan.delete');
 
 // Page Pesanan
 Route::get('/pesanan', function () {
@@ -71,9 +79,7 @@ Route::get('/terapis', function () {
     return view('pages.SuperAdminTerapis');
 })->name('terapis');
 
-
-//Halaman Penangguhan
-  
+// Halaman Detail Terapis
 Route::get('/detail-terapis', function () {
     return view('pages.SuperAdminDetailTerapis');
 })->name('detail-terapis');
@@ -82,6 +88,7 @@ Route::get('/tambah-terapis', function () {
     return view('pages.SuperAdminTambahTerapis');
 })->name('tambah-terapis');
 
+//Halaman Penangguhan
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
 Route::prefix('admin')->group(function () {
     
@@ -101,14 +108,18 @@ Route::prefix('admin')->group(function () {
         // API untuk pencarian akun
         Route::get('/search', [SuspendedAccountController::class, 'search'])
             ->name('search');
+        
     });
 });
 
+// Routes untuk Aduan Pelanggan
 Route::get('/aduan-pelanggan', [App\Http\Controllers\AduanController::class, 'index'])->name('aduan-pelanggan');
 Route::get('/detail-aduan/{id}', [App\Http\Controllers\AduanController::class, 'show'])->name('detiladuan');
-Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
 Route::get('/aduan/search', [App\Http\Controllers\AduanController::class, 'search'])->name('aduan.search');
+Route::get('/detail-report-terapis/{aduan_id}', [App\Http\Controllers\AduanController::class, 'showTerapisDetail'])->name('detail.report.terapis');
+Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
 
+// Halaman FAQ
 Route::get('/faq', function () {
     return view('pages.SuperAdminFAQ');
 })->name('faq');

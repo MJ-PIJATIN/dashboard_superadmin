@@ -3,13 +3,13 @@
 @section('content')
 
 <div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[50px] pt-[70px] pb-[100px] pr-[25px]">
+<div class="bg-gray-100 ml-[50px] pt-[56px] pb-[100px] pr-[25px] mr-[34px]">
 
     <!-- Terapis Section -->
     <div>
         <div class="flex justify-between items-center mb-4 mt-10">
-            <h2 class="text-xl font-semibold text-gray-900">Data Terapis</h2>
-            <a href="{{ route('tambah-terapis') }}" id="open-additional-service-btn" class="bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm">
+            <h2 class="text-xl font-bold text-gray-700">Data Terapis</h2>
+            <a href="{{ route('tambah-terapis') }}" id="open-additional-service-btn" class="font-semibold bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm mr-[-10px]">
                 <img src="{{ asset('images/add.svg') }}" alt="Add" class="w-4 h-4 mr-2">
                 Tambah Data Baru    
             </a>
