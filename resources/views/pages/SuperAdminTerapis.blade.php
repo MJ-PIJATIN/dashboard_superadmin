@@ -9,7 +9,7 @@
     <div>
         <div class="flex justify-between items-center mb-4 mt-10">
             <h2 class="text-xl font-bold text-gray-700">Data Terapis</h2>
-            <a href="{{ route('tambah-terapis') }}" id="open-additional-service-btn" class="font-semibold bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm mr-[-10px]">
+            <a href="{{ route('tambah-terapis') }}" id="open-additional-service-btn" class="font-semibold bg-blue-500 text-white px-2 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center text-sm">
                 <img src="{{ asset('images/add.svg') }}" alt="Add" class="w-4 h-4 mr-2">
                 Tambah Data Baru    
             </a>
