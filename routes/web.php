@@ -7,6 +7,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\FaqController;
 
 // Routing ke Landing Page
 Route::get('/', function () {
@@ -120,9 +121,7 @@ Route::get('/detail-report-terapis/{aduan_id}', [App\Http\Controllers\AduanContr
 Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
 
 // Halaman FAQ
-Route::get('/faq', function () {
-    return view('pages.SuperAdminFAQ');
-})->name('faq');
+Route::resource('faqs', FaqController::class);
 
 // Page Cabang
 // Halaman Tambah Cabang
