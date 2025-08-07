@@ -23,12 +23,12 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             <!-- Card Kiri - Profile Info -->
-            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+            <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-200 flex flex-col">
                 
                 <!-- Profile Photo & Basic Info -->
                 <div class="text-center mb-6">
-                    <div class="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200 ring-2 ring-gray-100">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face" 
+                    <div class="w-52 h-52 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200">
+                        <img src="/images/karsa.svg" 
                              alt="Profile Photo" 
                              class="w-full h-full object-cover" />
                     </div>
@@ -89,10 +89,10 @@
             </div>
 
             <!-- Card Kanan - Identitas & Transaksi -->
-            <div class="space-y-6">
+            <div class="space-y-6w-1/2 flex flex-col space-y-6">
                 
                 <!-- Identitas Diri -->
-                <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-300">
+                <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-300 flex-1">
                     <h3 class="text-sm font-semibold text-gray-900 mb-4">Identitas Diri</h3>
                     
                     <div class="space-y-3">
@@ -114,7 +114,7 @@
                 </div>
 
                 <!-- Transaksi Terakhir -->
-                <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-200">
+                <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-200 flex-1">
                     <h3 class="text-sm font-semibold text-gray-900 mb-4">Transaksi Terakhir</h3>
                     
                     <div class="space-y-3">

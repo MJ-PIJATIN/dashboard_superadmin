@@ -7,6 +7,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\FaqController;
 
@@ -80,9 +81,8 @@ Route::get('/detail-terapis', function () {
     return view('pages.SuperAdminDetailTerapis');
 })->name('detail-terapis');
 
-Route::get('/tambah-terapis', function () {
-    return view('pages.SuperAdminTambahTerapis');
-})->name('tambah-terapis');
+Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tambah-terapis');
+Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
 
 //Halaman Penangguhan
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
