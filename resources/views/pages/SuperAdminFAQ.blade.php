@@ -101,11 +101,8 @@
 
         <!-- Tombol Simpan -->
         <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modalTambah')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-            Batal
-          </button>
           <button type="submit" class="bg-[#32C3C9] text-white px-4 py-2 rounded hover:bg-[#29b1b7] transition">
-            Simpan
+            Tambahkan
           </button>
         </div>
     </form>
@@ -117,7 +114,7 @@
   <div class="relative bg-white rounded-lg p-6 w-[600px] shadow-lg">
     <!-- Tombol X -->
     <button onclick="closeModal('modalEdit')" class="absolute top-4 right-4 text-gray-600 hover:text-black text-xl font-bold">
-      <img src="{{ asset('images/X.svg') }}" alt="Close" class="w-8 h-8">
+      <img src="{{ asset('images/X.svg') }}" alt="Close" class="w-5 h-5">
     </button>
 
     <h1 class="text-lg font-semibold mb-4">Ubah Pertanyaan</h1>
@@ -137,9 +134,6 @@
 
         <!-- Tombol Ubah -->
         <div class="flex justify-end gap-2">
-          <button type="button" onclick="closeModal('modalEdit')" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-            Batal
-          </button>
           <button type="submit" class="bg-[#32C3C9] text-white px-4 py-2 rounded hover:bg-[#29b1b7] transition">
             Ubah
           </button>
