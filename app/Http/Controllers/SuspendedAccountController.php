@@ -6,15 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+
 class SuspendedAccountController extends Controller
 {
     /**
      * Display a listing of suspended accounts.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Data dummy untuk sementara - nanti bisa diganti dengan database
-        $suspendedAccounts = [
+        $allSuspendedAccounts = [
             ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '10:20'],
             ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari', 'waktu' => '15:00'],
             ['id' => 3, 'nama' => 'Santi Martini', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => 'Permanen', 'waktu' => '18:23'],
@@ -28,7 +30,24 @@ class SuspendedAccountController extends Controller
             ['id' => 11, 'nama' => 'Uda Lazuardi', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '20/12/22'],
         ];
 
-        return view('pages.SuperAdminPenangguhan', compact('suspendedAccounts'));
+        $perPage = 10;
+        $currentPage = $request->input('page', 1);
+        $paginatedData = array_slice($allSuspendedAccounts, ($currentPage - 1) * $perPage, $perPage);
+        $paginator = new LengthAwarePaginator($paginatedData, count($allSuspendedAccounts), $perPage, $currentPage, [
+            'path' => $request->url(),
+            'query' => $request->query(),
+        ]);
+
+        $paginationData = [
+            'total' => $paginator->total(),
+            'current_page' => $paginator->currentPage(),
+            'total_pages' => $paginator->lastPage(),
+        ];
+
+        return view('pages.SuperAdminPenangguhan', [
+            'suspendedAccounts' => $paginator->items(),
+            'paginationData' => $paginationData,
+        ]);
     }
 
     /**

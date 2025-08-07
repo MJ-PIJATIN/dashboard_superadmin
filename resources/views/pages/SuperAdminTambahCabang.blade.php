@@ -30,24 +30,24 @@
     <div class="max-w-xl">
     <h3 class="text-xl font-bold text-gray-700 mb-4">Buat Cabang Baru</h3>
 
-    <form action="#" method="POST" class="space-y-5">
+    <form action="{{ route('cabang.store') }}" method="POST" class="space-y-5">
       @csrf
 
       <div>
-      <label for="provinsi" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi</label>
-      <input type="text" id="provinsi" name="provinsi" maxlength="50"
+      <label for="province" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi</label>
+      <input type="text" id="province" name="province" maxlength="50"
         class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Maksimal 50 karakter">
       </div>
 
       <div>
-      <label for="kota" class="block text-sm font-semibold text-gray-700 mb-1">Kota</label>
-      <input type="text" id="kota" name="kota" maxlength="50"
+      <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Kota</label>
+      <input type="text" id="city" name="city" maxlength="50"
         class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Maksimal 50 karakter">
       </div>
 
       <div>
-      <label for="lokasi" class="block text-sm font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
-      <input type="text" id="lokasi" name="lokasi" class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
+      <label for="address" class="block text-sm font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
+      <input type="text" id="address" name="address" class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
         placeholder="Masukkan detail lokasi cabang">
       </div>
 
@@ -58,8 +58,8 @@
       </div>
 
       <div>
-      <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
-      <textarea id="deskripsi" name="deskripsi" rows="4" maxlength="512"
+      <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
+      <textarea id="description" name="description" rows="4" maxlength="512"
         class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
         placeholder="Penulisan dibatasi hingga 512 karakter"></textarea>
       </div>
