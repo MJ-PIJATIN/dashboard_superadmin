@@ -77,19 +77,26 @@
                                     default => 'bg-gray-100 text-gray-600'
                                 };
                             @endphp
-                                <span class="px-3 py-1 rounded-md text-xs font-medium {{ $durasiClass }}">
+                                <span class="inline-block w-24 px-3 py-1 rounded-md text-xs font-medium {{ $durasiClass }}">
                                 {{ $durasi }}
                             </span>
                             </td>
-                            <td class="px-3 py-4 text-sm text-gray-500 relative">
-                                <!-- Waktu - hilang saat hover -->
-                                <span class="group-hover:opacity-0 transition-opacity duration-200">{{ $account['waktu'] }}</span>
-                                
-                                <!-- Tombol - muncul saat hover -->
-                                <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();"
-                                    class="ml-[4px] absolute inset-0 flex items-center justify-beetween gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                    <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
-                                </button>
+                            <td class="px-6 py-4 text-sm text-gray-500 relative">
+                                <div class="flex items-center justify-end">
+                                    <!-- Waktu - tampil normal, hilang saat hover -->
+                                    <span class="group-hover:opacity-0 transition-opacity duration-200">
+                                        {{ $account['waktu'] }}
+                                    </span>
+                                    
+                                    <!-- Button - tersembunyi normal, muncul saat hover -->
+                                    <div class="absolute inset-y-0 right-4 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-6">
+                                        <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();"
+                                            title="Pulihkan"
+                                            class="flex items-center justify-center transition duration-200 hover:bg-green-200 rounded-md p-1">
+                                            <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         @empty
@@ -109,19 +116,49 @@
             </table>
 
             <!-- Pagination -->
-            <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
-                <span class="text-sm text-gray-600 order-2 sm:order-1">
-                    Halaman 1 dari {{ count($suspendedAccounts ?? []) }}
-                </span>
-                <div class="flex items-center gap-1 order-1 sm:order-2">
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-white bg-teal-600 rounded hover:bg-teal-700">1</button>
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">2</button>
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">3</button>
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">...</button>
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">10</button>
-                    <button class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">→</button>
+            @if($paginationData['total'] > 0)
+                <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
+                    <span class="text-sm text-gray-600 order-2 sm:order-1">
+                        Halaman {{ $paginationData['current_page'] }} dari {{ $paginationData['total_pages'] }}
+                    </span>
+                    <div class="flex items-center gap-1 order-1 sm:order-2">
+                        @if($paginationData['current_page'] > 1)
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['current_page'] - 1]) }}" class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">←</a>
+                        @endif
+
+                        @php
+                            $start = max(1, $paginationData['current_page'] - 2);
+                            $end = min($paginationData['total_pages'], $paginationData['current_page'] + 2);
+                        @endphp
+
+                        @if($start > 1)
+                            <a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">1</a>
+                            @if($start > 2)
+                                <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700">...</span>
+                            @endif
+                        @endif
+
+                        @for($i = $start; $i <= $end; $i++)
+                            @if($i == $paginationData['current_page'])
+                                <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-white bg-teal-600 rounded">{{ $i }}</span>
+                            @else
+                                <a href="{{ request()->fullUrlWithQuery(['page' => $i]) }}" class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">{{ $i }}</a>
+                            @endif
+                        @endfor
+
+                        @if($end < $paginationData['total_pages'])
+                            @if($end < $paginationData['total_pages'] - 1)
+                                <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700">...</span>
+                            @endif
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['total_pages']]) }}" class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">{{ $paginationData['total_pages'] }}</a>
+                        @endif
+
+                        @if($paginationData['current_page'] < $paginationData['total_pages'])
+                            <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['current_page'] + 1]) }}" class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">→</a>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>
