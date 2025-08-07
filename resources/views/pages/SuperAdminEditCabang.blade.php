@@ -26,59 +26,65 @@
     <div class="w-[160px] h-10"></div>
     </div>
 
-    {{-- Form Edit Cabang --}}
+   {{-- Form Edit Cabang --}}
     <div class="max-w-xl">
-    <h3 class="text-xl font-bold text-gray-700 mb-4">Edit Cabang</h3>
+      <h3 class="text-xl font-bold text-gray-700 mb-4">Edit Cabang</h3>
 
-    <form action="#" method="POST" class="space-y-5">
-      @csrf
+      <form action="{{ route('cabang.update', ['id' => $cabang->branch_code]) }}" method="POST" class="space-y-5">
+        @csrf
+        @method('PUT')
 
-      <div>
-      <label for="provinsi" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
-      <input type="text" id="provinsi" name="provinsi" maxlength="50"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Daerah Istimewa Yogyakarta">
+        {{-- Provinsi --}}
+        <div>
+          <label for="province" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
+          <input type="text" id="province" name="province" maxlength="50" value="{{ $cabang->province }}"
+            class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm">
+        </div>
+
+        <div>
+          <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Kota Cabang</label>
+          <input type="text" id="city" name="city" maxlength="50" value="{{ $cabang->city }}"
+            class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm">
+        </div>
+
+        <div>
+          <label for="address" class="block text-sm font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
+          <select id="address" name="address" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
+            <option value="">Pilih lokasi cabang</option>
+              @foreach($alamatList as $alamat)
+                <option value="{{ $alamat }}" {{ $cabang->address == $alamat ? 'selected' : '' }}>
+                    {{ $alamat }}
+                </option>
+              @endforeach
+          </select>
+        </div>
+
+        <div>
+          <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Cabang</label>
+          <select id="email" name="email" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
+            <option value="">Pilih email cabang</option>
+              @foreach($emailList as $email)
+                <option value="{{ $email }}" {{ $cabang->email == $email ? 'selected' : '' }}>
+                    {{ $email }}
+                </option>
+              @endforeach
+          </select>
+        </div>
+
+        <div>
+          <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
+          <textarea id="description" name="description" rows="4" maxlength="512"
+            class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
+            placeholder="Penulisan dibatasi hingga 512 karakter">{{ $cabang->description }}</textarea>
+        </div>
+
+          <div class="pt-2 flex justify-end">
+          <button type="submit"
+            class="bg-teal-500 hover:bg-[#35adae] text-white px-5 py-2 rounded-md text-sm font-medium shadow">
+            Tambahkan
+          </button>
+          </div>
+        </form>
       </div>
-
-      <div>
-      <label for="kota" class="block text-sm font-semibold text-gray-700 mb-1">Kota Cabang</label>
-      <input type="text" id="kota" name="kota" maxlength="50"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm" placeholder="Yogyakarta">
-      </div>
-
-      <div>
-      <label for="lokasi" class="block text-sm font-semibold text-gray-700 mb-1">Detail Lokasi Cabang</label>
-      <select id="lokasi" name="lokasi" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
-        <option value="">Pilih lokasi cabang</option>
-        <option value="Jl. Pahlawan, Kledungsari, No. 32, Yogyakarta">
-        Jl. Pahlawan, Kledungsari, No. 32, Yogyakarta
-        </option>
-        <option value="Jl. Kaliurang KM 6, Sleman">Jl. Kaliurang KM 6, Sleman</option>
-      </select>
-      </div>
-
-      <div>
-      <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email Cabang</label>
-      <select id="email" name="email" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
-        <option value="">Pilih email cabang</option>
-        <option value="pijatinjogja@gmail.com">pijatinjogja@gmail.com</option>
-        <option value="admin@pijatin.com">admin@pijatin.com</option>
-      </select>
-      </div>
-
-      <div>
-      <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
-      <textarea id="deskripsi" name="deskripsi" rows="4" maxlength="512"
-        class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
-        placeholder="Penulisan dibatasi hingga 512 karakter"></textarea>
-      </div>
-
-      <div class="pt-2 flex justify-end">
-      <button type="submit"
-        class="bg-teal-500 hover:bg-[#35adae] text-white px-5 py-2 rounded-md text-sm font-medium shadow">
-        Tambahkan
-      </button>
-      </div>
-    </form>
     </div>
-  </div>
 @endsection

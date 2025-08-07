@@ -22,68 +22,71 @@
 
         {{-- Section Search dan Filter --}}
         <div class="flex items-center justify-between">
-                    <div class="flex w-[300px] max-w-2xl">
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Cari nomor id, nama, kota, dll"
-                        class="flex-grow px-4 py-2.5 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-200"/>
-                    <button onclick="performSearch()" class="bg-[#469D89] hover:bg-[#378877] text-white px-4 py-2 rounded-r-lg flex items-center justify-center transition-colors">
-                        <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <div class="flex w-[300px] max-w-2xl">
+                <input type="text" id="search-input" placeholder="Cari nomor id, nama, kota, dll"
+                    class="flex-grow px-4 py-2.5 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-200" />
+                <button onclick="performSearch()"
+                    class="bg-[#469D89] hover:bg-[#378877] text-white px-4 py-2 rounded-r-lg flex items-center justify-center transition-colors">
+                    <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 9.7319 14.6427 11.3219 13.6295 12.5688L18.5303 17.4697C18.8232 17.7626 18.8232 18.2374 18.5303 18.5303C18.2641 18.7966 17.8474 18.8208 17.5538 18.6029L17.4697 18.5303L12.5688 13.6295C11.3219 14.6427 9.7319 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8C0.75 3.99594 3.99594 0.75 8 0.75ZM8 2.25C4.82436 2.25 2.25 4.82436 2.25 8C2.25 11.1756 4.82436 13.75 8 13.75C11.1756 13.75 13.75 11.1756 13.75 8C13.75 4.82436 11.1756 2.25 8 2.25Z"
-                            fill="white"
-                        />
-                        </svg>
-                        <i class="fas fa-search ml-1"></i>
-                    </button>
-                    </div>
-                </div>
+                            fill="white" />
+                    </svg>
+                    <i class="fas fa-search ml-1"></i>
+                </button>
+            </div>
+        </div>
 
         {{-- Table Section --}}
         <div class="overflow-x-auto">
-            <table class="min-w-full text-sm text-gray-700 border-collapse">
+            <table class="min-w-full text-sm text-gray-700 border-collapse table-fixed">
                 <thead class="border-b border-gray-300">
                     <tr>
-                        <th class="text-left px-6 py-3 font-semibold">#</th>
-                        <th class="text-left px-6 py-3 font-semibold">Kota</th>
-                        <th class="text-left px-6 py-3 font-semibold">Provinsi</th>
-                        <th class="text-left px-6 py-3 font-semibold">Tanggal Peresmian</th>
-                        <th class="text-left px-6 py-3 font-semibold">Status Cabang</th>
-                        <th class="text-left px-6 py-3 font-semibold">Alamat Cabang</th>
-                        <th class="text-left px-6 py-3 font-semibold">Aksi</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">#</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Kota</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Provinsi</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Tanggal Peresmian</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Status Cabang</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Alamat Cabang</th>
+                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(range(1, 10) as $i)
+                    @foreach($cabangs as $cabang)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-3">{{ $loop->iteration }}</td>
-                            <td class="px-6 py-3">
-                                @php $cities = ['Yogyakarta', 'Semarang', 'Bandung', 'Malang', 'Palangkaraya', 'Temanggung', 'Kudus', 'Magelang', 'Wonosobo', 'Banjar Negara']; @endphp
-                                {{ $cities[$i - 1] }}
-                            </td>
-                            <td class="px-6 py-3">
-                                @php $provinces = ['DIY', 'Jawa Tengah', 'Jawa Barat', 'Jawa Timur', 'Kalimantan Tengah', 'Jawa Tengah', 'Jawa Tengah', 'Jawa Tengah', 'Jawa Tengah', 'Jawa Tengah']; @endphp
-                                {{ $provinces[$i - 1] }}
-                            </td>
-                            <td class="px-6 py-3">{{ now()->subDays($i * 10)->format('d-m-Y') }}</td>
-                            <td class="px-6 py-3">
-                                @php
-                                $statuses = ['Aktif', 'Tidak Aktif'];
-                                $isActive = $statuses[$i % 2] === 'Aktif';
-                            @endphp
+                            <td class="px-6 py-3 break-words min-w-[100px]">{{ $loop->iteration }}</td>
+                            <td
+                                class="px-6 py-3 break-words min-w-[100px] max-w-[150px] truncate overflow-hidden whitespace-nowrap">
+                                {{ $cabang->city }}</td>
+                            <td
+                                class="px-6 py-3 break-words min-w-[100px] max-w-[250px] truncate overflow-hidden whitespace-nowrap">
+                                {{ $cabang->province }}</td>
+                            <td class="px-6 py-3 break-words min-w-[100px]">
+                                {{ \Carbon\Carbon::parse($cabang->inauguration_date)->format('d-m-Y') }}</td>
 
-                            <div
-                                class="flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-[4px] w-[120px]
-                                    {{ $isActive ? 'bg-teal-100 text-teal-600' : 'bg-[#ED555433] text-[#ED5554]' }}">
-                                <span class="w-2 h-2 rounded-full {{ $isActive ? 'bg-teal-500' : 'bg-[#ED5554]' }}"></span>
-                                {{ $statuses[$i % 2] }}
-                            </div>
+                            <td class="px-6 py-3 break-words min-w-[100px]">
+                                @php
+                                    $isActive = $cabang->status === 'Aktif';
+                                @endphp
+                                <form method="POST" action="{{ route('cabang.toggleStatus', $cabang->branch_code) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        class="flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-[4px] w-[120px]
+                                                    {{ $isActive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
+                                        <span
+                                            class="w-2 h-2 rounded-full {{ $isActive ? 'bg-green-500' : 'bg-red-500' }}"></span>
+                                        {{ $isActive ? 'Aktif' : 'Tidak Aktif' }}
+                                    </button>
+                                </form>
                             </td>
-                            <td class="px-6 py-3">cabang{{ strtolower($cities[$i - 1]) }}{{ $i + 10 }}@gmail.com</td>
-                            <td class="px-6 py-3">
-                                <a href="{{ route('cabang.detail', ['id' => $loop->iteration]) }}" class="hover:text-blue-600"
-                                    title="Lihat Detail Cabang">
+                            <td
+                                class="px-6 py-3 break-words min-w-[100px] max-w-[300px] truncate overflow-hidden whitespace-nowrap">
+                                {{ $cabang->address }}
+                            </td>
+                            <td class="px-6 py-3 break-words min-w-[100px]">
+                                <a href="{{ route('cabang.detail', ['id' => $cabang->branch_code]) }}"
+                                    class="hover:text-blue-600">
                                     <svg width="19" height="21" viewBox="0 0 19 21" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -92,7 +95,6 @@
                                     </svg>
                                 </a>
                             </td>
-
                         </tr>
                     @endforeach
                 </tbody>
@@ -100,50 +102,52 @@
         </div>
 
         {{-- Pagination Section --}}
-        <div class="flex justify-between items-center">
-            <span class="text-base font-regular text-gray-600">Halaman 1 dari 53</span>
-            <div class="flex space-x-1 text-base font-semibold ">
-                <button class="px-3 py-1 rounded bg-teal-600 text-white">1</button>
-                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">2</button>
-                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">3</button>
-                <span class="px-2 py-1">...</span>
-                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">53</button>
-                <button class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</button>
+        <div class="flex justify-between items-center mt-4">
+            <span class="text-base font-regular text-gray-600">
+                Halaman {{ $cabangs->currentPage() }} dari {{ $cabangs->lastPage() }}
+            </span>
+            <div class="flex space-x-1 text-base font-semibold">
+                {{-- Previous --}}
+                @if ($cabangs->onFirstPage())
+                    <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
+                @else
+                    <a href="{{ $cabangs->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                @endif
+
+                {{-- Page Numbers --}}
+                @for ($i = 1; $i <= $cabangs->lastPage(); $i++)
+                    @if ($i == $cabangs->currentPage())
+                        <button class="px-3 py-1 rounded bg-teal-600 text-white">{{ $i }}</button>
+                    @else
+                        <a href="{{ $cabangs->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                {{-- Next --}}
+                @if ($cabangs->hasMorePages())
+                    <a href="{{ $cabangs->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
+                @else
+                    <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
+                @endif
             </div>
         </div>
     </div>
 
-<script>
-    // Fungsi untuk pencarian
-    function performSearch() {
-        const query = document.getElementById('searchInput').value;
-        
-        if (query.trim() === '') {
-            // Jika kosong, reload halaman untuk menampilkan semua data
-            window.location.reload();
-            return;
-        }
-        
-        // AJAX request untuk pencarian
-        fetch("{{ route('suspended-account.search') }}?q=" + encodeURIComponent(query), {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                updateTable(data.data);
-            } else {
-                console.error('Search failed:', data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Search error:', error);
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-input');
+
+            searchInput.addEventListener('input', function () {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('table tbody tr');
+
+                rows.forEach(row => {
+                    const textRow = row.textContent.toLowerCase();
+                    row.style.visibility = textRow.includes(filter) ? 'visible' : 'collapse';
+                });
+            });
         });
-    }
-</script>
+    </script>
+
 
 @endsection

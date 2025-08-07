@@ -7,6 +7,7 @@ use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LayananController;
+use App\Http\Controllers\CabangController;
 use App\Http\Controllers\FaqController;
 
 // Routing ke Landing Page
@@ -43,37 +44,31 @@ Route::get('/pesanan', function () {
     return view('pages.SuperAdminPesanan');
 })->name('pesanan');
 
-// Page Cabang
-// Halaman Tambah Cabang
-Route::get('/cabang', function () {
-    return view('pages.SuperAdminCabang');
-})->name('cabang');
+// Halaman Cabang
+Route::prefix('cabang')->group(function () {
+    Route::get('/', [CabangController::class, 'index'])->name('cabang');
+    Route::get('/tambah', fn () => view('pages.SuperAdminTambahCabang'))->name('cabang.tambah');
+    Route::post('/tambah', [CabangController::class, 'store'])->name('cabang.store');
+    Route::get('/{id}', [CabangController::class, 'show'])
+        ->where('id', '[A-Za-z0-9]+')
+        ->name('cabang.detail');
+    Route::patch('/{id}/toggle-status', [CabangController::class, 'toggleStatus'])->name('cabang.toggleStatus');
+});
 
-Route::get('/cabang/tambah', function () {
-    return view('pages.SuperAdminTambahCabang');
-})->name('cabang.tambah');
-
-// Halaman Detail Cabang
-Route::get('/cabang/{id}', function ($id) {
-    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
-})->where('id', '[0-9]+')->name('cabang.detail');
-
-// Halaman Edit Cabang
-Route::get('/cabang/{id}/edit', function ($id) {
-    return view('pages.SuperAdminEditCabang', ['id' => $id]);
-})->where('id', '[0-9]+')->name('cabang.edit');
+Route::prefix('superadmin/cabang')->group(function () {
+    Route::get('/{id}/edit', [CabangController::class, 'edit'])->name('cabang.edit');
+    Route::put('/{id}/update', [CabangController::class, 'update'])->name('cabang.update');
+});
 
 //Halaman Karyawan
 Route::get('/karyawan', function () {
     return view('pages.SuperAdminKaryawan');
 })->name('karyawan');
 
-
 //Halaman Pelanggan
 Route::get('/pelanggan', function () {
     return view('pages.SuperAdminPelanggan');
 })->name('pelanggan');
-
 
 // Halaman Terapis
 Route::get('/terapis', function () {
@@ -122,22 +117,6 @@ Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::cla
 
 // Halaman FAQ
 Route::resource('faqs', FaqController::class);
-
-// Page Cabang
-// Halaman Tambah Cabang
-Route::get('/cabang/tambah', function () {
-    return view('pages.SuperAdminTambahCabang');
-})->name('cabang.tambah');
-
-// Halaman Detail Cabang
-Route::get('/cabang/{id}', function ($id) {
-    return view('pages.SuperAdminDetailCabang', ['id' => $id]);
-})->where('id', '[0-9]+')->name('cabang.detail');
-
-// Halaman Edit Cabang
-Route::get('/cabang/{id}/edit', function ($id) {
-    return view('pages.SuperAdminEditCabang', ['id' => $id]);
-})->where('id', '[0-9]+')->name('cabang.edit');
 
 //Page Pesanan
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
