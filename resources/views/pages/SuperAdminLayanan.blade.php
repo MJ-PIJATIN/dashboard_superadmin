@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="bg-gray-100 min-h-screen">
-<div class="max-w-screen-xl bg-gray-100 ml-[50px] pt-[92px] pb-[100px] pr-[25px]">
+<div class=" bg-gray-100 ml-[50px] pt-[92px] pb-[100px] pr-[50px]">
 
     <!-- Layanan Utama Section -->
     <div class="mb-8">
@@ -67,7 +67,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-1">
-                                    <button class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium status-button ml-10"
+                                    <button class="inline-flex items-center px-3 py-2 rounded-lg text-xs font-medium status-button ml-10"
                                             style="background-color: {{ $layanan->status == 'aktif' ? '#E5F9F9' : '#FEF2F2' }};
                                                 color: {{ $layanan->status == 'aktif' ? '#3FC1C0' : '#EF4444' }};"
                                             data-service-id="{{ $layanan->id }}" data-current-status="{{ $layanan->status == 'aktif' ? 'Aktif' : 'Nonaktif' }}">
@@ -490,17 +490,37 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = 'hidden';
     }
 
+    // Updated hideDrawer function yang mengembalikan Promise
     function hideDrawer(drawerId) {
-        const drawer = document.getElementById(drawerId);
-        const overlay = document.getElementById('overlay');
-        if (drawer) {
-            drawer.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
-            drawer.classList.remove('opacity-100', 'scale-100');
-        }
-        if (overlay) {
-            overlay.classList.add('hidden');
-        }
-        document.body.style.overflow = 'auto';
+        return new Promise((resolve) => {
+            const drawer = document.getElementById(drawerId);
+            const overlay = document.getElementById('overlay');
+            
+            if (drawer) {
+                drawer.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                drawer.classList.remove('opacity-100', 'scale-100');
+                
+                // Tunggu transisi selesai
+                const handleTransitionEnd = () => {
+                    if (drawer.classList.contains('opacity-0')) {
+                        drawer.removeEventListener('transitionend', handleTransitionEnd);
+                        resolve();
+                    }
+                };
+                
+                drawer.addEventListener('transitionend', handleTransitionEnd);
+                
+                // Fallback timeout jika transisi tidak terjadi
+                setTimeout(resolve, 300);
+            } else {
+                resolve();
+            }
+            
+            if (overlay) {
+                overlay.classList.add('hidden');
+            }
+            document.body.style.overflow = 'auto';
+        });
     }
 
     function showSuccess() {
@@ -533,7 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Main service form submission
+    // Updated Main service form submission
     document.getElementById('drawer-main-service')?.querySelector('form')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = {
@@ -542,6 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('duration').value,
             description: document.getElementById('description').value
         };
+        const form = this;
 
         fetch("{{ route('layanan-utama.store') }}", {
             method: "POST",
@@ -554,14 +575,22 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                addRowToTable(data, formData, 'main');
-                hideDrawer('drawer-main-service');
-                showModal('loading-drawer');
-                setTimeout(() => {
-                    hideModal('loading-drawer');
-                    showSuccess();
-                    this.reset();
-                }, 1000);
+                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                hideDrawer('drawer-main-service').then(() => {
+                    // Tampilkan loading
+                    showModal('loading-drawer');
+                    
+                    setTimeout(() => {
+                        hideModal('loading-drawer');
+                        
+                        // Tambahkan data ke tabel setelah drawer tertutup
+                        addRowToTable(data, formData, 'main');
+                        
+                        // Tampilkan success message
+                        showSuccess();
+                        form.reset();
+                    }, 1000);
+                });
             } else {
                 alert(data.message || 'Gagal menambah layanan.');
             }
@@ -569,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(() => alert('Terjadi kesalahan saat menambah layanan.'));
     });
 
-    // Additional service form submission
+    // Updated Additional service form submission
     document.getElementById('drawer-additional-service')?.querySelector('form')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = {
@@ -578,6 +607,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('additional-service-duration').value,
             description: document.getElementById('additional-description').value
         };
+        const form = this;
 
         fetch("{{ route('layanan-tambahan.store') }}", {
             method: "POST",
@@ -590,14 +620,22 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                addRowToTable(data, formData, 'additional');
-                hideDrawer('drawer-additional-service');
-                showModal('loading-drawer');
-                setTimeout(() => {
-                    hideModal('loading-drawer');
-                    showSuccess();
-                    this.reset();
-                }, 1000);
+                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                hideDrawer('drawer-additional-service').then(() => {
+                    // Tampilkan loading
+                    showModal('loading-drawer');
+                    
+                    setTimeout(() => {
+                        hideModal('loading-drawer');
+                        
+                        // Tambahkan data ke tabel setelah drawer tertutup
+                        addRowToTable(data, formData, 'additional');
+                        
+                        // Tampilkan success message
+                        showSuccess();
+                        form.reset();
+                    }, 1000);
+                });
             } else {
                 alert(data.message || 'Gagal menambah layanan tambahan.');
             }
@@ -605,7 +643,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(() => alert('Terjadi kesalahan saat menambah layanan tambahan.'));
     });
 
-    // Edit main service form submission
+    // Updated Edit main service form submission
     document.getElementById('edit-main-service-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
         if (!currentEditRow) return;
@@ -618,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('edit-main-duration').value,
             description: document.getElementById('edit-main-description').value
         };
+        const rowToUpdate = currentEditRow; // Simpan referensi row
 
         fetch("{{ route('layanan-utama.update') }}", {
             method: "POST",
@@ -630,14 +669,22 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updateTableRow(currentEditRow, formData);
-                hideDrawer('drawer-edit-main-service');
-                showModal('loading-drawer');
-                setTimeout(() => {
-                    hideModal('loading-drawer');
-                    showSuccess();
-                    currentEditRow = null;
-                }, 1000);
+                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                hideDrawer('drawer-edit-main-service').then(() => {
+                    // Tampilkan loading
+                    showModal('loading-drawer');
+                    
+                    setTimeout(() => {
+                        hideModal('loading-drawer');
+                        
+                        // Update data di tabel setelah drawer tertutup
+                        updateTableRow(rowToUpdate, formData);
+                        
+                        // Tampilkan success message
+                        showSuccess();
+                        currentEditRow = null;
+                    }, 1000);
+                });
             } else {
                 alert(data.message || 'Gagal mengubah layanan.');
             }
@@ -645,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(() => alert('Terjadi kesalahan saat mengubah layanan.'));
     });
 
-    // Edit additional service form submission
+    // Updated Edit additional service form submission
     document.getElementById('edit-additional-service-form')?.addEventListener('submit', function(e) {
         e.preventDefault();
         if (!currentEditRow) return;
@@ -658,6 +705,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('edit-additional-duration').value,
             description: document.getElementById('edit-additional-description').value
         };
+        const rowToUpdate = currentEditRow; // Simpan referensi row
 
         fetch("{{ route('layanan-tambahan.update') }}", {
             method: "POST",
@@ -670,14 +718,22 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updateTableRow(currentEditRow, formData, true);
-                hideDrawer('drawer-edit-additional-service');
-                showModal('loading-drawer');
-                setTimeout(() => {
-                    hideModal('loading-drawer');
-                    showSuccess();
-                    currentEditRow = null;
-                }, 1000);
+                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                hideDrawer('drawer-edit-additional-service').then(() => {
+                    // Tampilkan loading
+                    showModal('loading-drawer');
+                    
+                    setTimeout(() => {
+                        hideModal('loading-drawer');
+                        
+                        // Update data di tabel setelah drawer tertutup
+                        updateTableRow(rowToUpdate, formData, true);
+                        
+                        // Tampilkan success message
+                        showSuccess();
+                        currentEditRow = null;
+                    }, 1000);
+                });
             } else {
                 alert(data.message || 'Gagal mengubah layanan tambahan.');
             }
@@ -685,7 +741,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(() => alert('Terjadi kesalahan saat mengubah layanan tambahan.'));
     });
 
-    // Helper functions
+    // Helper functions dengan animasi
+    function addRowWithAnimation(row) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateY(-10px)';
+        
+        setTimeout(() => {
+            row.style.transition = 'all 0.3s ease-in-out';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+        }, 50);
+    }
+
     function addRowToTable(data, formData, type) {
         const tbody = type === 'main' 
             ? document.querySelector('tbody.bg-white')
@@ -702,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const statusColumn = type === 'main' ? `
             <td class="px-4 py-1">
-                <button class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-medium status-button"
+                <button class="inline-flex items-center px-3 py-2 rounded-lg text-xs font-medium status-button ml-10"
                         style="background-color: #E5F9F9; color: #3FC1C0;"
                         data-service-id="${data.id}" data-current-status="Aktif">
                     <div class="w-2 h-2" style="background-color: #3FC1C0; border-radius: 9999px; margin-right: 0.375rem;"></div>
@@ -737,10 +804,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </td>
         `;
+        
         tbody.appendChild(row);
+        addRowWithAnimation(row);
     }
 
     function updateTableRow(row, formData, isAdditional = false) {
+        // Tambahkan efek highlight sementara
+        row.style.backgroundColor = '#E5F9F9';
+        row.style.transition = 'background-color 0.3s ease-in-out';
+        
         const cells = row.children;
         if (cells.length >= 4) {
             cells[0].textContent = formData.name;
@@ -759,6 +832,11 @@ document.addEventListener('DOMContentLoaded', function () {
         Object.entries(formData).forEach(([key, value]) => {
             if (key !== 'id') row.setAttribute(`data-service-${key}`, value);
         });
+        
+        // Hilangkan highlight setelah 2 detik
+        setTimeout(() => {
+            row.style.backgroundColor = '';
+        }, 2000);
     }
 
     // Event listeners
@@ -778,7 +856,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Status modal events
+    // Updated Status modal events
     document.getElementById('status-cancel')?.addEventListener('click', () => {
         hideModal('status-drawer');
         currentStatusButton = null;
@@ -790,6 +868,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentStatus = currentStatusButton.getAttribute('data-current-status');
         const newStatus = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
         const serviceId = currentStatusButton.getAttribute('data-service-id');
+        const buttonToUpdate = currentStatusButton; // Simpan referensi
 
         fetch("{{ route('layanan-utama.updateStatus') }}", {
             method: "POST",
@@ -802,11 +881,19 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                updateStatusButton(currentStatusButton, newStatus);
+                // Tutup modal terlebih dahulu
                 hideModal('status-drawer');
+                
+                // Tampilkan loading
                 showModal('loading-drawer');
+                
                 setTimeout(() => {
                     hideModal('loading-drawer');
+                    
+                    // Update status setelah modal tertutup
+                    updateStatusButton(buttonToUpdate, newStatus);
+                    
+                    // Tampilkan success message
                     showSuccess();
                     currentStatusButton = null;
                 }, 1000);
@@ -817,7 +904,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(() => alert('Terjadi kesalahan saat mengubah status.'));
     });
 
-    // Delete modal events
+    // Updated Delete modal events
     document.getElementById('delete-cancel')?.addEventListener('click', () => {
         hideModal('delete-drawer');
         currentDeleteRow = null;
@@ -829,6 +916,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const serviceId = currentDeleteRow.getAttribute('data-service-id');
         const isAdditional = currentDeleteRow.closest('tbody') === document.querySelectorAll('tbody.bg-white')[1];
         const url = isAdditional ? "{{ route('layanan-tambahan.delete') }}" : "{{ route('layanan-utama.delete') }}";
+        const rowToDelete = currentDeleteRow; // Simpan referensi
 
         fetch(url, {
             method: "DELETE",
@@ -841,11 +929,25 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                currentDeleteRow.remove();
+                // Tutup modal terlebih dahulu
                 hideModal('delete-drawer');
+                
+                // Tampilkan loading
                 showModal('loading-drawer');
+                
                 setTimeout(() => {
                     hideModal('loading-drawer');
+                    
+                    // Hapus row setelah modal tertutup dengan animasi
+                    rowToDelete.style.transition = 'all 0.3s ease-in-out';
+                    rowToDelete.style.opacity = '0';
+                    rowToDelete.style.transform = 'translateX(100px)';
+                    
+                    setTimeout(() => {
+                        rowToDelete.remove();
+                    }, 300);
+                    
+                    // Tampilkan success message
                     showSuccess();
                     currentDeleteRow = null;
                 }, 1000);
@@ -857,21 +959,29 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function updateStatusButton(button, newStatus) {
-        const statusText = button.querySelector('.status-text');
-        const statusDot = button.querySelector('div');
+        // Tambahkan efek animasi saat status berubah
+        button.style.transform = 'scale(0.95)';
+        button.style.transition = 'all 0.2s ease-in-out';
+        
+        setTimeout(() => {
+            const statusText = button.querySelector('.status-text');
+            const statusDot = button.querySelector('div');
 
-        if (statusText) statusText.textContent = newStatus;
-        button.setAttribute('data-current-status', newStatus);
+            if (statusText) statusText.textContent = newStatus;
+            button.setAttribute('data-current-status', newStatus);
 
-        if (newStatus === 'Aktif') {
-            button.style.backgroundColor = '#E5F9F9';
-            button.style.color = '#3FC1C0';
-            if (statusDot) statusDot.style.backgroundColor = '#3FC1C0';
-        } else {
-            button.style.backgroundColor = '#FEF2F2';
-            button.style.color = '#EF4444';
-            if (statusDot) statusDot.style.backgroundColor = '#EF4444';
-        }
+            if (newStatus === 'Aktif') {
+                button.style.backgroundColor = '#E5F9F9';
+                button.style.color = '#3FC1C0';
+                if (statusDot) statusDot.style.backgroundColor = '#3FC1C0';
+            } else {
+                button.style.backgroundColor = '#FEF2F2';
+                button.style.color = '#EF4444';
+                if (statusDot) statusDot.style.backgroundColor = '#EF4444';
+            }
+            
+            button.style.transform = 'scale(1)';
+        }, 100);
     }
 
     // Event delegation for dynamic buttons
