@@ -1,4 +1,4 @@
-<div class="sidebar bg-[#469D89] text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto flex flex-col">
+<div class="sidebar bg-[#469D89] text-white h-screen w-64 fixed top-0 left-0 overflow-y-auto flex flex-col z-20">
     <div class="p-4">
         <div class="flex justify-center">
             <img src="{{ asset('images/logo_apl_sidebar.svg') }}" alt="Logo Sidebar" class="h-16 w-[200px] mt-1">
