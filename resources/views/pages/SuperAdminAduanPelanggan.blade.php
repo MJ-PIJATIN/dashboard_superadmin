@@ -32,13 +32,14 @@
             </div>
 
             <div class="bg-white rounded-lg mt-0 shadow-lg">
-                <div class="overflow-x-auto p-2">
+                <div class="overflow-x-auto">
                     @if(count($paginatedAduan) > 0)
                         <table class="min-w-full text-sm text-gray-700">
                             <thead class="bg-white">
                                 <tr class="bg-white">
-                                    <th class="px-10 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Nama Pelapor</th>
-                                    <th class="translate-x-[-60px] py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Alasan Aduan</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Nama Pelapor</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Alasan Aduan</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700"></th>
                                 </tr>
                                 <tr>
                                     <th colspan="3" class="px-1 pt-0 pb-3">
@@ -50,32 +51,32 @@
                                 @foreach ($paginatedAduan as $adu)
                                 <tr class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md"
                                     onclick="window.location.href='{{ route('detiladuan', ['id' => $adu['id']]) }}'">
-                                    <td class="px-10 py-4" data-field="nama_pelapor">{{ $adu['nama_pelapor'] }}</td>
-                                    <td class="translate-x-[-60px] py-4 max-w-lg">
+                                    <td class="px-6 py-4 whitespace-nowrap" data-field="nama_pelapor">{{ $adu['nama_pelapor'] }}</td>
+                                    <td class="px-6 py-4 max-w-lg">
                                         <div class="text-sm text-gray-700">
                                             <span class="font-bold text-gray-600">{{ $adu['jenis_aduan'] }}</span>
                                             <span class="text-gray-700 mx-2">•</span>
-                                            <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 116, '...') }}</span>
+                                            <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 100, '...') }}</span>
                                         </div>
                                     </td>
-                                    <td class="px-14 py-4 text-sm text-gray-500 relative">
-                                        <div class="flex items-center justify-between">
-                                              <!-- Waktu - tampil normal, hilang saat hover -->
-                                            <span class="absolute inset-0 flex items-center justify-center group-hover:opacity-0 transition-opacity duration-200">
+                                    <td class="px-6 py-4 text-sm text-gray-500 relative">
+                                        <div class="flex items-center justify-end">
+                                            <!-- Waktu - tampil normal, hilang saat hover -->
+                                            <span class="group-hover:opacity-0 transition-opacity duration-200">
                                                 {{ $adu['waktu'] }}
                                             </span>
                                             
                                             <!-- Buttons - tersembunyi normal, muncul saat hover -->
-                                            <div class="ml-[72px] absolute inset-0 flex items-center justify-beetween gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                            <div class="absolute inset-y-0 right-0 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-6">
                                                 <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
-                                                    title="Lihat Detail Terapis"
+                                                    title="Peringatkan"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-yellow-200 rounded-md p-1">
-                                                    <img src="/images/peringatan.svg" alt="Detail Terapis" class="w-4 h-4" />
+                                                    <img src="/images/peringatan.svg" alt="Peringatkan" class="w-4 h-4" />
                                                 </button>
                                                 <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
-                                                    title="Kelola Akun Terapis"
+                                                    title="Tangguhkan"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-red-200 rounded-md p-1">
-                                                    <img src="/images/tangguhkan.svg" alt="Kelola Akun" class="w-4 h-4" />
+                                                    <img src="/images/tangguhkan.svg" alt="Tangguhkan" class="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </div>
@@ -104,7 +105,7 @@
 
                     <!-- Pagination -->
                     @if($paginationData['total'] > 0)
-                        <div class="flex flex-col sm:flex-row justify-between items-center px-8 sm:px-9 py-4 border-gray-200 gap-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
                         <span class="text-sm text-gray-500 order-2 sm:order-1">
                             Halaman {{ $paginationData['current_page'] }} dari {{ $paginationData['total_pages'] }}
                         </span>
