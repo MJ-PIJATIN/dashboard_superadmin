@@ -8,6 +8,7 @@ use App\Http\Controllers\AduanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\FaqController;
 
 // Routing ke Landing Page
 Route::get('/', function () {
@@ -52,7 +53,6 @@ Route::prefix('cabang')->group(function () {
         ->where('id', '[A-Za-z0-9]+')
         ->name('cabang.detail');
     Route::patch('/{id}/toggle-status', [CabangController::class, 'toggleStatus'])->name('cabang.toggleStatus');
-
 });
 
 Route::prefix('superadmin/cabang')->group(function () {
@@ -116,9 +116,7 @@ Route::get('/detail-report-terapis/{aduan_id}', [App\Http\Controllers\AduanContr
 Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
 
 // Halaman FAQ
-Route::get('/faq', function () {
-    return view('pages.SuperAdminFAQ');
-})->name('faq');
+Route::resource('faqs', FaqController::class);
 
 //Page Pesanan
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');

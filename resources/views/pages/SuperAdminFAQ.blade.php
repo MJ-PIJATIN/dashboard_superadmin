@@ -28,27 +28,21 @@
                 </tr>
                 </thead>
                 <tbody id="faqTableBody">
-                    @foreach ([
-                        ['id' => 1, 'judul' => 'Apa itu massage?', 'deskripsi' => 'Massage merupakan suatu teknik perawatan tubuh yang menggunakan gerakan tangan, tekanan, dan manipulasi jaringan lunak untuk memberikan relaksasi, mengurangi stres, dan meningkatkan kesehatan secara keseluruhan.'],
-                        ['id' => 2, 'judul' => 'Bagaimana saya bisa menemukan terapis yang baik?', 'deskripsi' => 'Untuk menemukan terapis yang baik, pastikan untuk mengecek kualifikasi dan sertifikasi mereka, cari referensi atau ulasan dari pelanggan sebelumnya, tanyakan pengalaman mereka, dan pastikan mereka terdaftar secara resmi.'],
-                        ['id' => 3, 'judul' => 'Berapa biaya rata-rata untuk layanan massage?', 'deskripsi' => 'Harga layanan massage bervariasi tergantung jenis treatment, lokasi, dan kualitas tempat. Umumnya harga mulai dari 100 ribu rupiah untuk massage tradisional hingga 500 ribu rupiah untuk treatment premium di spa mewah.'],
-                        ['id' => 4, 'judul' => 'Seberapa sering saya sebaiknya mendapatkan massage?', 'deskripsi' => 'Frekuensi massage tergantung pada kebutuhan individu. Untuk relaksasi umum, 1 minggu sekali sudah cukup, namun untuk kondisi tertentu atau stress tinggi bisa 2-3 kali seminggu sesuai anjuran terapis.'],
-                        ['id' => 5, 'judul' => 'Apakah ada risiko atau efek samping dari massage?', 'deskripsi' => 'Meskipun umumnya aman, massage dapat menimbulkan beberapa risiko seperti memar ringan, nyeri otot sementara, atau reaksi alergi terhadap minyak. Hindari massage jika memiliki kondisi medis tertentu tanpa konsultasi dokter.']
-                    ] as $faq)
-                    <tr class="hover:bg-gray-50" data-id="{{ $faq['id'] }}">
-                        <td class="px-24 py-4" data-field="judul">{{ $faq['judul'] }}</td>
+                    @foreach ($faqs as $faq)
+                    <tr class="hover:bg-gray-50" data-id="{{ $faq->id }}">
+                        <td class="px-24 py-4" data-field="judul">{{ $faq->judul }}</td>
                         <td class="px-4 py-4 cursor-pointer hover:text-blue-600 transition-colors" 
                             data-field="deskripsi" 
-                            data-full-desc="{{ $faq['deskripsi'] }}"
-                            onclick="showFullDescription('{{ addslashes($faq['judul']) }}', '{{ addslashes($faq['deskripsi']) }}')">
-                            {{ Str::limit($faq['deskripsi'], 50, '...') }}
+                            data-full-desc="{{ $faq->deskripsi }}"
+                            onclick="showFullDescription('{{ addslashes($faq->judul) }}', '{{ addslashes($faq->deskripsi) }}')">
+                            {{ Str::limit($faq->deskripsi, 100, '...') }}
                         </td>
                         <td class="px-20 py-4 text-center">
                             <div class="flex justify-center gap-2">
-                                <button onclick="openEditModal({{ $faq['id'] }}, '{{ addslashes($faq['judul']) }}', '{{ addslashes($faq['deskripsi']) }}')" title="Edit">
+                                <button onclick="openEditModal({{ $faq->id }}, '{{ addslashes($faq->judul) }}', '{{ addslashes($faq->deskripsi) }}')" title="Edit">
                                     <img src="{{ asset('images/edit.svg') }}" alt="Edit" class="h-5 w-5 hover:opacity-80">
                                 </button>
-                                <button onclick="openDeleteModal({{ $faq['id'] }}, '{{ addslashes($faq['judul']) }}')" title="Hapus">
+                                <button onclick="openDeleteModal({{ $faq->id }}, '{{ addslashes($faq->judul) }}')" title="Hapus">
                                     <img src="{{ asset('images/delete.svg') }}" alt="Hapus" class="h-5 w-5 hover:opacity-80">
                                 </button>
                             </div>
@@ -81,13 +75,6 @@
         <label class="block font-semibold text-sm mb-2 text-gray-700">Deskripsi Lengkap:</label>
         <div class="text-gray-800 bg-gray-50 p-4 rounded border max-h-60 overflow-y-auto leading-relaxed" id="descModalContent"></div>
     </div>
-
-    <!-- Tombol Tutup -->
-    <div class="flex justify-end">
-      <button onclick="closeModal('modalDeskripsi')" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600 transition">
-        Tutup
-      </button>
-    </div>
   </div>
 </div>
 
@@ -103,6 +90,7 @@
     <h3 class="text-lg font-semibold mb-4">Tambah Pertanyaan</h3>
 
     <form id="addFaqForm">
+        @csrf
         <label class="block font-semibold text-sm mb-1">Judul</label>
         <input type="text" id="addJudul" class="w-full border p-2 rounded mb-4" placeholder="Masukkan judul pertanyaan" required>
         <span class="text-red-500 text-sm hidden" id="addJudulError">Judul harus diisi</span>
@@ -129,12 +117,14 @@
   <div class="relative bg-white rounded-lg p-6 w-[600px] shadow-lg">
     <!-- Tombol X -->
     <button onclick="closeModal('modalEdit')" class="absolute top-4 right-4 text-gray-600 hover:text-black text-xl font-bold">
-      <img src="{{ asset('images/X.svg') }}" alt="Close" class="w-5 h-5">
+      <img src="{{ asset('images/X.svg') }}" alt="Close" class="w-8 h-8">
     </button>
 
     <h1 class="text-lg font-semibold mb-4">Ubah Pertanyaan</h1>
 
     <form id="editFaqForm">
+        @csrf
+        @method('PUT')
         <input type="hidden" id="editId">
         
         <label class="block font-semibold text-sm mb-1">Judul</label>
@@ -217,66 +207,35 @@
 </div>
 
 <script>
-    let faqData = [];
-    let nextId = 6;
-
-    // Drawer Manager
+    // Drawer Manager (tetap dipakai)
     const drawerManager = {
         showLoading: function() {
             document.getElementById('loading-drawer').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         },
-        
         hideLoading: function() {
             document.getElementById('loading-drawer').classList.add('hidden');
             document.body.style.overflow = 'auto';
         },
-        
         showSuccess: function(message = 'Operasi berhasil dilakukan!') {
             document.getElementById('success-message').textContent = message;
             document.getElementById('success-drawer').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
-            
-            // Auto hide after 2 seconds
-            setTimeout(() => {
-                this.hideSuccess();
-            }, 2000);
+            setTimeout(() => this.hideSuccess(), 2000);
         },
-        
         hideSuccess: function() {
             document.getElementById('success-drawer').classList.add('hidden');
             document.body.style.overflow = 'auto';
         }
     };
 
-    // Initialize FAQ data from blade template
-    document.addEventListener('DOMContentLoaded', function() {
-        const rows = document.querySelectorAll('#faqTableBody tr');
-        rows.forEach(row => {
-            const id = parseInt(row.getAttribute('data-id'));
-            const judul = row.querySelector('[data-field="judul"]').textContent;
-            const deskripsi = row.querySelector('[data-field="deskripsi"]').getAttribute('data-full-desc');
-            faqData.push({ id, judul, deskripsi });
-        });
-
-        // Success drawer overlay click handler
-        const successOverlay = document.getElementById('success-drawer-overlay');
-        if (successOverlay) {
-            successOverlay.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    drawerManager.hideSuccess();
-                }
-            });
-        }
-
-        // Prevent success drawer content clicks from closing drawer
-        const successContent = document.getElementById('success-drawer-content');
-        if (successContent) {
-            successContent.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        }
-    });
+    // helper: ambil CSRF token (cari meta dulu, fallback ke input _token)
+    function getCsrfToken() {
+        const meta = document.querySelector('meta[name="csrf-token"]');
+        if (meta) return meta.getAttribute('content');
+        const tokenInput = document.querySelector('input[name="_token"]');
+        return tokenInput ? tokenInput.value : '';
+    }
 
     // Function to show full description
     function showFullDescription(judul, deskripsi) {
@@ -285,29 +244,26 @@
         openModal('modalDeskripsi');
     }
 
-    // Function to truncate text
-    function truncateText(text, maxLength = 50) {
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength) + '...';
-    }
-
     // Modal functions
     function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent background scroll
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Restore scroll
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add('hidden');
+        document.body.style.overflow = 'auto';
         clearForm(id);
     }
 
-    // Clear form data when closing modal
     function clearForm(modalId) {
         if (modalId === 'modalTambah') {
-            document.getElementById('addJudul').value = '';
-            document.getElementById('addDeskripsi').value = '';
+            const form = document.getElementById('addFaqForm');
+            if (form) form.reset();
             hideError('addJudulError');
             hideError('addDeskripsiError');
         } else if (modalId === 'modalEdit') {
@@ -316,237 +272,263 @@
         }
     }
 
-    // Add FAQ functions
-    function openAddModal() {
-        openModal('modalTambah');
+    function hideError(id) {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
     }
 
-    // Edit FAQ functions
+    // Add / Edit / Delete helpers
+    function openAddModal() { openModal('modalTambah'); }
     function openEditModal(id, judul, deskripsi) {
-        document.getElementById('editId').value = id;
-        document.getElementById('editJudul').value = judul;
-        document.getElementById('editDeskripsi').value = deskripsi;
+        const elId = document.getElementById('editId');
+        const elJudul = document.getElementById('editJudul');
+        const elDesc = document.getElementById('editDeskripsi');
+        if (elId) elId.value = id;
+        if (elJudul) elJudul.value = judul;
+        if (elDesc) elDesc.value = deskripsi;
         openModal('modalEdit');
     }
-
-    // Delete FAQ functions
     function openDeleteModal(id, judul) {
         document.getElementById('deleteId').value = id;
         document.getElementById('deleteItemTitle').textContent = `"${judul}"`;
         openModal('modalHapus');
     }
 
+    // Confirm delete (tetap menggunakan fetch sederhana seperti sebelumnya — ok)
     function confirmDelete() {
-        const id = parseInt(document.getElementById('deleteId').value);
-        
-        // Show loading
+        const id = document.getElementById('deleteId').value;
+        if (!id) return;
         drawerManager.showLoading();
         closeModal('modalHapus');
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Remove from array
-            faqData = faqData.filter(faq => faq.id !== id);
-            
-            // Remove from DOM
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-            if (row) {
-                row.remove();
-            }
 
-            // Hide loading and show success
+        fetch(`/faqs/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
             drawerManager.hideLoading();
-            drawerManager.showSuccess('Pertanyaan berhasil dihapus!');
-        }, 1000);
+            if (response.ok) {
+                drawerManager.showSuccess('Pertanyaan berhasil dihapus!');
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                return response.json().then(j => { throw new Error(j.message || 'Gagal menghapus.'); }).catch(()=> { throw new Error('Gagal menghapus.'); });
+            }
+        })
+        .catch(err => {
+            drawerManager.hideLoading();
+            alert(err.message || 'Gagal menghapus pertanyaan.');
+        });
     }
 
-    // Form validation
+    // --- Validasi forms ---
     function validateForm(formType) {
         let isValid = true;
+        const fields = formType === 'add' ? ['addJudul', 'addDeskripsi'] : ['editJudul', 'editDeskripsi'];
         
-        if (formType === 'add') {
-            const judul = document.getElementById('addJudul').value.trim();
-            const deskripsi = document.getElementById('addDeskripsi').value.trim();
-            
-            if (!judul) {
-                showError('addJudulError');
+        fields.forEach(field => {
+            const input = document.getElementById(field);
+            const error = document.getElementById(`${field}Error`);
+            if (!input || input.value.trim() === '') {
+                if (error) error.classList.remove('hidden');
                 isValid = false;
             } else {
-                hideError('addJudulError');
+                if (error) error.classList.add('hidden');
             }
-            
-            if (!deskripsi) {
-                showError('addDeskripsiError');
-                isValid = false;
-            } else {
-                hideError('addDeskripsiError');
-            }
-        } else if (formType === 'edit') {
-            const judul = document.getElementById('editJudul').value.trim();
-            const deskripsi = document.getElementById('editDeskripsi').value.trim();
-            
-            if (!judul) {
-                showError('editJudulError');
-                isValid = false;
-            } else {
-                hideError('editJudulError');
-            }
-            
-            if (!deskripsi) {
-                showError('editDeskripsiError');
-                isValid = false;
-            } else {
-                hideError('editDeskripsiError');
-            }
-        }
+        });
         
         return isValid;
     }
 
-    function showError(elementId) {
-        document.getElementById(elementId).classList.remove('hidden');
-    }
-
-    function hideError(elementId) {
-        document.getElementById(elementId).classList.add('hidden');
-    }
-
-    // Add FAQ form submission
-    document.getElementById('addFaqForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    // --- Robust fetch helper untuk form submission ---
+async function submitForm(fetchUrl, formElement, method = 'POST') {
+    try {
+        drawerManager.showLoading();
         
-        if (!validateForm('add')) {
-            return;
+        // Ambil data dari form secara manual untuk memastikan data terkirim
+        const formData = new FormData();
+        
+        if (method === 'PUT') {
+            formData.append('_method', 'PUT');
+        }
+        
+        // Tambahkan CSRF token
+        formData.append('_token', getCsrfToken());
+        
+        // Ambil semua input dari form
+        const inputs = formElement.querySelectorAll('input[type="text"], textarea, input[type="hidden"]');
+        inputs.forEach(input => {
+            if (input.name && input.name !== '_token' && input.name !== '_method') {
+                formData.append(input.name, input.value);
+            }
+        });
+
+        const response = await fetch(fetchUrl, {
+            method: 'POST', // selalu POST, method override via _method
+            headers: {
+                'X-CSRF-TOKEN': getCsrfToken(),
+                'Accept': 'application/json'
+            },
+            body: formData,
+            credentials: 'same-origin'
+        });
+
+        // jika ada error status
+        if (!response.ok) {
+            let errMsg = `Request gagal: ${response.status} ${response.statusText}`;
+            try {
+                const errJson = await response.json();
+                if (errJson && errJson.message) errMsg = errJson.message;
+                else if (errJson && errJson.errors) {
+                    // Validation errors
+                    const firstError = Object.values(errJson.errors)[0];
+                    if (Array.isArray(firstError)) errMsg = firstError[0];
+                }
+            } catch (_e) {
+                // ignore parse error
+            }
+            throw new Error(errMsg);
         }
 
+        // check content-type
+        const ct = (response.headers.get('content-type') || '').toLowerCase();
+        if (ct.includes('application/json')) {
+            return { ok: true, json: await response.json() };
+        } else {
+            const text = await response.text();
+            return { ok: true, html: text };
+        }
+    } catch (err) {
+        return { ok: false, error: err.message || String(err) };
+    } finally {
+        drawerManager.hideLoading();
+    }
+}
+
+// --- Event listener: Tambah FAQ (DIPERBAIKI) ---
+const addForm = document.getElementById('addFaqForm');
+if (addForm) {
+    addForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!validateForm('add')) return;
+
+        // Siapkan data manual untuk memastikan terkirim
         const judul = document.getElementById('addJudul').value.trim();
         const deskripsi = document.getElementById('addDeskripsi').value.trim();
         
-        // Show loading
-        drawerManager.showLoading();
-        closeModal('modalTambah');
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Add to array
-            const newFaq = { id: nextId++, judul, deskripsi };
-            faqData.push(newFaq);
-            
-            // Add to DOM
-            addRowToTable(newFaq);
-            
-            // Hide loading and show success
-            drawerManager.hideLoading();
-            drawerManager.showSuccess('Pertanyaan berhasil ditambahkan!');
-        }, 1000);
-    });
-
-    // Edit FAQ form submission
-    document.getElementById('editFaqForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (!validateForm('edit')) {
+        if (!judul || !deskripsi) {
+            alert('Judul dan deskripsi harus diisi!');
             return;
         }
 
-        const id = parseInt(document.getElementById('editId').value);
+        closeModal('modalTambah');
+        drawerManager.showLoading();
+
+        try {
+            const response = await fetch('/faqs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    judul: judul,
+                    deskripsi: deskripsi
+                }),
+                credentials: 'same-origin'
+            });
+
+            drawerManager.hideLoading();
+
+            if (!response.ok) {
+                let errMsg = `Gagal menambahkan: ${response.status}`;
+                try {
+                    const errJson = await response.json();
+                    if (errJson.message) errMsg = errJson.message;
+                    else if (errJson.errors) {
+                        const firstError = Object.values(errJson.errors)[0];
+                        if (Array.isArray(firstError)) errMsg = firstError[0];
+                    }
+                } catch (e) {}
+                throw new Error(errMsg);
+            }
+
+            const result = await response.json();
+            drawerManager.showSuccess('Pertanyaan berhasil ditambahkan!');
+            setTimeout(() => location.reload(), 1200);
+
+        } catch (error) {
+            drawerManager.hideLoading();
+            console.error('Error adding FAQ:', error);
+            alert('Gagal menambahkan pertanyaan: ' + error.message);
+        }
+    });
+}
+
+// --- Event listener: Edit FAQ (DIPERBAIKI) ---
+const editForm = document.getElementById('editFaqForm');
+if (editForm) {
+    editForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        if (!validateForm('edit')) return;
+
+        const id = document.getElementById('editId').value;
         const judul = document.getElementById('editJudul').value.trim();
         const deskripsi = document.getElementById('editDeskripsi').value.trim();
         
-        // Show loading
-        drawerManager.showLoading();
+        if (!id || !judul || !deskripsi) {
+            alert('Semua field harus diisi!');
+            return;
+        }
+
         closeModal('modalEdit');
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Update array
-            const faqIndex = faqData.findIndex(faq => faq.id === id);
-            if (faqIndex !== -1) {
-                faqData[faqIndex].judul = judul;
-                faqData[faqIndex].deskripsi = deskripsi;
-            }
-            
-            // Update DOM
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-            if (row) {
-                row.querySelector('[data-field="judul"]').textContent = judul;
-                const descCell = row.querySelector('[data-field="deskripsi"]');
-                descCell.textContent = truncateText(deskripsi, 50);
-                descCell.setAttribute('data-full-desc', deskripsi);
-                descCell.setAttribute('onclick', `showFullDescription('${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}');`);
-                
-                // Update button onclick attributes
-                const editBtn = row.querySelector('button[title="Edit"]');
-                const deleteBtn = row.querySelector('button[title="Hapus"]');
-                
-                editBtn.setAttribute('onclick', `openEditModal(${id}, '${judul.replace(/'/g, "\\'")}', '${deskripsi.replace(/'/g, "\\'")}')`);
-                deleteBtn.setAttribute('onclick', `openDeleteModal(${id}, '${judul.replace(/'/g, "\\'")}')`);
-            }
-            
-            // Hide loading and show success
-            drawerManager.hideLoading();
-            drawerManager.showSuccess('Pertanyaan berhasil diubah!');
-        }, 1000);
-    });
+        drawerManager.showLoading();
 
-    // Add new row to table
-    function addRowToTable(faq) {
-        const tbody = document.getElementById('faqTableBody');
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50';
-        row.setAttribute('data-id', faq.id);
-        
-        row.innerHTML = `
-            <td class="px-24 py-4" data-field="judul">${faq.judul}</td>
-            <td class="px-4 py-4 cursor-pointer hover:text-blue-600 transition-colors" 
-                data-field="deskripsi" 
-                data-full-desc="${faq.deskripsi}"
-                onclick="showFullDescription('${faq.judul.replace(/'/g, "\\'")}', '${faq.deskripsi.replace(/'/g, "\\'")}')">
-                ${truncateText(faq.deskripsi, 50)}
-            </td>
-            <td class="px-20 py-4 text-center">
-                <div class="flex justify-center gap-2">
-                    <button onclick="openEditModal(${faq.id}, '${faq.judul.replace(/'/g, "\\'")}', '${faq.deskripsi.replace(/'/g, "\\'")}');" title="Edit">
-                        <img src="{{ asset('images/edit.svg') }}" alt="Edit" class="h-5 w-5 hover:opacity-80">
-                    </button>
-                    <button onclick="openDeleteModal(${faq.id}, '${faq.judul.replace(/'/g, "\\'")}')" title="Hapus">
-                        <img src="{{ asset('images/delete.svg') }}" alt="Hapus" class="h-5 w-5 hover:opacity-80">
-                    </button>
-                </div>
-            </td>
-        `;
-        
-        tbody.appendChild(row);
-    }
-
-    // Close modal when clicking outside
-    window.addEventListener('click', function(e) {
-        const modals = ['modalTambah', 'modalEdit', 'modalHapus', 'modalDeskripsi'];
-        modals.forEach(modalId => {
-            const modal = document.getElementById(modalId);
-            if (e.target === modal) {
-                closeModal(modalId);
-            }
-        });
-    });
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const modals = ['modalTambah', 'modalEdit', 'modalHapus', 'modalDeskripsi'];
-            modals.forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (!modal.classList.contains('hidden')) {
-                    closeModal(modalId);
-                }
+        try {
+            const response = await fetch(`/faqs/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': getCsrfToken(),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    judul: judul,
+                    deskripsi: deskripsi
+                }),
+                credentials: 'same-origin'
             });
-            
-            // Also close success drawer with Escape
-            const successDrawer = document.getElementById('success-drawer');
-            if (!successDrawer.classList.contains('hidden')) {
-                drawerManager.hideSuccess();
+
+            drawerManager.hideLoading();
+
+            if (!response.ok) {
+                let errMsg = `Gagal mengubah: ${response.status}`;
+                try {
+                    const errJson = await response.json();
+                    if (errJson.message) errMsg = errJson.message;
+                    else if (errJson.errors) {
+                        const firstError = Object.values(errJson.errors)[0];
+                        if (Array.isArray(firstError)) errMsg = firstError[0];
+                    }
+                } catch (e) {}
+                throw new Error(errMsg);
             }
+
+            const result = await response.json();
+            drawerManager.showSuccess('Pertanyaan berhasil diubah!');
+            setTimeout(() => location.reload(), 1200);
+
+        } catch (error) {
+            drawerManager.hideLoading();
+            console.error('Error updating FAQ:', error);
+            alert('Gagal mengubah pertanyaan: ' + error.message);
         }
     });
+}
 </script>
+
 @endsection
