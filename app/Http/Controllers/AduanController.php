@@ -110,6 +110,11 @@ class AduanController extends Controller
             $template['nama_pelapor'];
             $template['waktu'] = date("H:i", strtotime("08:00 +". ($i * 7) ." minutes"));
             $template['deskripsi'];
+            if ($i <= 3) {
+                $template['read_at'] = null;
+            } else {
+                $template['read_at'] = date('Y-m-d H:i:s');
+            }
             $aduan[] = $template;
         }
 

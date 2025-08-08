@@ -54,7 +54,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap" data-field="nama_pelapor">{{ $adu['nama_pelapor'] }}</td>
                                     <td class="px-6 py-4 max-w-lg">
                                         <div class="text-sm text-gray-700">
-                                            <span class="font-bold text-gray-600">{{ $adu['jenis_aduan'] }}</span>
+                                            <span class="@if(empty($adu['read_at'])) font-bold @endif text-gray-600">{{ $adu['jenis_aduan'] }}</span>
                                             <span class="text-gray-700 mx-2">•</span>
                                             <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 100, '...') }}</span>
                                         </div>

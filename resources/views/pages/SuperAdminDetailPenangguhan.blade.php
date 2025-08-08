@@ -232,6 +232,30 @@
     </div>
 </div>
 
+<!-- Loading Spinner Drawer -->
+<div id="loading-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center h-full">
+        <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 70.5px;">
+            <div class="flex flex-col items-center mb-4">
+                <img src="{{ asset('images/loading.svg') }}" alt="Loading" class="h-30 w-30 animate-spin" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Drawer -->
+<div id="success-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div id="success-drawer-overlay" class="flex items-center justify-center h-full">
+        <div id="success-drawer-content" class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+            <div class="flex flex-col items-center mb-4">
+                <h2 class="text-2xl font-bold mb-6" style="color: #469D89;">Berhasil!</h2>
+                <img src="{{ asset('images/succed.svg') }}" alt="Success" class="h-30 w-30">
+                <p id="success-message" class="text-gray-700 text-center mt-4">Operasi berhasil dilakukan!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // KTP Modal functions
 let currentModalSlide = 1;
@@ -326,31 +350,55 @@ function closeRestoreModal() {
     document.getElementById('restoreModal').classList.add('hidden');
 }
 
+let currentUserId = null;
+let currentUserName = null;
+
+// CSRF Token
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+// Fungsi untuk menampilkan loading drawer
+function showLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.remove('hidden');
+}
+
+// Fungsi untuk menyembunyikan loading drawer
+function hideLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.add('hidden');
+}
+
+// Fungsi untuk menampilkan success drawer
+function showSuccessDrawer(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-drawer').classList.remove('hidden');
+    
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+        hideSuccessDrawer();
+    }, 3000);
+}
+
+// Fungsi untuk menyembunyikan success drawer
+function hideSuccessDrawer() {
+    document.getElementById('success-drawer').classList.add('hidden');
+}
+
 function confirmRestore() {
     // Logic untuk memulihkan akun
     console.log('Memulihkan akun Kamarina Mandasari');
     
-    // Contoh AJAX request
-    // fetch('/restore-account/10', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    //     }
-    // }).then(response => {
-    //     if (response.ok) {
-    //         alert('Akun berhasil dipulihkan!');
-    //         window.location.href = '/akun-ditangguhkan';
-    //     }
-    // });
-    
-    alert('Akun Kamarina Mandasari berhasil dipulihkan!');
     closeRestoreModal();
-    
-    // Redirect kembali ke daftar setelah berhasil
+    showLoadingDrawer();
+
+    // Simulate an asynchronous operation
     setTimeout(() => {
-        window.location.href = '/akun-ditangguhkan';
-    }, 1000);
+        hideLoadingDrawer();
+        showSuccessDrawer('Akun Kamarina Mandasari berhasil dipulihkan!');
+        
+        // Redirect kembali ke daftar setelah berhasil
+        setTimeout(() => {
+            window.location.href = '/akun-ditangguhkan';
+        }, 1000);
+    }, 1500); // Simulate a 1.5 second delay
 }
 
 // Close modal when clicking outside
