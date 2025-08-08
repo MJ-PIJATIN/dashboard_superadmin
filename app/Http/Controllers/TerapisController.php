@@ -132,65 +132,110 @@ class TerapisController extends Controller
         ]);
 
         if ($validator->fails()) {
+            // Return JSON response for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            
+            // Return normal redirect for non-AJAX requests
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
-    try {
-        // Generate random ID dengan 6 karakter
-        $randomId = $this->generateRandomId();
+        try {
+            // Add artificial delay for loading demonstration (remove in production)
+            sleep(2);
 
-        // Generate branch_id (format: BRANCH + 6 digit random)
-        $branchId = null; // Replace with actual logic to get branch ID if needed
+            // Generate random ID dengan 6 karakter
+            $randomId = $this->generateRandomId();
 
-        // Handle photo upload
-        $photoPath = null;
-        $photoBase64 = null;
-        
-        if ($request->hasFile('foto')) {
-            $photoPath = $this->handlePhotoUpload($request->file('foto'), $request->nama_lengkap);
+            // Generate branch_id (format: BRANCH + 6 digit random)
+            $branchId = null; // Replace with actual logic to get branch ID if needed
+
+            // Handle photo upload
+            $photoPath = null;
+            $photoBase64 = null;
             
-            // If you need base64 format for API or specific requirements
-            // $photoBase64 = $this->convertPhotoToBase64($photoPath);
-        }
-
-        // Ubah format tanggal lahir
-        $birthDate = null;
-        if ($request->tanggal_lahir) {
-            $birthDate = \DateTime::createFromFormat('d/m/Y', $request->tanggal_lahir);
-            if ($birthDate) {
-                $birthDate = $birthDate->format('Y-m-d');
+            if ($request->hasFile('foto')) {
+                $photoPath = $this->handlePhotoUpload($request->file('foto'), $request->nama_lengkap);
+                
+                // If you need base64 format for API or specific requirements
+                // $photoBase64 = $this->convertPhotoToBase64($photoPath);
             }
+
+            // Ubah format tanggal lahir
+            $birthDate = null;
+            if ($request->tanggal_lahir) {
+                $birthDate = \DateTime::createFromFormat('d/m/Y', $request->tanggal_lahir);
+                if ($birthDate) {
+                    $birthDate = $birthDate->format('Y-m-d');
+                }
+            }
+
+            // Process gender value
+            $genderValue = $this->processGenderValue($request->jenis_kelamin);
+
+            // Simpan data terapis dengan ID custom
+            $terapis = new Terapis();
+            $terapis->id = $randomId;
+            $terapis->branch_id = $branchId;
+            $terapis->name = $request->nama_lengkap;
+            $terapis->joining_date = now()->format('Y-m-d');
+            $terapis->birth_date = $birthDate;
+            $terapis->gender = $genderValue;
+            $terapis->phone = $request->no_ponsel;
+            
+            // Store photo path (or base64 if needed)
+            $terapis->photo = $photoPath; // or $photoBase64 if you need base64 format
+            
+            $terapis->email = $request->email;
+            $terapis->NIK = $request->nik;
+            $terapis->addres = $request->alamat . ', ' . $request->kota_kabupaten . ', ' . $request->provinsi;
+            
+            $terapis->save();
+
+            // Return success response for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data terapis berhasil ditambahkan',
+                    'data' => [
+                        'id' => $terapis->id,
+                        'name' => $terapis->name
+                    ],
+                    'redirect_url' => route('terapis')
+                ], 200);
+            }
+
+            // Return normal redirect for non-AJAX requests
+            return redirect()->route('terapis')->with('success', 'Data terapis berhasil ditambahkan');
+
+        } catch (\Exception $e) {
+            // Log error for debugging
+            \Log::error('Error saving therapist: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->except(['foto']) // Exclude file from logging
+            ]);
+
+            // Return error response for AJAX requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+                    'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                ], 500);
+            }
+
+            // Return normal redirect with error for non-AJAX requests
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['general' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
         }
-
-        // Process gender value
-        $genderValue = $this->processGenderValue($request->jenis_kelamin);
-
-        // Simpan data terapis dengan ID custom
-        $terapis = new Terapis();
-        $terapis->id = $randomId;
-        $terapis->branch_id = $branchId;
-        $terapis->name = $request->nama_lengkap;
-        $terapis->joining_date = now()->format('Y-m-d');
-        $terapis->birth_date = $birthDate;
-        $terapis->gender = $genderValue;
-        $terapis->phone = $request->no_ponsel;
-        
-        // Store photo path (or base64 if needed)
-        $terapis->photo = $photoPath; // or $photoBase64 if you need base64 format
-        
-        $terapis->email = $request->email;
-        $terapis->NIK = $request->nik;
-        $terapis->addres = $request->alamat . ', ' . $request->kota_kabupaten . ', ' . $request->provinsi;
-        
-        $terapis->save();
-
-        return redirect()->back();
-
-    } catch (\Exception $e) {
-        return redirect()->back()->withInput();
-    }
     }
 
     public function getPhotoUrl($photoPath)
