@@ -32,40 +32,29 @@ class TerapisController extends Controller
 
     private function processGenderValue($gender)
     {
-        // Jika menggunakan ENUM dengan nilai singkat
         if ($gender === 'Laki-laki') {
-            return 'L'; // atau bisa 'M' untuk Male
+            return 'L';
         } elseif ($gender === 'Perempuan') {
-            return 'P'; // atau bisa 'F' untuk Female
+            return 'P';
         }
-        
-        // Jika menggunakan VARCHAR, return nilai asli
         return $gender;
     }
 
     private function handlePhotoUpload($file, $therapistName)
     {
         try {
-            // Validate file
             if (!$file || !$file->isValid()) {
                 return null;
             }
 
-            // Create filename with timestamp and therapist name
             $filename = time() . '_' . Str::slug($therapistName) . '.' . $file->getClientOriginalExtension();
-            
-            // Create directory if it doesn't exist
             $uploadPath = storage_path('app/public/therapists/photos');
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0755, true);
             }
 
-            // Get the full file path
             $filePath = $uploadPath . '/' . $filename;
-
-            // Option 1: Simple move (recommended for most cases)
             $file->move($uploadPath, $filename);
-            // Return the relative path for database storage
             return 'therapists/photos/' . $filename;
 
         } catch (\Exception $e) {
@@ -100,7 +89,6 @@ class TerapisController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'nama_lengkap' => 'required|string|max:255',
             'nik' => 'required|string|max:255|unique:therapists,NIK',
@@ -132,7 +120,6 @@ class TerapisController extends Controller
         ]);
 
         if ($validator->fails()) {
-            // Return JSON response for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -140,35 +127,24 @@ class TerapisController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            
-            // Return normal redirect for non-AJAX requests
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
         try {
-            // Add artificial delay for loading demonstration (remove in production)
             sleep(2);
 
-            // Generate random ID dengan 6 karakter
             $randomId = $this->generateRandomId();
+            $branchId = null;
 
-            // Generate branch_id (format: BRANCH + 6 digit random)
-            $branchId = null; // Replace with actual logic to get branch ID if needed
-
-            // Handle photo upload
             $photoPath = null;
             $photoBase64 = null;
             
             if ($request->hasFile('foto')) {
                 $photoPath = $this->handlePhotoUpload($request->file('foto'), $request->nama_lengkap);
-                
-                // If you need base64 format for API or specific requirements
-                // $photoBase64 = $this->convertPhotoToBase64($photoPath);
             }
 
-            // Ubah format tanggal lahir
             $birthDate = null;
             if ($request->tanggal_lahir) {
                 $birthDate = \DateTime::createFromFormat('d/m/Y', $request->tanggal_lahir);
@@ -177,10 +153,8 @@ class TerapisController extends Controller
                 }
             }
 
-            // Process gender value
             $genderValue = $this->processGenderValue($request->jenis_kelamin);
 
-            // Simpan data terapis dengan ID custom
             $terapis = new Terapis();
             $terapis->id = $randomId;
             $terapis->branch_id = $branchId;
@@ -189,17 +163,12 @@ class TerapisController extends Controller
             $terapis->birth_date = $birthDate;
             $terapis->gender = $genderValue;
             $terapis->phone = $request->no_ponsel;
-            
-            // Store photo path (or base64 if needed)
-            $terapis->photo = $photoPath; // or $photoBase64 if you need base64 format
-            
+            $terapis->photo = $photoPath;
             $terapis->email = $request->email;
             $terapis->NIK = $request->nik;
             $terapis->addres = $request->alamat . ', ' . $request->kota_kabupaten . ', ' . $request->provinsi;
-            
             $terapis->save();
 
-            // Return success response for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => true,
@@ -212,17 +181,14 @@ class TerapisController extends Controller
                 ], 200);
             }
 
-            // Return normal redirect for non-AJAX requests
             return redirect()->route('terapis')->with('success', 'Data terapis berhasil ditambahkan');
 
         } catch (\Exception $e) {
-            // Log error for debugging
             \Log::error('Error saving therapist: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->except(['foto']) // Exclude file from logging
+                'request_data' => $request->except(['foto'])
             ]);
 
-            // Return error response for AJAX requests
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json([
                     'success' => false,
@@ -231,7 +197,6 @@ class TerapisController extends Controller
                 ], 500);
             }
 
-            // Return normal redirect with error for non-AJAX requests
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['general' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.']);
@@ -241,20 +206,14 @@ class TerapisController extends Controller
     public function getPhotoUrl($photoPath)
     {
         if (!$photoPath) {
-            return asset('images/default-avatar.png'); // default avatar
+            return asset('images/default-avatar.png');
         }
-
-        // If photo path is already a full URL
         if (filter_var($photoPath, FILTER_VALIDATE_URL)) {
             return $photoPath;
         }
-
-        // If photo is base64
         if (strpos($photoPath, 'data:') === 0) {
             return $photoPath;
         }
-
-        // Regular file path
         return Storage::url($photoPath);
     }
 

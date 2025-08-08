@@ -10,39 +10,11 @@ class Terapis extends Model
 {
     use HasFactory;
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'therapists';
-
-    /**
-     * The primary key for the model.
-     *
-     * @var string
-     */
     protected $primaryKey = 'id';
-
-    /**
-     * Indicates if the model's ID is auto-incrementing.
-     *
-     * @var bool
-     */
     public $incrementing = false;
-
-    /**
-     * The data type of the primary key ID.
-     *
-     * @var string
-     */
     protected $keyType = 'string';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'id',
         'branch_id',
@@ -58,11 +30,6 @@ class Terapis extends Model
         'suspended_duration',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'joining_date' => 'date',
         'birth_date' => 'date',
@@ -94,7 +61,7 @@ class Terapis extends Model
             case 'F':
                 return 'Perempuan';
             default:
-                return $this->gender; // Return original value if already full text
+                return $this->gender;
         }
     }
 
@@ -158,14 +125,12 @@ class Terapis extends Model
     public function scopeByGender($query, $gender)
     {
         if ($gender) {
-            // Handle both short and full gender values
             $genderValue = $gender;
             if ($gender === 'Laki-laki') {
                 $genderValue = 'L';
             } elseif ($gender === 'Perempuan') {
                 $genderValue = 'P';
             }
-            
             return $query->where('gender', $genderValue);
         }
         return $query;
@@ -175,14 +140,12 @@ class Terapis extends Model
     {
         $words = explode(' ', $this->name);
         $initials = '';
-        
         foreach ($words as $word) {
             if (!empty($word)) {
                 $initials .= strtoupper($word[0]);
             }
         }
-        
-        return substr($initials, 0, 2); // Limit to 2 characters
+        return substr($initials, 0, 2);
     }
 
     public function getDisplayNameAttribute()
@@ -216,31 +179,21 @@ class Terapis extends Model
     {
         parent::boot();
 
-        // Auto-generate random ID dan branch_id saat creating
         static::creating(function ($therapist) {
-            // Generate random ID jika belum ada
             if (empty($therapist->id)) {
                 $therapist->id = self::generateRandomId();
             }
-
-            // Auto-generate branch_id if not provided
             if (empty($therapist->branch_id)) {
-                
                 $therapist->branch_id = null;
             }
-
-            // Set default joining date to today if not provided
             if (empty($therapist->joining_date)) {
                 $therapist->joining_date = now()->format('Y-m-d');
             }
-
-            // Set default suspended duration
             if (empty($therapist->suspended_duration)) {
                 $therapist->suspended_duration = null;
             }
         });
 
-        // Clean up photo when deleting
         static::deleting(function ($therapist) {
             if ($therapist->photo && Storage::disk('public')->exists($therapist->photo)) {
                 Storage::disk('public')->delete($therapist->photo);
