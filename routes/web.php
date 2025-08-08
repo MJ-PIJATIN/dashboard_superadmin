@@ -10,6 +10,8 @@ use App\Http\Controllers\LayananController;
 use App\Http\Controllers\TerapisController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\KaryawanController;
 
 // Routing ke Landing Page
 Route::get('/', function () {
@@ -62,14 +64,14 @@ Route::prefix('superadmin/cabang')->group(function () {
 });
 
 //Halaman Karyawan
-Route::get('/karyawan', function () {
-    return view('pages.SuperAdminKaryawan');
-})->name('karyawan');
+Route::get('/karyawan', [KaryawanController::class, 'index'])->name('karyawan');
+Route::get('/karyawan/search', [KaryawanController::class, 'search'])->name('karyawan.search');
 
 //Halaman Pelanggan
-Route::get('/pelanggan', function () {
-    return view('pages.SuperAdminPelanggan');
-})->name('pelanggan');
+Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan');
+Route::get('/pelanggan/search', [PelangganController::class, 'search'])->name('pelanggan.search');
+Route::patch('/pelanggan/{id}/toggle-status', [PelangganController::class, 'toggleStatus'])->name('pelanggan.toggleStatus');
+Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])->name('detail.akun.pelanggan');
 
 // Halaman Terapis
 Route::get('/terapis', function () {
