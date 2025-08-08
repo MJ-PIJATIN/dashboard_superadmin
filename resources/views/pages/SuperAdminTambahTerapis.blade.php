@@ -1,5 +1,10 @@
 @extends('layouts.terapis')
 
+@section('head')
+    <!-- Add CSRF token meta tag for AJAX requests -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('navtitle')
     <div class="text-base flex items-center gap-2" style="color: #374151;">
         <span>Terapis</span>
@@ -22,16 +27,8 @@
                 <h1 class="text-xl font-bold text-gray-700">Tambah Terapis</h1>
             </div>
 
-            @if($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <ul class="list-disc pl-5">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
+            <!-- General Error Message Container (will be created by JavaScript) -->
+            
             <!-- Form Content -->
             <div class="bg-white rounded-lg p-6 shadow-lg border border-gray-200">
                 <form action="{{ route('terapis.store') }}" method="POST" enctype="multipart/form-data" id="terapisForm">
@@ -48,22 +45,16 @@
                                     <div>
                                         <label for="nama_lengkap" class="block text-sm text-gray-700 mb-1">Nama Lengkap*</label>
                                         <input type="text" id="nama_lengkap" name="nama_lengkap" value="{{ old('nama_lengkap') }}"
-                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 @error('nama_lengkap') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
                                             placeholder="Masukkan nama lengkap" required>
-                                        @error('nama_lengkap')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
 
                                     <!-- Tempat Lahir -->
                                     <div>
-                                        <label for="tempat_lahir" class="block text-sm text-gray-700 mb-1">Tempat Lahir</label>
+                                        <label for="tempat_lahir" class="block text-sm text-gray-700 mb-1">Tempat Lahir*</label>
                                         <input type="text" id="tempat_lahir" name="tempat_lahir" value="{{ old('tempat_lahir') }}"
                                             class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
                                             placeholder="Masukkan tempat lahir" required>
-                                        @error('tempat_lahir')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
 
                                     <!-- Jenis Kelamin -->
@@ -83,20 +74,14 @@
                                                 <span class="ml-2 text-sm text-gray-700">Perempuan</span>
                                             </label>
                                         </div>
-                                        @error('jenis_kelamin')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
 
                                     <!-- Email -->
                                     <div>
-                                        <label for="email" class="block text-sm text-gray-700 mb-1">Email</label>
+                                        <label for="email" class="block text-sm text-gray-700 mb-1">Email*</label>
                                         <input type="email" id="email" name="email" value="{{ old('email') }}"
-                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 @error('email') border-red-500 @enderror"
+                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
                                             placeholder="Masukkan alamat email" required>
-                                        @error('email')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
                                 </div>
 
@@ -106,29 +91,23 @@
                                     <div>
                                         <label for="nik" class="block text-sm text-gray-700 mb-1">NIK*</label>
                                         <input type="text" id="nik" name="nik" value="{{ old('nik') }}"
-                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 @error('nik') border-red-500 @enderror"
-                                            placeholder="Masukkan NIK" required>
-                                        @error('nik')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
+                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
+                                            placeholder="Masukkan NIK (16 digit)" maxlength="16" required>
                                     </div>
 
                                     <!-- Tanggal Lahir -->
                                     <div class="relative">
-                                        <label for="tanggal_lahir" class="block text-sm text-gray-700 mb-1">Tanggal Lahir</label>
+                                        <label for="tanggal_lahir" class="block text-sm text-gray-700 mb-1">Tanggal Lahir*</label>
                                         <div class="flex w-full rounded overflow-hidden border border-gray-500 focus-within:ring-1 focus-within:ring-teal-500 focus-within:border-teal-500">
                                             <div class="bg-teal-500 flex items-center justify-center px-3 cursor-pointer" onclick="TerapisForm.datePicker.toggle()">
                                                 <img src="{{ asset('images/calendar.svg') }}" alt="calendar" class="w-[24px] h-[24px]">
                                             </div>
                                             <input type="text" id="tanggal_lahir" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}"
                                                 class="w-full px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none"
-                                                placeholder="Masukkan tanggal lahir" onkeydown="return false" required>
-                                            @error('tanggal_lahir')
-                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
+                                                placeholder="dd/mm/yyyy" onkeydown="return false" required>
                                         </div>
                                         
-                                        <!-- Custom Date Picker -->
+                                        <!-- Custom Date Picker (same as before) -->
                                         <div id="custom-date-picker" class="absolute top-full left-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 hidden w-64">
                                             <div class="p-3">
                                                 <!-- Month/Year Header -->
@@ -191,24 +170,18 @@
 
                                     <!-- Alamat -->
                                     <div>
-                                        <label for="alamat" class="block text-sm text-gray-700 mb-1">Alamat</label>
+                                        <label for="alamat" class="block text-sm text-gray-700 mb-1">Alamat*</label>
                                         <input type="text" id="alamat" name="alamat" value="{{ old('alamat') }}"
                                             class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
                                             placeholder="Masukkan alamat lengkap" required>
-                                        @error('alamat')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
 
                                     <!-- No. Ponsel -->
                                     <div>
-                                        <label for="no_ponsel" class="block text-sm text-gray-700 mb-1">No. Ponsel</label>
+                                        <label for="no_ponsel" class="block text-sm text-gray-700 mb-1">No. Ponsel*</label>
                                         <input type="tel" id="no_ponsel" name="no_ponsel" value="{{ old('no_ponsel') }}"
                                             class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500"
                                             placeholder="Masukkan nomor ponsel" required>
-                                        @error('no_ponsel')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +194,7 @@
                                     <div>
                                         <label for="provinsi" class="block text-sm text-gray-700 mb-1">Provinsi*</label>
                                         <select id="provinsi" name="provinsi" 
-                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 bg-white @error('provinsi') border-red-500 @enderror" required>
+                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 bg-white" required>
                                             <option value="">Pilih Provinsi</option>
                                             @php
                                             $provinces = [
@@ -236,21 +209,15 @@
                                                 <option value="{{ $province }}" {{ old('provinsi') == $province ? 'selected' : '' }}>{{ $province }}</option>
                                             @endforeach
                                         </select>
-                                        @error('provinsi')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
                                     
                                     <!-- Kota/Kabupaten -->
                                     <div>
                                         <label for="kota_kabupaten" class="block text-sm text-gray-700 mb-1">Kota/Kabupaten*</label>
                                         <select id="kota_kabupaten" name="kota_kabupaten"
-                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 bg-white @error('kota_kabupaten') border-red-500 @enderror" required>
+                                            class="w-full px-3 py-2 text-sm border border-gray-500 rounded focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 bg-white" required>
                                             <option value="">Pilih Kota/Kabupaten</option>
                                         </select>
-                                        @error('kota_kabupaten')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -268,10 +235,9 @@
                                 <div class="flex items-center space-x-3 border border-gray-500 rounded">
                                     <span class="text-xs text-gray-400 flex-1 ml-2" id="file-name">File belum dipilih</span>
                                     <div>
-                                        <input type="file" id="foto" name="foto" accept="image/*" 
-                                        class="hidden" onchange="TerapisForm.fileUpload.updateFileName(event)">
+                                        <input type="file" id="foto" name="foto" accept="image/*" class="hidden">
                                         <button type="button" onclick="TerapisForm.fileUpload.selectFile()"
-                                            class="px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors" required>
+                                            class="px-4 py-2 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-colors">
                                             Pilih file
                                         </button>
                                     </div>
@@ -288,14 +254,11 @@
                                     </div>
                                 </div>
                             </div>
-                            @error('foto')
-                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                            @enderror
 
                             <!-- Submit Button -->
                             <div class="mt-64 ml-[300px]">
                                 <button type="submit" id="submit-btn"
-                                    class="px-8 py-2.5 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50">
+                                    class="px-8 py-2.5 bg-teal-500 text-white text-sm font-medium rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
                                     Tambah Data
                                 </button>
                             </div>
@@ -307,10 +270,67 @@
     </div>
 </div>
 
+<!-- Loading Spinner Drawer -->
+<div id="loading-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center h-full">
+        <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 70.5px;">
+            <div class="flex flex-col items-center mb-4">
+                <img src="{{ asset('images/loading.svg') }}" alt="Loading" class="h-30 w-30 animate-spin" />
+            </div>
+        </div>
+    </div>
+</div>
 
+    <!-- Success Drawer -->
+<div id="success-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+                <div class="flex flex-col items-center mb-4">
+                    <h2 class="text-2xl font-bold mb-6" style="color: #469D89;">Berhasil!</h2>
+                    <img src="{{ asset('images/succed.svg') }}" alt="Success" class="h-30 w-30">
+                </div>
+            </div>
+        </div>
+    </div>
 
 @push('scripts')
 <script>
+// Drawer utility functions
+let successTimeout = null;
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hideModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+function showSuccess() {
+    hideModal('loading-drawer'); // Hide loading first
+    showModal('success-drawer');
+    successTimeout = setTimeout(() => {
+        hideModal('success-drawer');
+        // Redirect to terapis list after success
+        window.location.href = "{{ route('terapis') }}";
+    }, 1000);
+}
+
+function showLoading() {
+    showModal('loading-drawer');
+}
+
+function hideLoading() {
+    hideModal('loading-drawer');
+}
+
 // Main TerapisForm object - organized and modular
 const TerapisForm = {
     // Province-City data
@@ -498,7 +518,7 @@ const TerapisForm = {
         }
     },
 
-    // File upload functionality
+    // File upload functionality - Updated version
     fileUpload: {
         maxSize: 5 * 1024 * 1024, // 5MB
         allowedTypes: ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'],
@@ -517,10 +537,13 @@ const TerapisForm = {
             const fileNameSpan = document.getElementById('file-name');
             const photoPreview = document.getElementById('photo-preview');
             
+            // Clear any existing error messages for this field
+            this.clearPhotoError();
+            
             if (file) {
                 // Validate file size
                 if (file.size > this.maxSize) {
-                    alert('Ukuran file terlalu besar. Maksimal 5MB.');
+                    this.showPhotoError('Ukuran file terlalu besar. Maksimal 5MB.');
                     e.target.value = '';
                     this.resetFileInput(fileNameSpan, photoPreview);
                     return;
@@ -528,7 +551,7 @@ const TerapisForm = {
                 
                 // Validate file type
                 if (!this.allowedTypes.includes(file.type)) {
-                    alert('Format file tidak didukung. Gunakan JPEG, PNG, JPG, GIF, atau WebP.');
+                    this.showPhotoError('Format file tidak didukung. Gunakan JPEG, PNG, JPG, GIF, atau WebP.');
                     e.target.value = '';
                     this.resetFileInput(fileNameSpan, photoPreview);
                     return;
@@ -552,7 +575,7 @@ const TerapisForm = {
                 };
                 
                 reader.onerror = () => {
-                    alert('Terjadi kesalahan saat membaca file.');
+                    this.showPhotoError('Terjadi kesalahan saat membaca file.');
                     this.resetFileInput(fileNameSpan, photoPreview);
                 };
                 
@@ -574,8 +597,47 @@ const TerapisForm = {
             `;
         },
 
+        // Updated method untuk menampilkan error khusus foto
+        showPhotoError(message) {
+            // Clear existing error first
+            this.clearPhotoError();
+            
+            // Find the file input container
+            const fileInputContainer = document.querySelector('.flex.items-center.space-x-3.border.border-gray-500.rounded');
+            
+            if (fileInputContainer) {
+                // Create error message element
+                const errorDiv = document.createElement('p');
+                errorDiv.id = 'foto-error';
+                errorDiv.className = 'text-red-500 text-xs mt-1';
+                errorDiv.textContent = message;
+                
+                // Insert error message after the file input container
+                fileInputContainer.parentNode.insertBefore(errorDiv, fileInputContainer.nextSibling);
+                
+                // Add error styling to the container
+                fileInputContainer.classList.add('border-red-500');
+                fileInputContainer.classList.remove('border-gray-500');
+            }
+        },
+
+        // Method untuk menghapus error foto
+        clearPhotoError() {
+            const errorElement = document.querySelector('#foto-error');
+            if (errorElement) {
+                errorElement.remove();
+            }
+            
+            // Remove error styling from container
+            const fileInputContainer = document.querySelector('.flex.items-center.space-x-3.border');
+            if (fileInputContainer) {
+                fileInputContainer.classList.remove('border-red-500');
+                fileInputContainer.classList.add('border-gray-500');
+            }
+        },
+
         initializeDragAndDrop() {
-            const dropZone = document.querySelector('.border-gray-500.rounded');
+            const dropZone = document.querySelector('.flex.items-center.space-x-3.border');
             const fileInput = document.getElementById('foto');
             
             if (!dropZone) return;
@@ -677,7 +739,7 @@ const TerapisForm = {
         }
     },
 
-    // Form submission functionality
+    // Form submission functionality - Updated validation method
     formSubmission: {
         init() {
             const form = document.getElementById('terapisForm');
@@ -685,38 +747,223 @@ const TerapisForm = {
         },
 
         handleSubmit(e) {
-            const fileInput = document.getElementById('foto');
+            e.preventDefault();
             
-            if (fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                
-                // Final validation before submission
-                const maxSize = 5 * 1024 * 1024; // 5MB
-                if (file.size > maxSize) {
-                    e.preventDefault();
-                    alert('Ukuran file foto terlalu besar. Maksimal 5MB.');
-                    return false;
-                }
-                
-                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
-                if (!allowedTypes.includes(file.type)) {
-                    e.preventDefault();
-                    alert('Format foto tidak didukung.');
-                    return false;
-                }
+            const form = e.target;
+            const submitButton = document.getElementById('submit-btn');
+            
+            // Final client-side validation
+            if (!this.validateForm(form)) {
+                return false;
             }
             
-            // Show loading state
-            const submitButton = document.getElementById('submit-btn');
+            // Show loading spinner
+            showLoading();
+            
+            // Disable submit button
             const originalText = submitButton.textContent;
             submitButton.textContent = 'Menyimpan...';
             submitButton.disabled = true;
             
-            // Re-enable button after 10 seconds (fallback)
-            setTimeout(() => {
+            // Prepare form data
+            const formData = new FormData(form);
+            
+            // Make AJAX request
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                const contentType = response.headers.get('Content-Type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    throw new Error('Server returned non-JSON response');
+                }
+            })
+            .then(data => {
+                hideLoading();
+                
+                if (data.success) {
+                    showSuccess();
+                } else {
+                    this.handleErrors(data.errors || {});
+                    this.showErrorMessage(data.message || 'Terjadi kesalahan saat menyimpan data.');
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error:', error);
+                this.showErrorMessage('Terjadi kesalahan jaringan. Silakan coba lagi.');
+            })
+            .finally(() => {
                 submitButton.textContent = originalText;
                 submitButton.disabled = false;
-            }, 10000);
+            });
+        },
+
+        validateForm(form) {
+            // Clear previous error messages
+            this.clearErrorMessages();
+            
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    // Special handling for foto field
+                    if (field.name === 'foto') {
+                        TerapisForm.fileUpload.showPhotoError('Foto wajib diunggah');
+                    } else {
+                        this.showFieldError(field, 'Field ini wajib diisi');
+                    }
+                    isValid = false;
+                }
+            });
+            
+            // Validate file upload specifically
+            const fileInput = document.getElementById('foto');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                // File size validation
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    TerapisForm.fileUpload.showPhotoError('Ukuran file foto terlalu besar. Maksimal 5MB.');
+                    isValid = false;
+                }
+                
+                // File type validation
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    TerapisForm.fileUpload.showPhotoError('Format foto tidak didukung.');
+                    isValid = false;
+                }
+            }
+            
+            // Validate email format
+            const emailField = document.getElementById('email');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailField.value && !emailRegex.test(emailField.value)) {
+                this.showFieldError(emailField, 'Format email tidak valid');
+                isValid = false;
+            }
+            
+            // Validate NIK (should be 16 digits)
+            const nikField = document.getElementById('nik');
+            if (nikField.value && (nikField.value.length !== 16 || !/^\d{16}$/.test(nikField.value))) {
+                this.showFieldError(nikField, 'NIK harus berupa 16 digit angka');
+                isValid = false;
+            }
+            
+            // Validate phone number
+            const phoneField = document.getElementById('no_ponsel');
+            if (phoneField.value && !/^[0-9+\-\s()]+$/.test(phoneField.value)) {
+                this.showFieldError(phoneField, 'Format nomor ponsel tidak valid');
+                isValid = false;
+            }
+            
+            return isValid;
+        },
+
+        showFieldError(field, message) {
+            // Skip foto field as it's handled separately
+            if (field.name === 'foto') {
+                return;
+            }
+            
+            // Remove existing error
+            const existingError = field.parentNode.querySelector('.field-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add error class to field
+            field.classList.add('border-red-500');
+            
+            // Create error message
+            const errorElement = document.createElement('p');
+            errorElement.className = 'text-red-500 text-xs mt-1 field-error';
+            errorElement.textContent = message;
+            
+            // Insert error message after field
+            field.parentNode.appendChild(errorElement);
+        },
+
+        clearErrorMessages() {
+            // Remove all field error messages
+            document.querySelectorAll('.field-error').forEach(error => error.remove());
+            
+            // Clear photo error specifically
+            TerapisForm.fileUpload.clearPhotoError();
+            
+            // Remove error classes from fields
+            document.querySelectorAll('.border-red-500').forEach(field => {
+                if (field.name !== 'foto') { // Don't reset foto field styling here
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            // Hide general error message
+            const generalError = document.getElementById('general-error');
+            if (generalError) {
+                generalError.classList.add('hidden');
+            }
+        },
+
+        handleErrors(errors) {
+            Object.keys(errors).forEach(fieldName => {
+                if (fieldName === 'foto') {
+                    // Handle foto errors specially
+                    if (errors[fieldName].length > 0) {
+                        TerapisForm.fileUpload.showPhotoError(errors[fieldName][0]);
+                    }
+                } else {
+                    // Handle other field errors
+                    const field = document.querySelector(`[name="${fieldName}"]`);
+                    if (field && errors[fieldName].length > 0) {
+                        this.showFieldError(field, errors[fieldName][0]);
+                    }
+                }
+            });
+        },
+
+        showErrorMessage(message) {
+            // Create or show general error message
+            let errorDiv = document.getElementById('general-error');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'general-error';
+                errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
+                
+                // Insert at the top of the form
+                const form = document.getElementById('terapisForm');
+                form.insertBefore(errorDiv, form.firstChild);
+            }
+            
+            errorDiv.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            `;
+            errorDiv.classList.remove('hidden');
+            
+            // Scroll to error message
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                if (errorDiv) {
+                    errorDiv.classList.add('hidden');
+                }
+            }, 5000);
         }
     },
 
@@ -731,8 +978,18 @@ const TerapisForm = {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Set up CSRF token for AJAX requests
+    if (typeof $ !== 'undefined') {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    }
+    
     TerapisForm.init();
 });
 </script>
 @endpush
+
 @endsection
