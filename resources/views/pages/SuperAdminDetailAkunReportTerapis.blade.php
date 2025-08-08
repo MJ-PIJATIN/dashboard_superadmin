@@ -419,7 +419,39 @@
     </div>
 </div>
 
+<!-- Loading Spinner Drawer -->
+<div id="loading-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div class="flex items-center justify-center h-full">
+        <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 70.5px;">
+            <div class="flex flex-col items-center mb-4">
+                <img src="{{ asset('images/loading.svg') }}" alt="Loading" class="h-30 w-30 animate-spin" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Drawer -->
+<div id="success-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+    <div id="success-drawer-overlay" class="flex items-center justify-center h-full">
+        <div id="success-drawer-content" class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+            <div class="flex flex-col items-center mb-4">
+                <h2 class="text-2xl font-bold mb-6" style="color: #469D89;">Berhasil!</h2>
+                <img src="{{ asset('images/succed.svg') }}" alt="Success" class="h-30 w-30">
+                <p id="success-message" class="text-gray-700 text-center mt-4">Operasi berhasil dilakukan!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Helper function to truncate string
+function truncateString(str, num) {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + '...';
+}
+
 // Warning Drawer functions
 function sendWarning() {
     const drawer = document.getElementById('warningDrawer');
@@ -463,14 +495,22 @@ function submitWarning() {
         duration = selectedDuration.value;
     }
     
-    // Logic untuk mengirim peringatan
-    let message = `Peringatan berhasil dikirim kepada {{ $detailTerapis['nama'] }}!`;
-    if (hasSuspension && duration) {
-        message += ` Akun juga akan ditangguhkan selama ${duration} hari.`;
-    }
-    
-    alert(message);
-    closeWarningDrawer(); // Tutup popup otomatis setelah submit
+    closeWarningDrawer();
+    showLoadingDrawer();
+
+    // Simulate API call
+    setTimeout(() => {
+        hideLoadingDrawer();
+
+        let message = `Peringatan Berhasil dikirimkan kepada {{ $detailTerapis['nama'] }}`;
+        if (hasSuspension && duration) {
+            const truncatedReason = truncateString(reason, 70); // Truncate reason for suspension message
+            message = `Akun berhasil ditangguhkan dengan alasan ${truncatedReason}`;
+        }
+        
+        showSuccessDrawer(message);
+
+    }, 2000); // Simulate 2 second delay
 }
 
 // Suspend Drawer functions
@@ -483,7 +523,6 @@ function openSuspendModal() {
     document.getElementById('suspendDescription').value = '';
     document.getElementById('suspendCharCount').textContent = '0';
     document.querySelectorAll('input[name="suspendReason"]').forEach(radio => radio.checked = false);
-    // PERBAIKAN: Ganti dari 'suspendDuration' menjadi 'duration'
     document.querySelectorAll('input[name="duration"]').forEach(radio => radio.checked = false);
 }
 
@@ -496,7 +535,6 @@ function closeSuspendDrawer() {
 function submitSuspension() {
     const reason = document.querySelector('input[name="suspendReason"]:checked');
     const description = document.getElementById('suspendDescription').value;
-    // PERBAIKAN: Ganti dari 'suspendDuration' menjadi 'duration'
     const duration = document.querySelector('input[name="duration"]:checked');
     
     // Validasi alasan wajib dipilih
@@ -517,12 +555,39 @@ function submitSuspension() {
         return;
     }
     
-    // Logic untuk menangguhkan akun
     const reasonText = reason.nextElementSibling.querySelector('.text-sm.font-medium').textContent;
-    const durationText = duration.value === 'permanent' ? 'permanen' : `${duration.value} hari`;
+    const truncatedDescription = truncateString(description, 70); // Truncate description
+    const message = `Akun berhasil ditangguhkan dengan alasan ${truncatedDescription}`;
+
+    closeSuspendDrawer();
+    showLoadingDrawer();
+
+    // Simulate API call
+    setTimeout(() => {
+        hideLoadingDrawer();
+        showSuccessDrawer(message);
+    }, 2000); // Simulate 2 second delay
+}
+
+function showLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.remove('hidden');
+}
+
+function hideLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.add('hidden');
+}
+
+function showSuccessDrawer(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-drawer').classList.remove('hidden');
     
-    alert(`Akun {{ $detailTerapis['nama'] }} berhasil ditangguhkan!\nAlasan: ${reasonText}\nDurasi: ${durationText}`);
-    closeSuspendDrawer(); // Tutup popup otomatis setelah submit
+    setTimeout(() => {
+        hideSuccessDrawer();
+    }, 3000);
+}
+
+function hideSuccessDrawer() {
+    document.getElementById('success-drawer').classList.add('hidden');
 }
 
 // Character count for textareas
@@ -635,6 +700,7 @@ document.addEventListener('keydown', function(e) {
         closeSuspendDrawer();
         closeSKCKModal();
         closeKTPModal();
+        hideSuccessDrawer();
     }
 });
 
