@@ -40,10 +40,11 @@
       <h3 class="text-xl font-semibold text-[#469D89] mt-10">Kota {{ ucfirst($cabang->city) }}</h3>
       <p class="text-base font-regular text-gray-600 mt-1">
         Status Cabang:
-        <span class="inline-flex items-center gap-2 bg-gray-100 text-gray-400 text-base font-semibold px-3 py-1 rounded-[4px]">
-          <span class="w-2 h-2 rounded-full {{ $cabang->status === 'Aktif' ? 'bg-gray-400' : 'bg-gray-400' }}"></span>
-          {{ $cabang->status }}
-        </span>
+        <span class="inline-flex items-center gap-2 bg-gray-100 text-base font-semibold px-3 py-1 rounded-[4px]
+        {{ $cabang->status === 'Aktif' ? 'text-teal-500' : 'text-red-500' }}">
+        <span class="w-2 h-2 rounded-full {{ $cabang->status === 'Aktif' ? 'bg-teal-500' : 'bg-red-500' }}"></span>
+        {{ $cabang->status === 'Aktif' ? 'Aktif' : 'Tidak Aktif' }}
+      </span>
       </p>
     </div>
 
