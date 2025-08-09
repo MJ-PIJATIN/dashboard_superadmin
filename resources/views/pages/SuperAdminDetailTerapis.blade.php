@@ -27,34 +27,32 @@
                 
                 <!-- Profile Photo & Basic Info -->
                 <div class="text-center mb-6">
-                    <div class="w-52 h-52 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200">
-                        <img src="/images/karsa.svg" 
-                             alt="Profile Photo" 
-                             class="w-full h-full object-cover" />
+                    <div class="w-52 h-52 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200" id="profile-photo-container">
+                        @if($terapis->photo_url && $terapis->photo_url !== asset('images/default-avatar.png'))
+                            <img src="{{ $terapis->photo_url }}" 
+                                 alt="Profile Photo of {{ $terapis->name }}" 
+                                 class="w-full h-full object-cover"
+                                 id="profile-photo"
+                                 onerror="showInitials()" />
+                        @else
+                            <div class="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-4xl font-semibold" id="initials-fallback">
+                                {{ $terapis->initials ?? substr($terapis->name ?? 'N', 0, 2) }}
+                            </div>
+                        @endif
                     </div>
-                    <h2 class="text-lg font-bold text-gray-900 mb-2">Karsa Wijaya</h2>
+                    <h2 class="text-lg font-bold text-gray-900 mb-2">{{ $terapis->name ?? 'Nama Tidak Tersedia' }}</h2>
                     <span class="inline-block px-3 py-1 rounded rectangle-full text-xs font-medium" 
                           style="background-color: #469D8933; color: #469D89;">
                         Terapis
                     </span>
                     
-                    <!-- Rating Stars -->
+                    <!-- Rating Stars (Static for now) -->
                     <div class="flex justify-center items-center mt-7 space-x-1">
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
-                        <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                        </svg>
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                            </svg>
+                        @endfor
                     </div>
                 </div>
 
@@ -65,24 +63,24 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Status Akun</span>
-                            <span class="px-2 py-1 rounded-full text-xs font-medium" style= "color: #85B804;">
-                                Tersedia
+                            <span class="px-2 py-1 rounded-full text-xs font-medium" style="color: {{ ($terapis->is_available ?? true) ? '#85B804' : '#EF4444' }};">
+                                {{ $terapis->status_display ?? 'Aktif' }}
                             </span>
                         </div>
                         
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Alamat Email</span>
-                            <span class="text-gray-900 text-xs font-medium">karsawijaya@gmail.com</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->email ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Ponsel</span>
-                            <span class="text-gray-900 text-xs font-medium">08897E754578</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->phone ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Area Kerja</span>
-                            <span class="text-gray-900 text-xs font-medium">Bantul, Yogyakarta</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->area_kerja ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -98,22 +96,22 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">NIK</span>
-                            <span class="text-gray-900 text-xs font-medium">3171895833240935</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->NIK ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Nama Lengkap</span>
-                            <span class="text-gray-900 text-xs font-medium">Karsa Wijaya</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->name ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between items-center py-2 border-b border-gray-300">
                             <span class="text-gray-600 text-xs">Jenis Kelamin</span>
-                            <span class="text-gray-900 text-xs font-medium">Laki-Laki</span>
+                            <span class="text-gray-900 text-xs font-medium">{{ $terapis->formatted_gender ?? $terapis->gender_display ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Transaksi Terakhir -->
+                <!-- Transaksi Terakhir (Static data as requested) -->
                 <div class="bg-white rounded-xl shadow-lg p-5 border border-gray-200 flex-1">
                     <h3 class="text-sm font-semibold text-gray-900 mb-4">Transaksi Terakhir</h3>
                     
@@ -160,25 +158,80 @@ function goBack() {
     window.history.back();
 }
 
-// Dynamic data loading
-function loadAccountDetail(accountData) {
-    if (accountData) {
-        console.log('Loading account detail for:', accountData);
+// Function to show initials when photo fails to load
+function showInitials() {
+    console.log('Profile image failed to load, showing initials');
+    const profilePhoto = document.getElementById('profile-photo');
+    const container = document.getElementById('profile-photo-container');
+    
+    if (profilePhoto) {
+        profilePhoto.style.display = 'none';
+    }
+    
+    if (container) {
+        container.innerHTML = `
+            <div class="w-full h-full flex items-center justify-center bg-gray-300 text-gray-600 text-4xl font-semibold" id="initials-fallback">
+                {{ substr($terapis->name ?? 'N', 0, 2) }}
+            </div>
+        `;
     }
 }
 
-// Check if data passed via URL parameters
+// Initialize page
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('data')) {
-        try {
-            const accountData = JSON.parse(decodeURIComponent(urlParams.get('data')));
-            loadAccountDetail(accountData);
-        } catch (e) {
-            console.error('Error parsing account data:', e);
-        }
+    console.log('Detail terapis page loaded for: {{ $terapis->name ?? "Unknown" }}');
+    
+    // Debug information
+    console.log('Area Kerja:', '{{ $terapis->area_kerja ?? "Not set" }}');
+    console.log('Formatted Gender:', '{{ $terapis->formatted_gender ?? "Not set" }}');
+    console.log('Gender Display:', '{{ $terapis->gender_display ?? "Not set" }}');
+    console.log('Raw Gender:', '{{ $terapis->gender ?? "Not set" }}');
+    
+    // Handle BLOB photo loading
+    const profilePhoto = document.getElementById('profile-photo');
+    if (profilePhoto) {
+        // Add loading indicator
+        profilePhoto.onload = function() {
+            console.log('Profile photo loaded successfully');
+        };
+        
+        profilePhoto.onerror = function() {
+            console.log('Error loading profile photo, showing initials');
+            showInitials();
+        };
+        
+        // Add timeout for slow loading images
+        setTimeout(function() {
+            if (profilePhoto && !profilePhoto.complete) {
+                console.log('Photo loading timeout, showing initials');
+                showInitials();
+            }
+        }, 10000); // 10 second timeout
+    }
+    
+    // Optional: Add click handler to view photo in full size
+    const photoContainer = document.getElementById('profile-photo-container');
+    if (photoContainer && '{{ $terapis->photo_url ?? "" }}') {
+        photoContainer.style.cursor = 'pointer';
+        photoContainer.addEventListener('click', function() {
+            // Open photo in new tab/window
+            window.open('{{ $terapis->photo_url ?? "" }}', '_blank');
+        });
     }
 });
+
+// Optional: Function to refresh photo if needed
+function refreshPhoto() {
+    const profilePhoto = document.getElementById('profile-photo');
+    if (profilePhoto && '{{ $terapis->photo_url ?? "" }}') {
+        // Add timestamp to force refresh
+        const url = '{{ $terapis->photo_url ?? "" }}';
+        profilePhoto.src = url + '?t=' + new Date().getTime();
+    }
+}
+
+// Call debug function on page load (remove after testing)
+debugTerapisData();
 </script>
 
 @endsection

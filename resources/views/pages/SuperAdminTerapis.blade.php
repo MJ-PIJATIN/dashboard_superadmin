@@ -106,10 +106,15 @@
                                 </td>
                                 <td class="px-4 py-1 text-right">
                                     <div class="flex items-center justify-end space-x-2">
-                                        <a href="{{ route('detail-terapis', $item->id) }}" class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" data-terapis-id="{{ $item->id }}">
+                                        <a href="{{ route('detail-terapis', $item->id) }}" 
+                                           class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" 
+                                           data-terapis-id="{{ $item->id }}"
+                                           title="Lihat Detail Terapis">
                                             <img src="{{ asset('images/isi tabel.svg') }}" alt="View" class="w-4.5 h-4.5">
                                         </a>
-                                        <button class="text-red-600 hover:text-red-800 p-1 rounded delete-terapis-button" data-terapis-id="{{ $item->id }}">
+                                        <button class="text-red-600 hover:text-red-800 p-1 rounded delete-terapis-button" 
+                                                data-terapis-id="{{ $item->id }}"
+                                                title="Hapus Terapis">
                                             <img src="{{ asset('images/trash can.svg') }}" alt="Hapus" class="h-4.5 w-4.5">
                                         </button>
                                     </div>
