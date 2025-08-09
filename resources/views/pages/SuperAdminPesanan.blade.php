@@ -103,20 +103,20 @@
                                 <td class="py-2 px-4 font-semibold">
                                     <div
                                         class="flex items-center gap-2 px-3 py-1 rounded-[4px] w-[130px]
-                                                        @if ($booking['status'] === 'Dijadwalkan') bg-cyan-100 text-cyan-400
-                                                        @elseif($booking['status'] === 'Pending') bg-amber-100 text-amber-500
-                                                        @elseif($booking['status'] === 'Berlangsung') bg-green-100 text-green-600
-                                                        @elseif($booking['status'] === 'Menunggu') bg-yellow-100 text-yellow-400
-                                                        @elseif($booking['status'] === 'Selesai') bg-teal-100 text-teal-500
-                                                        @elseif($booking['status'] === 'Dibatalkan') bg-red-100 text-red-600 @endif">
+                                                        @if ($booking->status === 'Dijadwalkan') bg-cyan-100 text-cyan-400
+                                                        @elseif($booking->status === 'Pending') bg-amber-100 text-amber-500
+                                                        @elseif($booking->status === 'Berlangsung') bg-green-100 text-green-600
+                                                        @elseif($booking->status === 'Menunggu') bg-yellow-100 text-yellow-400
+                                                        @elseif($booking->status === 'Selesai') bg-teal-100 text-teal-500
+                                                        @elseif($booking->status === 'Dibatalkan') bg-red-100 text-red-600 @endif">
                                         <span
                                             class="w-2 h-2 rounded-full
-                                                            @if ($booking['status'] === 'Dijadwalkan') bg-cyan-400
-                                                            @elseif($booking['status'] === 'Pending') bg-amber-500
-                                                            @elseif($booking['status'] === 'Berlangsung') bg-green-600
-                                                            @elseif($booking['status'] === 'Menunggu') bg-yellow-400
-                                                            @elseif($booking['status'] === 'Selesai') bg-teal-500
-                                                            @elseif($booking['status'] === 'Dibatalkan') bg-red-500 @endif"></span>
+                                                            @if ($booking->status === 'Dijadwalkan') bg-cyan-400
+                                                            @elseif($booking->status === 'Pending') bg-amber-500
+                                                            @elseif($booking->status === 'Berlangsung') bg-green-600
+                                                            @elseif($booking->status === 'Menunggu') bg-yellow-400
+                                                            @elseif($booking->status === 'Selesai') bg-teal-500
+                                                            @elseif($booking->status === 'Dibatalkan') bg-red-500 @endif"></span>
                                         <span>{{ $booking->status }}</span>
                                     </div>
                                 </td>
@@ -207,20 +207,20 @@
                                 <td class="py-2 px-4 font-semibold">
                                     <div
                                         class="flex items-center gap-2 px-3 py-1 rounded-[4px] w-[130px]
-                                                        @if ($booking['status'] === 'Dijadwalkan') bg-cyan-100 text-cyan-400
-                                                        @elseif($booking['status'] === 'Pending') bg-amber-100 text-amber-500
-                                                        @elseif($booking['status'] === 'Berlangsung') bg-green-100 text-green-600
-                                                        @elseif($booking['status'] === 'Menunggu') bg-yellow-100 text-yellow-400
-                                                        @elseif($booking['status'] === 'Selesai') bg-teal-100 text-teal-500
-                                                        @elseif($booking['status'] === 'Dibatalkan') bg-red-100 text-red-600 @endif">
+                                                        @if ($booking->status === 'Dijadwalkan') bg-cyan-100 text-cyan-400
+                                                        @elseif($booking->status === 'Pending') bg-amber-100 text-amber-500
+                                                        @elseif($booking->status === 'Berlangsung') bg-green-100 text-green-600
+                                                        @elseif($booking->status === 'Menunggu') bg-yellow-100 text-yellow-400
+                                                        @elseif($booking->status === 'Selesai') bg-teal-100 text-teal-500
+                                                        @elseif($booking->status === 'Dibatalkan') bg-red-100 text-red-600 @endif">
                                         <span
                                             class="w-2 h-2 rounded-full
-                                                            @if ($booking['status'] === 'Dijadwalkan') bg-cyan-400
-                                                            @elseif($booking['status'] === 'Pending') bg-amber-500
-                                                            @elseif($booking['status'] === 'Berlangsung') bg-green-600
-                                                            @elseif($booking['status'] === 'Menunggu') bg-yellow-400
-                                                            @elseif($booking['status'] === 'Selesai') bg-teal-500
-                                                            @elseif($booking['status'] === 'Dibatalkan') bg-red-500 @endif"></span>
+                                                            @if ($booking->status === 'Dijadwalkan') bg-cyan-400
+                                                            @elseif($booking->status === 'Pending') bg-amber-500
+                                                            @elseif($booking->status === 'Berlangsung') bg-green-600
+                                                            @elseif($booking->status === 'Menunggu') bg-yellow-400
+                                                            @elseif($booking->status === 'Selesai') bg-teal-500
+                                                            @elseif($booking->status === 'Dibatalkan') bg-red-500 @endif"></span>
                                         <span>{{ $booking->status }}</span>
                                     </div>
                                 </td>
@@ -247,35 +247,65 @@
             </div>
 
             {{-- Pagination Section --}}
-            <div class="flex justify-between items-center mt-4">
-            <span class="text-base font-regular text-gray-600">
-                Halaman {{ $bookings->currentPage() }} dari {{ $bookings->lastPage() }}
-            </span>
-            <div class="flex space-x-1 text-base font-semibold">
-                {{-- Previous --}}
-                @if ($bookings->onFirstPage())
-                    <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
-                @else
-                    <a href="{{ $bookings->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
-                @endif
-
-                {{-- Page Numbers --}}
-                @for ($i = 1; $i <= $bookings->lastPage(); $i++)
-                    @if ($i == $bookings->currentPage())
-                        <button class="px-3 py-1 rounded bg-teal-600 text-white">{{ $i }}</button>
+            <div id="pagination-transfer" class="flex justify-between items-center p-4 mt-4">
+                <span class="text-base font-regular text-gray-600">
+                    Halaman {{ $transfer->currentPage() }} dari {{ $transfer->lastPage() }}
+                </span>
+                <div class="flex space-x-1 text-base font-semibold">
+                    {{-- Previous --}}
+                    @if ($transfer->onFirstPage())
+                        <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
                     @else
-                        <a href="{{ $bookings->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
+                        <a href="{{ $transfer->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
                     @endif
-                @endfor
 
-                {{-- Next --}}
-                @if ($bookings->hasMorePages())
-                    <a href="{{ $bookings->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
-                @else
-                    <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
-                @endif
+                    {{-- Page Numbers --}}
+                    @for ($i = 1; $i <= $transfer->lastPage(); $i++)
+                        @if ($i == $transfer->currentPage())
+                            <button class="px-3 py-1 rounded bg-teal-600 text-white">{{ $i }}</button>
+                        @else
+                            <a href="{{ $transfer->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
+                        @endif
+                    @endfor
+
+                    {{-- Next --}}
+                    @if ($transfer->hasMorePages())
+                        <a href="{{ $transfer->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
+                    @else
+                        <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
+                    @endif
+                </div>
             </div>
-        </div>
+
+            <div id="pagination-cash" class="flex justify-between items-center p-4 mt-4 hidden">
+                <span class="text-base font-regular text-gray-600">
+                    Halaman {{ $cash->currentPage() }} dari {{ $cash->lastPage() }}
+                </span>
+                <div class="flex space-x-1 text-base font-semibold">
+                    {{-- Previous --}}
+                    @if ($cash->onFirstPage())
+                        <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
+                    @else
+                        <a href="{{ $cash->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                    @endif
+
+                    {{-- Page Numbers --}}
+                    @for ($i = 1; $i <= $cash->lastPage(); $i++)
+                        @if ($i == $cash->currentPage())
+                            <button class="px-3 py-1 rounded bg-teal-600 text-white">{{ $i }}</button>
+                        @else
+                            <a href="{{ $cash->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
+                        @endif
+                    @endfor
+
+                    {{-- Next --}}
+                    @if ($cash->hasMorePages())
+                        <a href="{{ $cash->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
+                    @else
+                        <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
+                    @endif
+                </div>
+            </div>
     </div>
 
     <!-- Delete Confirmation Drawer -->
@@ -305,8 +335,8 @@
     </div>
 </div>
 
-    {{-- Script Tab Switching --}}
     <script>
+    {{-- Script Tab Switching --}}    
         document.addEventListener('DOMContentLoaded', function () {
             const tabTransferBtn = document.getElementById('tab-transfer-btn');
             const tabCashBtn = document.getElementById('tab-cash-btn');
@@ -314,7 +344,6 @@
             function setActiveTab(tab) {
                 const isTransfer = tab === 'transfer';
 
-                // Set active tab button styles
                 if (isTransfer) {
                     tabTransferBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative';
                     tabCashBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
@@ -323,15 +352,15 @@
                     tabCashBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative -ml-6';
                 }
 
-                // Simpan tab yang aktif
                 localStorage.setItem('activeTab', tab);
 
-                // Tampilkan konten tab yang sesuai
                 document.getElementById('tab-transfer').classList.toggle('hidden', !isTransfer);
                 document.getElementById('tab-cash').classList.toggle('hidden', isTransfer);
+
+                document.getElementById('pagination-transfer').classList.toggle('hidden', !isTransfer);
+                document.getElementById('pagination-cash').classList.toggle('hidden', isTransfer);
             }
 
-            // Tombol diklik
             tabTransferBtn.addEventListener('click', () => setActiveTab('transfer'));
             tabCashBtn.addEventListener('click', () => setActiveTab('cash'));
 
