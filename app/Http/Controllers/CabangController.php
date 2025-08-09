@@ -65,7 +65,7 @@ class CabangController extends Controller
             'status' =>'Aktif',
         ]);
 
-        return redirect()->route('branch')->with('success', 'Cabang berhasil ditambahkan!');
+        return redirect()->route('cabang')->with('success', 'Cabang berhasil ditambahkan!');
     }
 
     public function toggleStatus($id)
@@ -107,7 +107,7 @@ class CabangController extends Controller
             'description' => $validated['description'],
         ]);
 
-        return redirect()->route('cabang.detail', ['id' => $id])->with('success', 'Cabang berhasil diperbarui!');
+        return redirect()->route('cabang', ['id' => $id])->with('success', 'Cabang berhasil diperbarui!');
     }
 
 }
