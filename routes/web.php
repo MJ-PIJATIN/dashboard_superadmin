@@ -42,6 +42,27 @@ Route::post('/layanan-tambahan/store', [App\Http\Controllers\LayananController::
 Route::post('/layanan-tambahan/update', [App\Http\Controllers\LayananController::class, 'updateTambahan'])->name('layanan-tambahan.update');
 Route::delete('/layanan-tambahan/delete', [App\Http\Controllers\LayananController::class, 'destroyTambahan'])->name('layanan-tambahan.delete');
 
+// Tambahkan route ini di web.php untuk debugging (hapus setelah masalah selesai)
+Route::get('/debug-terapis/{id}', function($id) {
+    $terapis = App\Models\Terapis::find($id);
+    return response()->json([
+        'exists' => $terapis ? true : false,
+        'data' => $terapis,
+        'route_works' => true,
+        'method' => request()->method()
+    ]);
+});
+
+// Test route untuk memastikan delete endpoint accessible
+Route::match(['GET', 'DELETE'], '/test-delete-terapis/{id}', function($id) {
+    return response()->json([
+        'method' => request()->method(),
+        'id' => $id,
+        'headers' => request()->headers->all(),
+        'route_accessible' => true
+    ]);
+});
+
 // Page Pesanan
 Route::get('/pesanan', function () {
     return view('pages.SuperAdminPesanan');
@@ -74,17 +95,11 @@ Route::patch('/pelanggan/{id}/toggle-status', [PelangganController::class, 'togg
 Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])->name('detail.akun.pelanggan');
 
 // Halaman Terapis
-Route::get('/terapis', function () {
-    return view('pages.SuperAdminTerapis');
-})->name('terapis');
-
-// Halaman Detail Terapis
-Route::get('/detail-terapis', function () {
-    return view('pages.SuperAdminDetailTerapis');
-})->name('detail-terapis');
-
+Route::get('/terapis', [TerapisController::class, 'index'])->name('terapis');
 Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tambah-terapis');
+Route::get('/terapis/{id}/detail', [TerapisController::class, 'show'])->name('detail-terapis');
 Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
+Route::delete('/terapis/{id}', [TerapisController::class, 'destroy'])->name('terapis.destroy');
 
 //Halaman Penangguhan
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
