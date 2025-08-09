@@ -11,13 +11,13 @@ class CabangController extends Controller
 {
     public function index()
     {
-        $cabangs = Cabang::paginate(10);
-        return view('pages.SuperAdminCabang', compact('cabangs'));
+        $branches = Cabang::paginate(10);
+        return view('pages.SuperAdminCabang', compact('branches'));
     }
 
     public function show($id)
     {
-        $cabang = Cabang::findOrFail($id);
+        $branch = Cabang::findOrFail($id);
 
         // $users = User::where('cabang_id', $id)->get();
 
@@ -30,7 +30,7 @@ class CabangController extends Controller
         $totalPengguna = 0;
 
         return view('pages.SuperAdminDetailCabang', compact(
-            'cabang',
+            'branch',
             'pegawaiAdmin',
             'pegawaiFinance',
             'totalPegawai',
@@ -65,26 +65,26 @@ class CabangController extends Controller
             'status' =>'Aktif',
         ]);
 
-        return redirect()->route('cabang')->with('success', 'Cabang berhasil ditambahkan!');
+        return redirect()->route('branch')->with('success', 'Cabang berhasil ditambahkan!');
     }
 
     public function toggleStatus($id)
     {
-        $cabang = Cabang::findOrFail($id);
-        $cabang->status = $cabang->status === 'Aktif' ? 'Nonaktif' : 'Aktif';
-        $cabang->save();
+        $branch = Cabang::findOrFail($id);
+        $branch->status = $branch->status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+        $branch->save();
 
         return redirect()->back()->with('success', 'Status cabang berhasil diperbarui.');
     }
 
     public function edit($id)
     {
-        $cabang = Cabang::where('branch_code', $id)->firstOrFail();
+        $branch = Cabang::where('branch_code', $id)->firstOrFail();
 
         $alamatList = Cabang::select('address')->distinct()->pluck('address');
         $emailList = Cabang::select('email')->distinct()->pluck('email');
 
-        return view('pages.SuperAdminEditCabang', compact('cabang', 'alamatList', 'emailList'));
+        return view('pages.SuperAdminEditCabang', compact('branch', 'alamatList', 'emailList'));
     }
 
 
@@ -98,8 +98,8 @@ class CabangController extends Controller
             'description' => 'nullable|max:512',
         ]);
 
-        $cabang = Cabang::findOrFail($id);
-        $cabang->update([
+        $branch = Cabang::findOrFail($id);
+        $branch->update([
             'province' => $validated['province'],
             'city' => $validated['city'],
             'address' => $validated['address'],

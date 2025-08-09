@@ -30,20 +30,20 @@
     <div class="max-w-xl">
       <h3 class="text-xl font-bold text-gray-700 mb-4">Edit Cabang</h3>
 
-      <form action="{{ route('cabang.update', ['id' => $cabang->branch_code]) }}" method="POST" class="space-y-5">
+      <form action="{{ route('cabang.update', ['id' => $branch->branch_code]) }}" method="POST" class="space-y-5">
         @csrf
         @method('PUT')
 
         {{-- Provinsi --}}
         <div>
           <label for="province" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
-          <input type="text" id="province" name="province" maxlength="50" value="{{ $cabang->province }}"
+          <input type="text" id="province" name="province" maxlength="50" value="{{ $branch->province }}"
             class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm">
         </div>
 
         <div>
           <label for="city" class="block text-sm font-semibold text-gray-700 mb-1">Kota Cabang</label>
-          <input type="text" id="city" name="city" maxlength="50" value="{{ $cabang->city }}"
+          <input type="text" id="city" name="city" maxlength="50" value="{{ $branch->city }}"
             class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm">
         </div>
 
@@ -52,7 +52,7 @@
           <select id="address" name="address" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
             <option value="">Pilih lokasi cabang</option>
               @foreach($alamatList as $alamat)
-                <option value="{{ $alamat }}" {{ $cabang->address == $alamat ? 'selected' : '' }}>
+                <option value="{{ $alamat }}" {{ $branch->address == $alamat ? 'selected' : '' }}>
                     {{ $alamat }}
                 </option>
               @endforeach
@@ -64,7 +64,7 @@
           <select id="email" name="email" class="w-full px-4 py-2 border border-gray-600 rounded-md bg-white text-sm">
             <option value="">Pilih email cabang</option>
               @foreach($emailList as $email)
-                <option value="{{ $email }}" {{ $cabang->email == $email ? 'selected' : '' }}>
+                <option value="{{ $email }}" {{ $branch->email == $email ? 'selected' : '' }}>
                     {{ $email }}
                 </option>
               @endforeach
@@ -75,7 +75,7 @@
           <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
           <textarea id="description" name="description" rows="4" maxlength="512"
             class="w-full px-4 py-2 border border-gray-600 rounded-md text-sm"
-            placeholder="Penulisan dibatasi hingga 512 karakter">{{ $cabang->description }}</textarea>
+            placeholder="Penulisan dibatasi hingga 512 karakter">{{ $branch->description }}</textarea>
         </div>
 
           <div class="pt-2 flex justify-end">
