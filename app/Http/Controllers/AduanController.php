@@ -127,7 +127,7 @@ class AduanController extends Controller
         // Data dummy detail terapis berdasarkan nama terlapor
         $terapisDetails = [
             'Samsul Alamayah' => [
-                'id' => 'TRS008031',
+                'id' => 1,
                 'nama' => 'Samsul Alamayah',
                 'email' => 'samsul.alamayah@gmail.com',
                 'ponsel' => '082954627818',
@@ -144,7 +144,7 @@ class AduanController extends Controller
                 'total_peringatan' => 1
             ],
             'Budi Santoso' => [
-                'id' => 'TRS008032',
+                'id' => 2,
                 'nama' => 'Budi Santoso',
                 'email' => 'budi.santoso@gmail.com',
                 'ponsel' => '081234567890',
@@ -161,7 +161,7 @@ class AduanController extends Controller
                 'total_peringatan' => 3
             ],
             'Joko Widodo' => [
-                'id' => 'TRS008033',
+                'id' => 3,
                 'nama' => 'Joko Widodo',
                 'email' => 'joko.widodo@gmail.com',
                 'ponsel' => '089876543210',
@@ -178,7 +178,7 @@ class AduanController extends Controller
                 'total_peringatan' => 0
             ],
             'Agus Setiawan' => [
-                'id' => 'TRS008034',
+                'id' => 4,
                 'nama' => 'Agus Setiawan',
                 'email' => 'agus.setiawan@gmail.com',
                 'ponsel' => '087654321098',
@@ -195,7 +195,7 @@ class AduanController extends Controller
                 'total_peringatan' => 2
             ],
             'Indra Wijaya' => [
-                'id' => 'TRS008035',
+                'id' => 5,
                 'nama' => 'Indra Wijaya',
                 'email' => 'indra.wijaya@gmail.com',
                 'ponsel' => '085432109876',
@@ -215,7 +215,7 @@ class AduanController extends Controller
 
         // Return default data jika nama terlapor tidak ditemukan
         return $terapisDetails[$nama_terlapor] ?? [
-            'id' => 'TRS008031',
+            'id' => 1,
             'nama' => 'Karsa Wijaya',
             'email' => 'Karsawijaya@gmail.com',
             'ponsel' => '082954627818',

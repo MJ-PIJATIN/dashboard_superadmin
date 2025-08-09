@@ -36,7 +36,7 @@
                 <table class="min-w-full text-sm text-gray-700">
                     <thead class="bg-white">
                         <tr class="bg-white">
-                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">No</th>
+                            <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">#</th>
                             <th class="px-6 py-4 text-left text-sm font-medium text-gray-700 whitespace-nowrap">
                                 Nama Lengkap
                                 <img src="{{ asset('images/scrollupdown.svg') }}" alt="Sort Icon" class="inline-block ml-1 w-4 h-4" />
@@ -63,23 +63,27 @@
                     </thead>
                     <tbody id="tableBody">
                         @forelse($suspendedAccounts ?? [] as $account)
-                        <tr class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail({{ $account['id'] }}, event)">
+                        <tr id="account-row-{{ $account['id'] }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail({{ $account['id'] }}, event)">
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['id'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $account['nama'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kelamin'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kota'] }}</td>
                             <td class="px-6 py-4">
-                                 @php
-                                $durasi = $account['durasi'];
-                                $durasiClass = match($durasi) {
-                                    'Permanen' => 'bg-[#ED555433] text-[#ED5554]',
-                                    '30 Hari', '14 Hari', '7 Hari' => 'bg-[#FF990033] text-[#FF9900]',
-                                    default => 'bg-gray-100 text-gray-600'
-                                };
-                            @endphp
+                                @php
+                                    $durasi = $account['durasi'];
+                                    $durasiClass = match($durasi) {
+                                        'Permanen' => 'bg-[#ED555433] text-[#ED5554]',
+                                        '30 Hari', '14 Hari', '7 Hari' => 'bg-[#FF990033] text-[#FF9900]',
+                                        default => 'bg-gray-100 text-gray-600'
+                                    };
+                                    $durasiText = $durasi;
+                                    if ($durasi !== 'Permanen') {
+                                        $durasiText = str_replace('Hari', 'hari', $durasi);
+                                    }
+                                @endphp
                                 <span class="inline-block w-24 px-3 py-1 rounded-md text-xs font-medium {{ $durasiClass }}">
-                                {{ $durasi }}
-                            </span>
+                                    {{ $durasiText }}
+                                </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500 relative">
                                 <div class="flex items-center justify-end">
@@ -116,7 +120,7 @@
             </table>
 
             <!-- Pagination -->
-            @if($paginationData['total'] > 0)
+            @if($paginationData['total'] > 10)
                 <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
                     <span class="text-sm text-gray-600 order-2 sm:order-1">
                         Halaman {{ $paginationData['current_page'] }} dari {{ $paginationData['total_pages'] }}
