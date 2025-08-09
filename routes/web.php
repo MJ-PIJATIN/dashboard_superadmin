@@ -42,10 +42,8 @@ Route::post('/layanan-tambahan/store', [App\Http\Controllers\LayananController::
 Route::post('/layanan-tambahan/update', [App\Http\Controllers\LayananController::class, 'updateTambahan'])->name('layanan-tambahan.update');
 Route::delete('/layanan-tambahan/delete', [App\Http\Controllers\LayananController::class, 'destroyTambahan'])->name('layanan-tambahan.delete');
 
-// Page Pesanan
-Route::get('/pesanan', function () {
-    return view('pages.SuperAdminPesanan');
-})->name('pesanan');
+// Halaman Pesanan
+Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
 
 // Halaman Cabang
 Route::prefix('cabang')->group(function () {

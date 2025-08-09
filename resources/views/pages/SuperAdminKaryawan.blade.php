@@ -250,7 +250,6 @@
                 @endif
             </div>
         </div>
-        
 
         {{-- Tab Contents (Finance) --}}
         <div id="tab-finance-content" class="tab-content hidden">

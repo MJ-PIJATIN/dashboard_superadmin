@@ -52,23 +52,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($cabangs as $cabang)
+                    @foreach($branches as $branch)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-3 break-words min-w-[100px]">{{ $cabangs->firstItem() + $loop->index }}</td>
+                            <td class="px-6 py-3 break-words min-w-[100px]">{{ $branches->firstItem() + $loop->index }}</td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[150px] truncate overflow-hidden whitespace-nowrap">
-                                {{ $cabang->city }}</td>
+                                {{ $branch->city }}</td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[250px] truncate overflow-hidden whitespace-nowrap">
-                                {{ $cabang->province }}</td>
+                                {{ $branch->province }}</td>
                             <td class="px-6 py-3 break-words min-w-[100px]">
-                                {{ \Carbon\Carbon::parse($cabang->inauguration_date)->format('d-m-Y') }}</td>
+                                {{ \Carbon\Carbon::parse($branch->inauguration_date)->format('d-m-Y') }}</td>
 
                             <td class="px-6 py-3 break-words min-w-[100px]">
                                 @php
-                                    $isActive = $cabang->status === 'Aktif';
+                                    $isActive = $branch->status === 'Aktif';
                                 @endphp
-                                <form method="POST" action="{{ route('cabang.toggleStatus', $cabang->branch_code) }}">
+                                <form method="POST" action="{{ route('cabang.toggleStatus', $branch->branch_code) }}">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
@@ -82,10 +82,10 @@
                             </td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[300px] truncate overflow-hidden whitespace-nowrap">
-                                {{ $cabang->address }}
+                                {{ $branch->address }}
                             </td>
                             <td class="px-6 py-3 break-words min-w-[100px]">
-                                <a href="{{ route('cabang.detail', ['id' => $cabang->branch_code]) }}"
+                                <a href="{{ route('cabang.detail', ['id' => $branch->branch_code]) }}"
                                     class="hover:text-blue-600">
                                     <svg width="18" height="18" viewBox="0 0 19 21" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
@@ -104,28 +104,28 @@
         {{-- Pagination Section --}}
         <div class="flex justify-between items-center mt-4">
             <span class="text-base font-regular text-gray-600">
-                Halaman {{ $cabangs->currentPage() }} dari {{ $cabangs->lastPage() }}
+                Halaman {{ $branches->currentPage() }} dari {{ $branches->lastPage() }}
             </span>
             <div class="flex space-x-1 text-base font-semibold">
                 {{-- Previous --}}
-                @if ($cabangs->onFirstPage())
+                @if ($branches->onFirstPage())
                     <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
                 @else
-                    <a href="{{ $cabangs->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                    <a href="{{ $branches->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
                 @endif
 
                 {{-- Page Numbers --}}
-                @for ($i = 1; $i <= $cabangs->lastPage(); $i++)
-                    @if ($i == $cabangs->currentPage())
+                @for ($i = 1; $i <= $branches->lastPage(); $i++)
+                    @if ($i == $branches->currentPage())
                         <button class="px-3 py-1 rounded bg-teal-600 text-white">{{ $i }}</button>
                     @else
-                        <a href="{{ $cabangs->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
+                        <a href="{{ $branches->url($i) }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">{{ $i }}</a>
                     @endif
                 @endfor
 
                 {{-- Next --}}
-                @if ($cabangs->hasMorePages())
-                    <a href="{{ $cabangs->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
+                @if ($branches->hasMorePages())
+                    <a href="{{ $branches->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
                 @else
                     <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
                 @endif
