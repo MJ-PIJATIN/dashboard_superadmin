@@ -40,10 +40,11 @@
                 <div class="text-right">
                     <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan['waktu'] }}</p>
                     <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan['lokasi'] }}</p>
-                    <button class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors mt-2
-                    hover:text-white hover:bg-[#2196F3] mt-2">
-                        Detail Pesanan
-                    </button>
+                    <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan['id']]) }}" 
+                    class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors mt-2
+                            hover:text-white hover:bg-[#2196F3]">
+                    Detail Pesanan
+                    </a>
                 </div>
             </div>
         </div>

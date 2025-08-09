@@ -346,26 +346,26 @@
 
                 <!-- Duration Selection -->
                 <div>
-  <p class="text-gray-700 font-medium mb-4">Pilih durasi penangguhan</p>
-  <div id="durationOptions" class="flex flex-wrap gap-4">
-    <label class="inline-flex items-center gap-2">
-      <input type="radio" name="duration" value="1" class="text-blue-600">
-      <span class="text-sm text-gray-700">1 Hari</span>
-    </label>
-    <label class="inline-flex items-center gap-2">
-      <input type="radio" name="duration" value="7" class="text-blue-600">
-      <span class="text-sm text-gray-700">7 Hari</span>
-    </label>
-    <label class="inline-flex items-center gap-2">
-      <input type="radio" name="duration" value="14" class="text-blue-600">
-      <span class="text-sm text-gray-700">14 Hari</span>
-    </label>
-    <label class="inline-flex items-center gap-2">
-      <input type="radio" name="duration" value="30" class="text-blue-600">
-      <span class="text-sm text-gray-700">30 Hari</span>
-    </label>
-  </div>
-</div>
+                <p class="text-gray-700 font-medium mb-4">Pilih durasi penangguhan</p>
+                <div id="durationOptions" class="flex flex-wrap gap-4">
+                    <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="duration" value="1" class="text-blue-600">
+                    <span class="text-sm text-gray-700">7 Hari</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="duration" value="7" class="text-blue-600">
+                    <span class="text-sm text-gray-700">14 Hari</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="duration" value="14" class="text-blue-600">
+                    <span class="text-sm text-gray-700">30 Hari</span>
+                    </label>
+                    <label class="inline-flex items-center gap-2">
+                    <input type="radio" name="duration" value="30" class="text-blue-600">
+                    <span class="text-sm text-gray-700">Permanen</span>
+                    </label>
+                </div>
+                </div>
                 </div>
 
                 <!-- Submit Button -->
@@ -557,7 +557,27 @@ function submitSuspension() {
     
     const reasonText = reason.nextElementSibling.querySelector('.text-sm.font-medium').textContent;
     const truncatedDescription = truncateString(description, 70); // Truncate description
-    const message = `Akun berhasil ditangguhkan dengan alasan ${truncatedDescription}`;
+    
+    // Get duration text
+    let durationText;
+    switch(duration.value) {
+        case "1":
+            durationText = "7 Hari";
+            break;
+        case "7":
+            durationText = "14 Hari"; 
+            break;
+        case "14":
+            durationText = "30 Hari";
+            break;
+        case "30":
+            durationText = "Permanen";
+            break;
+        default:
+            durationText = duration.value + " Hari";
+    }
+
+    const message = `Akun berhasil ditangguhkan ${durationText} dengan alasan ${reasonText}`;
 
     closeSuspendDrawer();
     showLoadingDrawer();
