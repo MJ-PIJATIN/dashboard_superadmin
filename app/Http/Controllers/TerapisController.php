@@ -297,10 +297,35 @@ class TerapisController extends Controller
         return view('pages.SuperAdminTambahTerapis');
     }
 
+    // PERBAIKAN: Method show() untuk menampilkan detail terapis
     public function show($id)
     {
-        $terapis = Terapis::findOrFail($id);
-        return view('pages.SuperAdminDetailTerapis', compact('terapis'));
+        try {
+            $terapis = Terapis::findOrFail($id);
+            
+            // Pastikan area kerja terbaca dengan benar
+            $addressParts = explode(', ', $terapis->addres);
+            $terapis->area_kerja = isset($addressParts[1]) ? $addressParts[1] : 
+                                  (isset($addressParts[0]) ? $addressParts[0] : '-');
+            
+            // Pastikan formatted_gender tersedia
+            $terapis->formatted_gender = $this->getGenderDisplay($terapis->gender);
+            
+            // Set photo URL
+            $terapis->photo_url = $this->getPhotoUrl($terapis->photo);
+            
+            // Set status display (jika ada)
+            $terapis->status_display = $terapis->is_available ? 'Aktif' : 'Tidak Aktif';
+            
+            return view('pages.SuperAdminDetailTerapis', compact('terapis'));
+        } catch (\Exception $e) {
+            Log::error('Error showing therapist detail', [
+                'id' => $id,
+                'error' => $e->getMessage()
+            ]);
+            
+            return redirect()->back()->with('error', 'Data terapis tidak ditemukan.');
+        }
     }
 
     private function generateRandomId()
@@ -325,6 +350,19 @@ class TerapisController extends Controller
             return 'P';
         }
         return $gender;
+    }
+
+    // PERBAIKAN: Method untuk menampilkan gender yang readable
+    private function getGenderDisplay($gender)
+    {
+        switch ($gender) {
+            case 'L':
+                return 'Laki-laki';
+            case 'P':
+                return 'Perempuan';
+            default:
+                return $gender ?? '-';
+        }
     }
 
     private function handlePhotoUpload($file, $therapistName)

@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Terapis extends Model
 {
@@ -23,7 +22,7 @@ class Terapis extends Model
         'birth_date',
         'gender',
         'phone',
-        'photo',
+        'photo', // BLOB data
         'email',
         'NIK',
         'addres',
@@ -35,6 +34,11 @@ class Terapis extends Model
         'birth_date' => 'date',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+    ];
+
+    // Don't cast photo as it's binary data (BLOB)
+    protected $hidden = [
+        'photo', // Hide photo BLOB data from JSON serialization by default
     ];
 
     public static function generateRandomId()
@@ -65,18 +69,84 @@ class Terapis extends Model
         }
     }
 
+    /**
+     * Get photo URL for BLOB data
+     */
     public function getPhotoUrlAttribute()
     {
         if ($this->photo) {
-            return Storage::disk('public')->url($this->photo);
+            return route('terapis.photo', $this->id);
         }
         return null;
+    }
+
+    /**
+     * Get photo data URL (base64 encoded) for inline display
+     * Use this sparingly as it can be memory intensive
+     */
+    public function getPhotoDataUrlAttribute()
+    {
+        if (!$this->photo) {
+            return null;
+        }
+
+        try {
+            // Detect image type
+            $imageInfo = getimagesizefromstring($this->photo);
+            if (!$imageInfo) {
+                return null;
+            }
+
+            $mimeType = $imageInfo['mime'];
+            $base64 = base64_encode($this->photo);
+            
+            return "data:{$mimeType};base64,{$base64}";
+        } catch (\Exception $e) {
+            \Log::warning('Failed to generate photo data URL: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Check if terapis has photo
+     */
+    public function getHasPhotoAttribute()
+    {
+        return !empty($this->photo);
+    }
+
+    /**
+     * Get photo size in bytes
+     */
+    public function getPhotoSizeAttribute()
+    {
+        if ($this->photo) {
+            return strlen($this->photo);
+        }
+        return 0;
+    }
+
+    /**
+     * Get photo size in human readable format
+     */
+    public function getPhotoSizeFormattedAttribute()
+    {
+        $bytes = $this->photo_size;
+        
+        if ($bytes == 0) {
+            return '0 B';
+        }
+        
+        $units = ['B', 'KB', 'MB', 'GB'];
+        $i = floor(log($bytes, 1024));
+        
+        return round($bytes / pow(1024, $i), 2) . ' ' . $units[$i];
     }
 
     public function getFormattedBirthDateAttribute()
     {
         if ($this->birth_date) {
-            return $this->birth_date->format('d/m/Y');
+            return $this->birth_date->format('d M Y');
         }
         return null;
     }
@@ -84,7 +154,7 @@ class Terapis extends Model
     public function getFormattedJoiningDateAttribute()
     {
         if ($this->joining_date) {
-            return $this->joining_date->format('d/m/Y');
+            return $this->joining_date->format('d M Y');
         }
         return null;
     }
@@ -95,6 +165,26 @@ class Terapis extends Model
             return $this->birth_date->diffInYears(now());
         }
         return null;
+    }
+
+    // Get initials from name
+    public function getInitialsAttribute()
+    {
+        if (!$this->name) {
+            return '';
+        }
+        
+        $words = explode(' ', trim($this->name));
+        $initials = '';
+        
+        foreach ($words as $word) {
+            if (!empty($word)) {
+                $initials .= strtoupper($word[0]);
+            }
+        }
+        
+        // Return maximum 2 characters
+        return substr($initials, 0, 2);
     }
 
     public function scopeActive($query)
@@ -136,18 +226,6 @@ class Terapis extends Model
         return $query;
     }
 
-    public function getInitialsAttribute()
-    {
-        $words = explode(' ', $this->name);
-        $initials = '';
-        foreach ($words as $word) {
-            if (!empty($word)) {
-                $initials .= strtoupper($word[0]);
-            }
-        }
-        return substr($initials, 0, 2);
-    }
-
     public function getDisplayNameAttribute()
     {
         if (strlen($this->name) > 20) {
@@ -175,6 +253,18 @@ class Terapis extends Model
         ];
     }
 
+    // Check if terapis is available (not suspended)
+    public function getIsAvailableAttribute()
+    {
+        return empty($this->suspended_duration);
+    }
+
+    // Get status display text
+    public function getStatusDisplayAttribute()
+    {
+        return $this->is_available ? 'Tersedia' : 'Ditangguhkan';
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -194,10 +284,42 @@ class Terapis extends Model
             }
         });
 
+        // No need to delete files when deleting record since photo is stored as BLOB
         static::deleting(function ($therapist) {
-            if ($therapist->photo && Storage::disk('public')->exists($therapist->photo)) {
-                Storage::disk('public')->delete($therapist->photo);
-            }
+            // Photo is stored as BLOB, no file cleanup needed
+            \Log::info('Deleting therapist with BLOB photo', [
+                'id' => $therapist->id,
+                'has_photo' => !empty($therapist->photo),
+                'photo_size' => !empty($therapist->photo) ? strlen($therapist->photo) : 0
+            ]);
         });
+    }
+
+    /**
+     * Override toArray to exclude photo BLOB by default
+     */
+    public function toArray()
+    {
+        $array = parent::toArray();
+        
+        // Remove photo BLOB from array representation
+        unset($array['photo']);
+        
+        // Add useful photo-related attributes instead
+        $array['has_photo'] = $this->has_photo;
+        $array['photo_url'] = $this->photo_url;
+        
+        return $array;
+    }
+
+    /**
+     * Get array representation including photo data URL
+     * Use carefully as this includes base64 encoded image
+     */
+    public function toArrayWithPhoto()
+    {
+        $array = $this->toArray();
+        $array['photo_data_url'] = $this->photo_data_url;
+        return $array;
     }
 }
