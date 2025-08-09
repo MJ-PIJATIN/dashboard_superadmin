@@ -59,7 +59,7 @@
 
                                     <!-- Jenis Kelamin -->
                                     <div>
-                                        <label class="block text-sm text-gray-700 mb-3">Jenis Kelamin*</label>
+                                        <label class="block text-sm text-gray-700 mb-[21.5px]">Jenis Kelamin*</label>
                                         <div class="flex space-x-6">
                                             <label class="flex items-center">
                                                 <input type="radio" name="jenis_kelamin" value="Laki-laki"
