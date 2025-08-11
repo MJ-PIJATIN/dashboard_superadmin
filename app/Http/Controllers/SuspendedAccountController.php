@@ -15,20 +15,7 @@ class SuspendedAccountController extends Controller
      */
     public function index(Request $request)
     {
-        // Data dummy untuk sementara - nanti bisa diganti dengan database
-        $allSuspendedAccounts = [
-            ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '10:20'],
-            ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari', 'waktu' => '15:00'],
-            ['id' => 3, 'nama' => 'Santi Martini', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => 'Permanen', 'waktu' => '18:23'],
-            ['id' => 4, 'nama' => 'Tono Winarto', 'kelamin' => 'Laki-Laki', 'kota' => 'Jakarta Selatan', 'durasi' => '30 Hari', 'waktu' => '20:10'],
-            ['id' => 5, 'nama' => 'Chandra Utama', 'kelamin' => 'Laki-Laki', 'kota' => 'Pekalongan', 'durasi' => 'Permanen', 'waktu' => '21:45'],
-            ['id' => 6, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
-            ['id' => 7, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
-            ['id' => 8, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
-            ['id' => 9, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari', 'waktu' => '6 Nov'],
-            ['id' => 10, 'nama' => 'Kamaria Mandasari', 'kelamin' => 'Perempuan', 'kota' => 'Surakarta', 'durasi' => '14 Hari', 'waktu' => '2 Nov'],
-            ['id' => 11, 'nama' => 'Uda Lazuardi', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen', 'waktu' => '20/12/22'],
-        ];
+        $allSuspendedAccounts = $request->session()->get('suspended_accounts', []);
 
         $perPage = 10;
         $currentPage = $request->input('page', 1);
@@ -49,7 +36,6 @@ class SuspendedAccountController extends Controller
             'paginationData' => $paginationData,
         ]);
     }
-
     /**
      * Display the specified suspended account detail.
      */
@@ -150,75 +136,51 @@ class SuspendedAccountController extends Controller
     public function restore($id, Request $request): JsonResponse
     {
         try {
-            // Log untuk debugging
-            Log::info('Restore attempt', [
-                'account_id' => $id,
-                'request_data' => $request->all(),
-                'route_param' => $id
-            ]);
-            
-            // Convert ID to integer dan validasi
+            Log::info('Restore attempt', ['account_id' => $id]);
             $accountId = (int) $id;
-            
+
             if ($accountId <= 0) {
-                Log::warning('Invalid account ID provided', ['id' => $id, 'converted_id' => $accountId]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'ID akun tidak valid'
-                ], 400);
+                Log::warning('Invalid account ID for restore', ['id' => $id]);
+                return response()->json(['success' => false, 'message' => 'ID akun tidak valid'], 400);
             }
-            
-            // Data dummy suspended accounts
-            $suspendedAccounts = [
-                1 => 'Karsa Wijaya',
-                2 => 'Dandia Rianti',
-                3 => 'Santi Martini',
-                4 => 'Tono Winarto',
-                5 => 'Chandra Utama',
-                6 => 'Willy Kusuma',
-                7 => 'Willy Kusuma',
-                8 => 'Willy Kusuma',
-                9 => 'Willy Kusuma',
-                10 => 'Kamaria Mandasari',
-                11 => 'Uda Lazuardi'
-            ];
-            
-            // Cek apakah akun dengan ID tersebut ada
-            if (!isset($suspendedAccounts[$accountId])) {
-                Log::warning('Account not found', ['account_id' => $accountId]);
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Akun dengan ID tersebut tidak ditemukan'
-                ], 404);
+
+            $suspendedAccounts = $request->session()->get('suspended_accounts', []);
+
+            $indexToRemove = null;
+            foreach ($suspendedAccounts as $key => $account) {
+                if (isset($account['id']) && $account['id'] == $accountId) {
+                    $indexToRemove = $key;
+                    break;
+                }
             }
-            
-            // Simulasi proses restore
-            $accountName = $suspendedAccounts[$accountId];
-            
-            // Simulasi delay untuk menunjukkan loading
-            sleep(1);
-            
-            // Log sukses
-            Log::info('Account restored successfully', [
-                'account_id' => $accountId,
-                'account_name' => $accountName
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Akun berhasil dipulihkan',
-                'data' => [
-                    'account_id' => $accountId,
-                    'account_name' => $accountName,
-                    'restored_at' => now()->toDateTimeString()
-                ]
-            ]);
-            
+
+            if ($indexToRemove !== null) {
+                // Remove the item from the array using unset
+                unset($suspendedAccounts[$indexToRemove]);
+
+                // Re-index the array
+                $updatedSuspendedAccounts = array_values($suspendedAccounts);
+
+                // Put the updated array back into the session and save
+                $request->session()->put('suspended_accounts', $updatedSuspendedAccounts);
+                $request->session()->save();
+
+                Log::info('Account restored successfully and removed from session', ['account_id' => $accountId]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Akun berhasil dipulihkan',
+                    'data' => ['account_id' => $accountId]
+                ]);
+            } else {
+                Log::warning('Account to restore not found in session', ['account_id' => $accountId]);
+                return response()->json(['success' => false, 'message' => 'Akun dengan ID tersebut tidak ditemukan di daftar penangguhan'], 404);
+            }
+
         } catch (\Exception $e) {
             Log::error('Restore failed', [
                 'account_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
             ]);
             
             return response()->json([
@@ -274,6 +236,142 @@ class SuspendedAccountController extends Controller
                 'success' => false,
                 'message' => 'Pencarian gagal. Silakan coba lagi.',
                 'error' => config('app.debug') ? $e->getMessage() : 'Search error'
+            ], 500);
+        }
+    }
+
+    private function getTerapisDataById($id)
+    {
+        $allTerapis = [
+            1 => [
+                'id' => 1,
+                'nama' => 'Karsa Wijaya',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Kertasari, Bandung',
+            ],
+            2 => [
+                'id' => 2,
+                'nama' => 'Budi Santoso',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Jakarta Pusat',
+            ],
+            3 => [
+                'id' => 3,
+                'nama' => 'Joko Widodo',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Jakarta Utara',
+            ],
+            4 => [
+                'id' => 4,
+                'nama' => 'Agus Setiawan',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Jakarta Selatan',
+            ],
+            5 => [
+                'id' => 5,
+                'nama' => 'Indra Wijaya',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Jakarta Pusat',
+            ],
+            6 => [
+                'id' => 6,
+                'nama' => 'Samsul Alamayah',
+                'jenis_kelamin' => 'Laki-Laki',
+                'area_kerja' => 'Jakarta Timur',
+            ]
+        ];
+
+        return $allTerapis[$id] ?? null;
+    }
+
+    /**
+     * Suspend a therapist account.
+     */
+    public function suspend(Request $request, $id): JsonResponse
+    {
+        try {
+            // Log untuk debugging
+            Log::info('Suspend attempt', [
+                'terapis_id' => $id,
+                'request_data' => $request->all(),
+            ]);
+
+            // Validasi data
+            $validatedData = $request->validate([
+                'reason' => 'required|string',
+                'description' => 'required|string|max:500',
+                'duration' => 'required|string',
+            ]);
+
+            // Ambil data terapis
+            $terapisData = $this->getTerapisDataById($id);
+
+            // Fallback jika terapis tidak ditemukan
+            if (!$terapisData) {
+                $terapisData = [
+                    'nama' => 'Terapis Tidak Dikenal',
+                    'jenis_kelamin' => '-',
+                    'area_kerja' => '-',
+                ];
+            }
+
+            // Map durasi dari form value ke display text
+            $durationMap = [
+                '1' => '7 Hari',
+                '7' => '14 Hari',
+                '14' => '30 Hari',
+                '30' => 'Permanen',
+            ];
+            $durasi = $durationMap[$validatedData['duration']] ?? $validatedData['duration'];
+
+            // Simulasi proses penangguhan
+            $suspendedAccounts = $request->session()->get('suspended_accounts', []);
+            
+            $newSuspendedAccount = [
+                'id' => $id,
+                'nama' => $terapisData['nama'],
+                'kelamin' => $terapisData['jenis_kelamin'],
+                'kota' => $terapisData['area_kerja'], // Menggunakan area_kerja sebagai kota
+                'durasi' => $durasi,
+                'waktu' => now()->format('H:i'),
+            ];
+
+            $suspendedAccounts[] = $newSuspendedAccount;
+            $request->session()->put('suspended_accounts', $suspendedAccounts);
+            
+            Log::info('Account suspended successfully', [
+                'terapis_id' => $id,
+                'validated_data' => $validatedData,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Akun berhasil ditangguhkan.',
+                'data' => [
+                    'terapis_id' => $id,
+                    'suspended_at' => now()->toDateTimeString(),
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Suspend validation failed', [
+                'terapis_id' => $id,
+                'errors' => $e->errors(),
+            ]);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Data tidak valid.', 
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Suspend failed', [
+                'terapis_id' => $id,
+                'error' => $e->getMessage(),
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
             ], 500);
         }
     }

@@ -89,6 +89,9 @@ Route::get('/terapis', [TerapisController::class, 'index'])->name('terapis');
 Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tambah-terapis');
 Route::get('/terapis/{id}/detail', [TerapisController::class, 'show'])->name('detail-terapis');
 Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
+
+Route::post('/terapis/{id}/suspend', [SuspendedAccountController::class, 'suspend'])->name('terapis.suspend')->where('id', '[0-9]+');
+
 Route::delete('/terapis/{id}', [TerapisController::class, 'destroy'])->name('terapis.destroy');
 Route::get('/terapis/{id}/photo', [TerapisController::class, 'showPhoto'])->name('terapis.photo');
 
@@ -113,8 +116,10 @@ Route::match(['GET', 'DELETE'], '/test-delete-terapis/{id}', function($id) {
     ]);
 });
 
+
 //Halaman Penangguhan
 Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
+Route::delete('/superadmin/penangguhan/{id}/pulihkan', [SuspendedAccountController::class, 'restore'])->name('penangguhan.restore');
 Route::prefix('admin')->group(function () {
     
     // Routes untuk akun ditangguhkan
@@ -157,5 +162,134 @@ Route::get('/tambah/karyawan', function () {
 Route::get('/karyawan/{id}', [KaryawanController::class, 'show'])->where('id', '[0-9]+')->name('detail.karyawan');
 
 // detail karyawan finance 
+
 Route::get('/karyawan/finance/{id}', [KaryawanController::class, 'showFinance'])->where('id', '[0-9]+')->name('detail.akun.finance');
 
+
+Route::get('/karyawan/finance/{id}', function ($id) {
+    return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
+})->where('id', '[0-9]+')->name('detail.akun.finance');
+
+//PAGE PELANGGAN
+// detail akun pelanggan
+Route::get('/pelanggan/{id}', function ($id) {
+    return view('pages.SuperAdminPelangganDetailAkun', ['id' => $id]);
+})->where('id', '[0-9]+')->name('detail.akun.pelanggan');
+
+// Tambahkan route ini di web.php (temporary untuk cleaning)
+Route::get('/clean-suspended-data', function(Request $request) {
+    // Ambil data session saat ini
+    $suspended = $request->session()->get('suspended_accounts', []);
+    
+    echo "<h2>Data Session SEBELUM dibersihkan:</h2>";
+    echo "<pre>";
+    print_r($suspended);
+    echo "</pre>";
+    
+    // Bersihkan data - hapus yang nama = "Terapis Ditangguhkan"
+    $cleaned = [];
+    $removed = [];
+    
+    foreach ($suspended as $index => $account) {
+        // Jika nama = "Terapis Ditangguhkan", skip (tidak masukkan ke cleaned)
+        if ($account['nama'] === 'Terapis Ditangguhkan') {
+            $removed[] = $account;
+            continue; // Skip data ini
+        }
+        
+        // Perbaiki format durasi jika masih angka
+        if (is_numeric($account['durasi'])) {
+            $durationMap = [
+                '1' => '7 Hari',
+                '7' => '14 Hari',
+                '14' => '30 Hari',
+                '30' => 'Permanen'
+            ];
+            $account['durasi'] = $durationMap[$account['durasi']] ?? $account['durasi'];
+        }
+        
+        $cleaned[] = $account;
+    }
+    
+    // Simpan data yang sudah dibersihkan ke session
+    $request->session()->put('suspended_accounts', $cleaned);
+    $request->session()->save(); // Force save
+    
+    echo "<h2>Data yang DIHAPUS:</h2>";
+    echo "<pre>";
+    print_r($removed);
+    echo "</pre>";
+    
+    echo "<h2>Data Session SETELAH dibersihkan:</h2>";
+    echo "<pre>";
+    print_r($cleaned);
+    echo "</pre>";
+    
+    echo "<h2>Summary:</h2>";
+    echo "Data sebelumnya: " . count($suspended) . " akun<br>";
+    echo "Data dihapus: " . count($removed) . " akun<br>";
+    echo "Data tersisa: " . count($cleaned) . " akun<br>";
+    
+    echo "<br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
+    
+    return null; // Sudah echo di atas
+});
+
+// Route untuk reset session (jika diperlukan)
+Route::get('/reset-suspended-data', function(Request $request) {
+    // Data default yang bersih
+    $defaultCleanData = [
+        [
+            'id' => 3,
+            'nama' => 'Joko Widodo',
+            'kelamin' => 'Laki-Laki', 
+            'kota' => 'Jakarta Utara',
+            'durasi' => 'Permanen',
+            'waktu' => '15:53'
+        ],
+        [
+            'id' => 5,
+            'nama' => 'Indra Wijaya',
+            'kelamin' => 'Laki-Laki',
+            'kota' => 'Jakarta Pusat', 
+            'durasi' => '14 Hari',
+            'waktu' => '15:56'
+        ],
+        [
+            'id' => 2,
+            'nama' => 'Budi Santoso',
+            'kelamin' => 'Laki-Laki',
+            'kota' => 'Jakarta Pusat',
+            'durasi' => '30 Hari', 
+            'waktu' => '16:04'
+        ],
+        [
+            'id' => 1,
+            'nama' => 'Karsa Wijaya',
+            'kelamin' => 'Laki-Laki',
+            'kota' => 'Kertasari, Bandung',
+            'durasi' => '7 Hari',
+            'waktu' => '16:08'
+        ]
+    ];
+    
+    $request->session()->put('suspended_accounts', $defaultCleanData);
+    $request->session()->save();
+    
+    echo "<h2>Session berhasil direset dengan data bersih!</h2>";
+    echo "<pre>";
+    print_r($defaultCleanData);
+    echo "</pre>";
+    
+    echo "<br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
+});
+
+// Route untuk clear semua data suspended (kosongkan)
+Route::get('/clear-all-suspended', function(Request $request) {
+    $request->session()->forget('suspended_accounts');
+    $request->session()->save();
+    
+    echo "<h2>Semua data penangguhan berhasil dihapus!</h2>";
+    echo "Session 'suspended_accounts' telah dikosongkan.";
+    echo "<br><br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
+});

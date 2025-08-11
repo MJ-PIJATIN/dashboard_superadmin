@@ -108,22 +108,22 @@
                     <thead class="bg-white border-b border-gray-300">
                         <tr>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Nama</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Harga</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Durasi</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Deskripsi</th>
                             <th class="px-4 py-2"></th>
@@ -458,6 +458,11 @@
     opacity: 1;
     pointer-events: auto;
 }
+
+.sort-icon {
+    opacity: 0.5;
+    transition: all 0.3s ease-in-out;
+}
 </style>
 
 <script>
@@ -467,6 +472,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentDeleteRow = null;
     let currentEditRow = null;
     let successTimeout = null;
+    let sortStates = {
+        name: 'none', // none, asc, desc
+        price: 'none',
+        duration: 'none'
+    };
 
     // Utility functions
     function showModal(modalId) {
@@ -534,6 +544,154 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
             });
         }
+    }
+
+    // Sorting functions
+    function sortTable(column, tbody) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        let sortDirection = 'asc';
+        
+        // Reset other sort states
+        Object.keys(sortStates).forEach(key => {
+            if (key !== column) sortStates[key] = 'none';
+        });
+        
+        // Determine sort direction
+        if (sortStates[column] === 'none' || sortStates[column] === 'desc') {
+            sortStates[column] = 'asc';
+            sortDirection = 'asc';
+        } else {
+            sortStates[column] = 'desc';
+            sortDirection = 'desc';
+        }
+
+        rows.sort((a, b) => {
+            let aValue, bValue;
+            
+            switch(column) {
+                case 'name':
+                    aValue = a.getAttribute('data-service-name').toLowerCase();
+                    bValue = b.getAttribute('data-service-name').toLowerCase();
+                    break;
+                case 'price':
+                    aValue = parseInt(a.getAttribute('data-service-price')) || 0;
+                    bValue = parseInt(b.getAttribute('data-service-price')) || 0;
+                    break;
+                case 'duration':
+                    // Extract number from duration (e.g., "60 Menit" -> 60)
+                    aValue = parseInt(a.getAttribute('data-service-duration')) || 0;
+                    bValue = parseInt(b.getAttribute('data-service-duration')) || 0;
+                    break;
+                default:
+                    return 0;
+            }
+            
+            if (column === 'name') {
+                // String comparison
+                if (sortDirection === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            } else {
+                // Numeric comparison
+                if (sortDirection === 'asc') {
+                    return aValue - bValue;
+                } else {
+                    return bValue - aValue;
+                }
+            }
+        });
+
+        // Clear tbody and append sorted rows with animation
+        tbody.innerHTML = '';
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(-10px)';
+            tbody.appendChild(row);
+            
+            setTimeout(() => {
+                row.style.transition = 'all 0.2s ease-in-out';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 30);
+        });
+
+        // Update sort icons
+        updateSortIcons();
+    }
+
+    function updateSortIcons() {
+        // Reset all sort icons
+        const sortIcons = document.querySelectorAll('.sort-icon');
+        sortIcons.forEach(icon => {
+            icon.style.transform = 'rotate(0deg)';
+            icon.style.opacity = '0.5';
+        });
+
+        // Update active sort icon
+        Object.keys(sortStates).forEach(column => {
+            if (sortStates[column] !== 'none') {
+                const icon = document.querySelector(`[data-sort="${column}"] .sort-icon`);
+                if (icon) {
+                    icon.style.opacity = '1';
+                    if (sortStates[column] === 'desc') {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+        });
+    }
+
+    // Add sorting event listeners to main service table headers
+    function initializeSorting() {
+        const mainServiceTbody = document.querySelector('tbody.bg-white');
+        if (!mainServiceTbody) return;
+
+        // Add sorting functionality to the header buttons in main service table
+        const mainServiceTable = mainServiceTbody.closest('table');
+        const headerRow = mainServiceTable.querySelector('thead tr');
+        
+        if (headerRow) {
+            const headers = headerRow.children;
+            
+            // Add click handlers and data attributes to sortable columns
+            if (headers[0]) { // Nama column
+                const nameHeader = headers[0].querySelector('div');
+                if (nameHeader) {
+                    nameHeader.style.cursor = 'pointer';
+                    nameHeader.setAttribute('data-sort', 'name');
+                    nameHeader.classList.add('sortable-header');
+                    nameHeader.querySelector('img').classList.add('sort-icon');
+                    nameHeader.addEventListener('click', () => sortTable('name', mainServiceTbody));
+                }
+            }
+            
+            if (headers[1]) { // Harga column
+                const priceHeader = headers[1].querySelector('div');
+                if (priceHeader) {
+                    priceHeader.style.cursor = 'pointer';
+                    priceHeader.setAttribute('data-sort', 'price');
+                    priceHeader.classList.add('sortable-header');
+                    priceHeader.querySelector('img').classList.add('sort-icon');
+                    priceHeader.addEventListener('click', () => sortTable('price', mainServiceTbody));
+                }
+            }
+            
+            if (headers[2]) { // Durasi column
+                const durationHeader = headers[2].querySelector('div');
+                if (durationHeader) {
+                    durationHeader.style.cursor = 'pointer';
+                    durationHeader.setAttribute('data-sort', 'duration');
+                    durationHeader.classList.add('sortable-header');
+                    durationHeader.querySelector('img').classList.add('sort-icon');
+                    durationHeader.addEventListener('click', () => sortTable('duration', mainServiceTbody));
+                }
+            }
+        }
+
+        // Initialize sort icon styles
+        updateSortIcons();
     }
 
     // Tooltip functions
@@ -1057,6 +1215,9 @@ document.addEventListener('DOMContentLoaded', function () {
     ['price', 'additional-service-price', 'edit-main-price', 'edit-additional-price'].forEach(id => {
         formatPriceInput(document.getElementById(id));
     });
+
+    // Initialize sorting functionality
+    initializeSorting();
 
     // Keyboard events
     document.addEventListener('keydown', function(e) {
