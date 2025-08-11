@@ -9,12 +9,23 @@ class Pelanggan extends Model
 {
     use HasFactory;
 
+    protected $table = 'customers';
+
     protected $fillable = [
         'id',
-        'nama',
+        'name',
         'email',
-        'kota',
+        'city',
         'status',
+        'phone',
+        'gender',
+        'address',
+        'NIK',
         'gender',
     ];
+
+    public function pesanans()
+    {
+        return $this->hasMany(Pesanan::class, 'customer_id');
+    }
 }
