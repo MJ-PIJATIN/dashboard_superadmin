@@ -27,14 +27,10 @@
                     <img src="https://i.pinimg.com/736x/f6/61/ea/f661ea61616909838a9fbfeda0d2ea14.jpg" alt="Foto" class="w-24 h-24 rounded-full object-cover">
                     <div>
                         <h3 class="text-sm font-semibold flex items-center gap-1">
-                            Cella Joepit 
-                            @php
-                                $gender = 'Perempuan'; 
-                            @endphp
-
-                            @if(strtolower($gender) === 'laki-laki')
+                            {{ $pelanggan->nama }} 
+                            @if(strtolower($pelanggan->gender) === 'male')
                                 <span class="text-blue-500 text-base">♂️</span>
-                            @elseif(strtolower($gender) === 'perempuan')
+                            @elseif(strtolower($pelanggan->gender) === 'female')
                                 <span class="text-pink-500 text-base">♀️</span>
                             @endif
                         </h3>
@@ -42,25 +38,25 @@
                     </div>
                 </div>
 
-                <div class="text-xs font-semibold text-gray-500">#CTS008726</div>
+                <div class="text-xs font-semibold text-gray-500">#CTS{{ str_pad($pelanggan->id, 6, '0', STR_PAD_LEFT) }}</div>
             </div>
 
             <div class="space-y-4 mb-3 text-xs text-gray-500 ">
                 <div class="flex justify-between">
                     <span>Status Akun:</span>
-                    <span class="text-lime-500 font-medium">Tidak dalam Penangguhan</span>
+                    <span class="text-lime-500 font-medium">{{ $pelanggan->status }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Alamat Email:</span>
-                    <span class="text-gray-900 font-medium">cellaon1@gmail.com</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->email }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Nomor Telepon:</span>
-                    <span class="text-gray-900 font-medium">087989373368</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->ponsel ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Alamat:</span>
-                    <span class="text-gray-900 font-medium text-right">Kecamatan Bulu, Temanggung 13320, Jawa Tengah</span>
+                    <span class="text-gray-900 font-medium text-right">{{ $pelanggan->kota }}</span>
                 </div>
             </div>
 
@@ -80,15 +76,15 @@
             <div class="space-y-4 mb-4 text-xs text-gray-500">
                 <div class="flex justify-between">
                     <span>NIK:</span>
-                    <span class="text-gray-900 font-medium">3171895833291145</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->nik ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Nama Lengkap:</span>
-                    <span class="text-gray-900 font-medium">Cella Joepit</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->nama }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Jenis Kelamin:</span>
-                    <span class="text-gray-900 font-medium">Perempuan</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->gender }}</span>
                 </div>
             </div>
 
@@ -98,19 +94,19 @@
             <div class="space-y-4 text-xs text-gray-500">
                 <div class="flex justify-between">
                     <span>Tanggal Bergabung:</span>
-                    <span class="text-gray-900 font-medium">18 September 2023</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->created_at->format('d M Y') }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Total Layanan:</span>
-                    <span class="text-gray-900 font-medium">15 Layanan</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->pesanans->count() }} Layanan</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Total Dibatalkan:</span>
-                    <span class="text-gray-900 font-medium">2 Layanan</span>
+                    <span class="text-gray-900 font-medium">{{ $pelanggan->pesanans->where('status', 'Dibatalkan')->count() }} Layanan</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Peringatan Diterima:</span>
-                    <span class="text-gray-900 font-medium">1x Peringatan</span>
+                    <span class="text-gray-900 font-medium">0x Peringatan</span>
                 </div>
             </div>
         </div>
@@ -167,31 +163,23 @@
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        @php
-                            $data = [
-                                ['Salma Rifyana',  'Full Body Message', '29 Nov 2023', 'Dibatalkan', '♀️'],
-                                ['Winda Harmony', 'Hot Stone Message', '29 Dec 2023', 'Selesai', '♀️'],
-                                ['Umi Sarimi', 'Full Body Message', '29 Jan 2024', 'Selesai', '♀️'],
-                            ];
-                        @endphp
-
-                        @foreach ($data as $index => [$nama, $layanan, $jadwal, $status, $gender])
+                        @foreach ($pelanggan->pesanans->where('payment', 'transfer') as $index => $pesanan)
                             <tr class="bg-white rounded shadow-sm">
                                 <td class="px-3 py-2">{{ $index + 1 }}</td>
                                 <td class="px-3 py-2 flex items-center gap-2">
                                     <span class="text-lg">
-                                        @if($gender == '♀️')
+                                        @if($pesanan->therapist->gender == 'female')
                                             <span class="text-pink-500">♀️</span>
                                         @else
                                             <span class="text-blue-500">♂️</span>
                                         @endif
                                     </span>
-                                    {{ $nama }}
+                                    {{ $pesanan->therapist->name }}
                                 </td>
-                                <td class="px-3 py-2">{{ $layanan }}</td>
-                                <td class="px-3 py-2">{{ $jadwal }}</td>
+                                <td class="px-3 py-2">{{ $pesanan->mainService->name }}</td>
+                                <td class="px-3 py-2">{{ $pesanan->bookings_date }}</td>
                                 <td class="px-3 py-2">
-                                    @if($status == 'Selesai')
+                                    @if($pesanan->status == 'Selesai')
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-600">● Selesai</span>
                                     @else
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-600">● Dibatalkan</span>
@@ -242,31 +230,23 @@
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        @php
-                            $data = [
-                                ['Salma Rifyana',  'Full Body Message', '29 Nov 2023', 'Dibatalkan', '♀️'],
-                                ['Winda Harmony', 'Hot Stone Message', '29 Dec 2023', 'Selesai', '♀️'],
-                                ['Umi Sarimi', 'Full Body Message', '29 Jan 2024', 'Selesai', '♀️'],
-                            ];
-                        @endphp
-
-                        @foreach ($data as $index => [$nama, $layanan, $jadwal, $status, $gender])
+                        @foreach ($pelanggan->pesanans->where('payment', 'cash') as $index => $pesanan)
                             <tr class="bg-white rounded shadow-sm">
                                 <td class="px-3 py-2">{{ $index + 1 }}</td>
                                 <td class="px-3 py-2 flex items-center gap-2">
                                     <span class="text-lg">
-                                        @if($gender == '♀️')
+                                        @if($pesanan->therapist->gender == 'female')
                                             <span class="text-pink-500">♀️</span>
                                         @else
                                             <span class="text-blue-500">♂️</span>
                                         @endif
                                     </span>
-                                    {{ $nama }}
+                                    {{ $pesanan->therapist->name }}
                                 </td>
-                                <td class="px-3 py-2">{{ $layanan }}</td>
-                                <td class="px-3 py-2">{{ $jadwal }}</td>
+                                <td class="px-3 py-2">{{ $pesanan->mainService->name }}</td>
+                                <td class="px-3 py-2">{{ $pesanan->bookings_date }}</td>
                                 <td class="px-3 py-2">
-                                    @if($status == 'Selesai')
+                                    @if($pesanan->status == 'Selesai')
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-600">● Selesai</span>
                                     @else
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-600">● Dibatalkan</span>

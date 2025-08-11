@@ -30,31 +30,31 @@
             <div class="flex flex-col items-center text-center mb-10 h-60">
                 <img src="https://i.pinimg.com/736x/1a/9f/89/1a9f896244aa7117bb89ebe335c78fd2.jpg" alt="Foto Profil"
                     class="w-40 h-40 rounded-full object-cover shadow mb-2">
-                <h2 class="text-sm font-semibold text-gray-800">Retno SUkmawati</h2>
-                <p class="text-xs text-gray-500">Finance</p>
+                <h2 class="text-sm font-semibold text-gray-800">{{ $employee->nama }}</h2>
+                <p class="text-xs text-gray-500">{{ $employee->role }}</p>
             </div>
 
             <h3 class="text-normal font-bold text-gray-800 mb-5 text-left w-full">Informasi Akun</h3>
             <div class="space-y-2 text-xs text-gray-700">
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Nomor ID</span>
-                    <span class="font-semibold text-gray-800">FNC005</span>
+                    <span class="font-semibold text-gray-800">FNC{{ str_pad($employee->id, 3, '0', STR_PAD_LEFT) }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Peran Akun</span>
-                    <span class="font-semibold text-gray-800">Finance</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->role }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Alamat Email</span>
-                    <span class="font-semibold text-gray-800">retnosukma@gmail.com</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->email ?? '-' }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Ponsel</span>
-                    <span class="font-semibold text-gray-800">087987654321</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->ponsel }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Area Penempatan</span>
-                    <span class="font-semibold text-gray-800">Biringkanaya, Makassar</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->area_penempatan }}</span>
                 </div>
             </div>
 
@@ -71,23 +71,23 @@
             <div class="space-y-2 text-xs text-gray-700">
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Nama Lengkap</span>
-                    <span class="font-semibold text-gray-800">Retno Sukmawati</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->nama }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Tempat Lahir</span>
-                    <span class="font-semibold text-gray-800">Makassar</span>
+                    <span class="font-semibold text-gray-800">-</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Tanggal Lahir</span>
-                    <span class="font-semibold text-gray-800">8 Januari 1999</span>
+                    <span class="font-semibold text-gray-800">-</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Jenis Kelamin</span>
-                    <span class="font-semibold text-gray-800">Perempuan</span>
+                    <span class="font-semibold text-gray-800">{{ $employee->jenis_kelamin }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Alamat</span>
-                    <span class="font-semibold text-gray-800">Sudiang, Biringkanaya, Makassar</span>
+                    <span class="font-semibold text-gray-800">-</span>
                 </div>
             </div>
         </div>

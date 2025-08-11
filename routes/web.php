@@ -43,7 +43,20 @@ Route::post('/layanan-tambahan/update', [App\Http\Controllers\LayananController:
 Route::delete('/layanan-tambahan/delete', [App\Http\Controllers\LayananController::class, 'destroyTambahan'])->name('layanan-tambahan.delete');
 
 // Halaman Pesanan
-Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan.index');
+Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
+Route::prefix('pesanan')->group(function () {
+    Route::get('/detail/{tipe}/{id}', [PesananController::class, 'detail'])
+         ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
+         ->name('pesanan.detail');
+    
+    Route::patch('/{tipe}/{id}/update-status', [PesananController::class, 'updateStatus'])
+         ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
+         ->name('pesanan.updateStatus');
+         
+    Route::delete('/{tipe}/{id}', [PesananController::class, 'destroy'])
+         ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
+         ->name('pesanan.destroy');
+});
 
 // Halaman Cabang
 Route::prefix('cabang')->group(function () {
@@ -134,14 +147,6 @@ Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::cla
 // Halaman FAQ
 Route::resource('faqs', FaqController::class);
 
-//Page Pesanan
-Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
-
-Route::get('/pesanan/detail/{tipe}/{id}', [PesananController::class, 'detail'])->name('pesanan.detail');
-
-Route::put('/pesanan/{tipe}/{id}/update-status', [PesananController::class, 'updateStatus'])
-    ->name('pesanan.updateStatus');
-
 //PAGE KARYAWAN
 //tambah karyawan
 Route::get('/tambah/karyawan', function () {
@@ -149,17 +154,8 @@ Route::get('/tambah/karyawan', function () {
 })->name('tambah.karyawan');
 
 // detail karyawan admin
-Route::get('/karyawan/{id}', function ($id) {
-    return view('pages.SuperAdminKaryawanDetailAkun', ['id' => $id]);
-})->where('id', '[0-9]+')->name('detail.karyawan');
+Route::get('/karyawan/{id}', [KaryawanController::class, 'show'])->where('id', '[0-9]+')->name('detail.karyawan');
 
 // detail karyawan finance 
-Route::get('/karyawan/finance/{id}', function ($id) {
-    return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
-})->where('id', '[0-9]+')->name('detail.akun.finance');
+Route::get('/karyawan/finance/{id}', [KaryawanController::class, 'showFinance'])->where('id', '[0-9]+')->name('detail.akun.finance');
 
-//PAGE PELANGGAN
-// detail akun pelanggan
-Route::get('/pelanggan/{id}', function ($id) {
-    return view('pages.SuperAdminPelangganDetailAkun', ['id' => $id]);
-})->where('id', '[0-9]+')->name('detail.akun.pelanggan');
