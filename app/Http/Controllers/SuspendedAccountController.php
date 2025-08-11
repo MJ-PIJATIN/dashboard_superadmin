@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Carbon\Carbon;
 
 class SuspendedAccountController extends Controller
 {
@@ -15,15 +16,15 @@ class SuspendedAccountController extends Controller
      */
     public function index(Request $request)
     {
-        $allSuspendedAccounts = $request->session()->get('suspended_accounts', []);
+        $query = DB::table('suspended_accounts')->orderBy('suspension_id', 'asc');
+        $paginator = $query->paginate(10);
 
-        $perPage = 10;
-        $currentPage = $request->input('page', 1);
-        $paginatedData = array_slice($allSuspendedAccounts, ($currentPage - 1) * $perPage, $perPage);
-        $paginator = new LengthAwarePaginator($paginatedData, count($allSuspendedAccounts), $perPage, $currentPage, [
-            'path' => $request->url(),
-            'query' => $request->query(),
-        ]);
+        // Convert stdClass objects to arrays and format date for the view
+        $suspendedAccounts = $paginator->map(function ($item) {
+            $item = (array) $item;
+            $item['waktu'] = Carbon::parse($item['tanggal_ditangguhkan'])->format('H:i');
+            return $item;
+        })->all();
 
         $paginationData = [
             'total' => $paginator->total(),
@@ -32,347 +33,189 @@ class SuspendedAccountController extends Controller
         ];
 
         return view('pages.SuperAdminPenangguhan', [
-            'suspendedAccounts' => $paginator->items(),
+            'suspendedAccounts' => $suspendedAccounts,
             'paginationData' => $paginationData,
         ]);
     }
+
     /**
      * Display the specified suspended account detail.
      */
-    public function detail($id)
+    public function detail($suspension_id) // $id is suspension_id
     {
-        // Data dummy untuk detail akun - nanti bisa diganti dengan database
-        $accountDetails = [
-            1 => [
-                'id' => 1,
-                'nama' => 'Karsa Wijaya',
-                'kelamin' => 'Laki-Laki',
-                'kota' => 'Bandung',
-                'durasi' => 'Permanen',
-                'nik' => '3273081234567890',
-                'tempat_lahir' => 'Bandung',
-                'tanggal_lahir' => '15 Maret 1985',
-                'alamat' => 'Jl. Sudirman No. 123, Bandung, Jawa Barat',
-                'email' => 'karsa.wijaya@email.com',
-                'ponsel' => '081234567890',
-                'area_kerja' => 'Bandung Kota',
-                'status' => 'Penangguhan Permanen',
-                'status_class' => 'bg-red-100 text-red-600',
-                'tanggal_ditangguhkan' => '10 September 2023',
-                'tanggal_selesai' => '-',
-                'sisa_durasi' => '-',
-                'photo' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
-            ],
-            2 => [
-                'id' => 2,
-                'nama' => 'Dandia Rianti',
-                'kelamin' => 'Perempuan',
-                'kota' => 'Jakarta Timur',
-                'durasi' => '30 Hari',
-                'nik' => '3175081234567891',
-                'tempat_lahir' => 'Jakarta',
-                'tanggal_lahir' => '22 Juli 1990',
-                'alamat' => 'Jl. Raya Bekasi No. 45, Jakarta Timur, DKI Jakarta',
-                'email' => 'dandia.rianti@email.com',
-                'ponsel' => '081234567891',
-                'area_kerja' => 'Jakarta Timur',
-                'status' => 'Penangguhan Sementara',
-                'status_class' => 'bg-orange-100 text-orange-600',
-                'tanggal_ditangguhkan' => '15 Oktober 2023',
-                'tanggal_selesai' => '14 November 2023',
-                'sisa_durasi' => '12 Hari, 8 Jam',
-                'photo' => 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
-            ],
-            10 => [
-                'id' => 10,
-                'nama' => 'Kamaria Mandasari',
-                'kelamin' => 'Perempuan',
-                'kota' => 'Surakarta',
-                'durasi' => '14 Hari',
-                'nik' => '3171895833200123',
-                'tempat_lahir' => 'Surakarta',
-                'tanggal_lahir' => '20 Mei 1998',
-                'alamat' => 'Jl Guntur, Ngasrinon, Jebres, Surakarta, Jawa Tengah',
-                'email' => 'kamarinda23@gmail.com',
-                'ponsel' => '082954627818',
-                'area_kerja' => 'Jebres, Surakarta',
-                'status' => 'Penangguhan Sementara',
-                'status_class' => 'bg-yellow-100 text-yellow-600',
-                'tanggal_ditangguhkan' => '20 Oktober 2023',
-                'tanggal_selesai' => '03 November 2023',
-                'sisa_durasi' => '8 Hari, 16 Jam',
-                'photo' => 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
-            ]
-        ];
+        $account = DB::table('suspended_accounts')->where('suspension_id', $suspension_id)->first();
 
-        // Ambil data berdasarkan ID, jika tidak ada gunakan data default
-        $account = $accountDetails[$id] ?? [
-            'id' => $id,
-            'nama' => 'Data tidak ditemukan',
-            'kelamin' => '-',
-            'kota' => '-',
-            'durasi' => '-',
-            'nik' => '-',
-            'tempat_lahir' => '-',
-            'tanggal_lahir' => '-',
-            'alamat' => '-',
-            'email' => '-',
-            'ponsel' => '-',
-            'area_kerja' => '-',
-            'status' => 'Tidak Diketahui',
-            'status_class' => 'bg-gray-100 text-gray-600',
-            'tanggal_ditangguhkan' => '-',
-            'tanggal_selesai' => '-',
-            'sisa_durasi' => '-',
-            'photo' => 'https://via.placeholder.com/150'
-        ];
+        if (!$account) {
+            abort(404, 'Akun penangguhan tidak ditemukan');
+        }
+
+        $account = (array) $account;
+        $account['sisa_durasi'] = $account['tanggal_selesai'] ? Carbon::parse($account['tanggal_selesai'])->diffForHumans(null, true) : '-';
 
         return view('pages.SuperAdminDetailPenangguhan', compact('account'));
     }
 
     /**
      * Restore suspended account.
+     * FIXED: Menggunakan suspension_id yang benar sesuai dengan database
      */
-    public function restore($id, Request $request): JsonResponse
+    public function restore($id): JsonResponse // $id is suspension_id (string format PNG001, PNG002, etc.)
     {
         try {
-            Log::info('Restore attempt', ['account_id' => $id]);
-            $accountId = (int) $id;
-
-            if ($accountId <= 0) {
-                Log::warning('Invalid account ID for restore', ['id' => $id]);
-                return response()->json(['success' => false, 'message' => 'ID akun tidak valid'], 400);
-            }
-
-            $suspendedAccounts = $request->session()->get('suspended_accounts', []);
-
-            $indexToRemove = null;
-            foreach ($suspendedAccounts as $key => $account) {
-                if (isset($account['id']) && $account['id'] == $accountId) {
-                    $indexToRemove = $key;
-                    break;
-                }
-            }
-
-            if ($indexToRemove !== null) {
-                // Remove the item from the array using unset
-                unset($suspendedAccounts[$indexToRemove]);
-
-                // Re-index the array
-                $updatedSuspendedAccounts = array_values($suspendedAccounts);
-
-                // Put the updated array back into the session and save
-                $request->session()->put('suspended_accounts', $updatedSuspendedAccounts);
-                $request->session()->save();
-
-                Log::info('Account restored successfully and removed from session', ['account_id' => $accountId]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Akun berhasil dipulihkan',
-                    'data' => ['account_id' => $accountId]
-                ]);
-            } else {
-                Log::warning('Account to restore not found in session', ['account_id' => $accountId]);
-                return response()->json(['success' => false, 'message' => 'Akun dengan ID tersebut tidak ditemukan di daftar penangguhan'], 404);
-            }
-
-        } catch (\Exception $e) {
-            Log::error('Restore failed', [
-                'account_id' => $id,
-                'error' => $e->getMessage(),
-            ]);
+            // Log untuk debugging
+            Log::info('Attempting to restore account with suspension_id: ' . $id);
             
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
-            ], 500);
+            // Gunakan suspension_id sebagai string (bukan integer)
+            $deleted = DB::table('suspended_accounts')
+                ->where('suspension_id', $id)  // suspension_id adalah string seperti "PNG001"
+                ->delete();
+
+            if ($deleted) {
+                Log::info('Account restored successfully', ['suspension_id' => $id, 'deleted_rows' => $deleted]);
+                return response()->json(['success' => true, 'message' => 'Penangguhan akun berhasil dihapus']);
+            } else {
+                Log::warning('Account to restore not found', ['suspension_id' => $id]);
+                return response()->json(['success' => false, 'message' => 'Akun tidak ditemukan'], 404);
+            }
+        } catch (\Exception $e) {
+            Log::error('Restore failed', ['suspension_id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()], 500);
         }
     }
 
     /**
      * Search suspended accounts.
+     * FIXED: Menambahkan pencarian berdasarkan suspension_id yang benar
      */
     public function search(Request $request): JsonResponse
     {
         try {
             $query = $request->get('q', '');
-            
-            // Data dummy untuk pencarian
-            $allAccounts = [
-                ['id' => 1, 'nama' => 'Karsa Wijaya', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen'],
-                ['id' => 2, 'nama' => 'Dandia Rianti', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => '30 Hari'],
-                ['id' => 3, 'nama' => 'Santi Martini', 'kelamin' => 'Perempuan', 'kota' => 'Jakarta Timur', 'durasi' => 'Permanen'],
-                ['id' => 4, 'nama' => 'Tono Winarto', 'kelamin' => 'Laki-Laki', 'kota' => 'Jakarta Selatan', 'durasi' => '30 Hari'],
-                ['id' => 5, 'nama' => 'Chandra Utama', 'kelamin' => 'Laki-Laki', 'kota' => 'Pekalongan', 'durasi' => 'Permanen'],
-                ['id' => 6, 'nama' => 'Willy Kusuma', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => '7 Hari'],
-                ['id' => 10, 'nama' => 'Kamaria Mandasari', 'kelamin' => 'Perempuan', 'kota' => 'Surakarta', 'durasi' => '14 Hari'],
-                ['id' => 11, 'nama' => 'Uda Lazuardi', 'kelamin' => 'Laki-Laki', 'kota' => 'Bandung', 'durasi' => 'Permanen'],
-            ];
+            $dbQuery = DB::table('suspended_accounts');
 
-            $filteredAccounts = array_filter($allAccounts, function($account) use ($query) {
-                return empty($query) || 
-                       stripos($account['nama'], $query) !== false ||
-                       stripos($account['kota'], $query) !== false ||
-                       stripos($account['kelamin'], $query) !== false ||
-                       stripos($account['durasi'], $query) !== false ||
-                       strpos((string)$account['id'], $query) !== false;
+            if (!empty($query)) {
+                $dbQuery->where(function($q) use ($query) {
+                    $q->where('nama', 'like', '%' . $query . '%')
+                      ->orWhere('suspension_id', 'like', '%' . $query . '%')  // suspension_id sebagai string
+                      ->orWhere('area_kerja', 'like', '%' . $query . '%')
+                      ->orWhere('durasi', 'like', '%' . $query . '%');
+                });
+            }
+
+            $accounts = $dbQuery->get()->map(function($item) {
+                $account = (array) $item;
+                // Tambahkan format waktu untuk konsistensi
+                $account['waktu'] = Carbon::parse($account['tanggal_ditangguhkan'])->format('H:i');
+                return $account;
             });
 
             return response()->json([
                 'success' => true,
-                'data' => array_values($filteredAccounts),
+                'data' => $accounts,
                 'query' => $query,
-                'total' => count($filteredAccounts)
+                'total' => count($accounts)
             ]);
 
         } catch (\Exception $e) {
-            Log::error("Search failed", [
-                'query' => $request->get('q'),
-                'error' => $e->getMessage()
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Pencarian gagal. Silakan coba lagi.',
-                'error' => config('app.debug') ? $e->getMessage() : 'Search error'
-            ], 500);
+            Log::error("Search failed", ['query' => $request->get('q'), 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Pencarian gagal: ' . $e->getMessage()], 500);
         }
-    }
-
-    private function getTerapisDataById($id)
-    {
-        $allTerapis = [
-            1 => [
-                'id' => 1,
-                'nama' => 'Karsa Wijaya',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Kertasari, Bandung',
-            ],
-            2 => [
-                'id' => 2,
-                'nama' => 'Budi Santoso',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Jakarta Pusat',
-            ],
-            3 => [
-                'id' => 3,
-                'nama' => 'Joko Widodo',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Jakarta Utara',
-            ],
-            4 => [
-                'id' => 4,
-                'nama' => 'Agus Setiawan',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Jakarta Selatan',
-            ],
-            5 => [
-                'id' => 5,
-                'nama' => 'Indra Wijaya',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Jakarta Pusat',
-            ],
-            6 => [
-                'id' => 6,
-                'nama' => 'Samsul Alamayah',
-                'jenis_kelamin' => 'Laki-Laki',
-                'area_kerja' => 'Jakarta Timur',
-            ]
-        ];
-
-        return $allTerapis[$id] ?? null;
     }
 
     /**
      * Suspend a therapist account.
      */
-    public function suspend(Request $request, $id): JsonResponse
+    public function suspend(Request $request, $id): JsonResponse // $id is terapis_id
     {
         try {
-            // Log untuk debugging
-            Log::info('Suspend attempt', [
-                'terapis_id' => $id,
-                'request_data' => $request->all(),
-            ]);
-
-            // Validasi data
             $validatedData = $request->validate([
                 'reason' => 'required|string',
                 'description' => 'required|string|max:500',
                 'duration' => 'required|string',
             ]);
 
-            // Ambil data terapis
-            $terapisData = $this->getTerapisDataById($id);
-
-            // Fallback jika terapis tidak ditemukan
+            $terapisData = $this->getTerapisData($id);
             if (!$terapisData) {
-                $terapisData = [
-                    'nama' => 'Terapis Tidak Dikenal',
-                    'jenis_kelamin' => '-',
-                    'area_kerja' => '-',
-                ];
+                return response()->json(['success' => false, 'message' => 'Data terapis tidak ditemukan.'], 404);
             }
 
-            // Map durasi dari form value ke display text
-            $durationMap = [
-                '1' => '7 Hari',
-                '7' => '14 Hari',
-                '14' => '30 Hari',
-                '30' => 'Permanen',
-            ];
+            $durationDaysMap = ['1' => 7, '7' => 14, '14' => 30, '30' => -1];
+            $days = $durationDaysMap[$validatedData['duration']] ?? 0;
+            $durationMap = ['1' => '7 Hari', '7' => '14 Hari', '14' => '30 Hari', '30' => 'Permanen'];
             $durasi = $durationMap[$validatedData['duration']] ?? $validatedData['duration'];
 
-            // Simulasi proses penangguhan
-            $suspendedAccounts = $request->session()->get('suspended_accounts', []);
-            
-            $newSuspendedAccount = [
-                'id' => $id,
+            $lastSuspension = DB::table('suspended_accounts')->orderBy('id', 'desc')->first();
+            $maxId = $lastSuspension ? (int)substr($lastSuspension->suspension_id, 3) : 0;
+            $newId = 'PNG' . str_pad($maxId + 1, 3, '0', STR_PAD_LEFT);
+
+            $isPermanent = ($durasi === 'Permanen');
+
+            DB::table('suspended_accounts')->insert([
+                'suspension_id' => $newId,
+                'terapis_id' => $id,
                 'nama' => $terapisData['nama'],
                 'kelamin' => $terapisData['jenis_kelamin'],
-                'kota' => $terapisData['area_kerja'], // Menggunakan area_kerja sebagai kota
+                'nik' => $terapisData['nik'],
+                'email' => $terapisData['email'],
+                'ponsel' => $terapisData['ponsel'],
+                'alamat' => $terapisData['alamat'],
+                'area_kerja' => $terapisData['area_kerja'],
+                'photo' => $terapisData['photo'],
                 'durasi' => $durasi,
-                'waktu' => now()->format('H:i'),
-            ];
-
-            $suspendedAccounts[] = $newSuspendedAccount;
-            $request->session()->put('suspended_accounts', $suspendedAccounts);
-            
-            Log::info('Account suspended successfully', [
-                'terapis_id' => $id,
-                'validated_data' => $validatedData,
+                'alasan' => $validatedData['reason'],
+                'deskripsi_alasan' => $validatedData['description'],
+                'tanggal_ditangguhkan' => now(),
+                'tanggal_selesai' => !$isPermanent ? now()->addDays($days) : null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Akun berhasil ditangguhkan.',
-                'data' => [
-                    'terapis_id' => $id,
-                    'suspended_at' => now()->toDateTimeString(),
-                ]
-            ]);
+            Log::info('Account suspended and stored in DB', ['terapis_id' => $id, 'new_suspension_id' => $newId]);
+            return response()->json(['success' => true, 'message' => 'Akun berhasil ditangguhkan.']);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Suspend validation failed', [
-                'terapis_id' => $id,
-                'errors' => $e->errors(),
-            ]);
-            return response()->json([
-                'success' => false, 
-                'message' => 'Data tidak valid.', 
-                'errors' => $e->errors()
-            ], 422);
+            return response()->json(['success' => false, 'message' => 'Data tidak valid.', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
-            Log::error('Suspend failed', [
-                'terapis_id' => $id,
-                'error' => $e->getMessage(),
-            ]);
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
-            ], 500);
+            Log::error('Suspend failed', ['terapis_id' => $id, 'error' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem.'], 500);
         }
+    }
+
+    private function getTerapisData($id)
+    {
+        // Data dummy, in real app should come from Terapis table
+        $allTerapis = [
+            1 => [
+                'id' => 1, 'nama' => 'Samsul Alamsyah', 'email' => 'samsul.alamayah@gmail.com',
+                'ponsel' => '082954627818', 'area_kerja' => 'Jakarta Timur',
+                'status_akun' => 'Tidak dalam Penangguhan', 'nik' => '31718958332409040',
+                'tempat_lahir' => 'Jakarta', 'tanggal_lahir' => '15 Agustus 1988',
+                'jenis_kelamin' => 'Laki-Laki', 'alamat' => 'Jl. Raya Bekasi No. 45, Pulogadung, Jakarta Timur',
+                'photo' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
+            ],
+            2 => [
+                'id' => 2, 'nama' => 'Budi Santoso', 'email' => 'budi.santoso@gmail.com',
+                'ponsel' => '081234567890', 'area_kerja' => 'Jakarta Pusat',
+                'status_akun' => 'Dalam Penangguhan', 'nik' => '31718958332409036',
+                'tempat_lahir' => 'Jakarta', 'tanggal_lahir' => '20 Mei 1985',
+                'jenis_kelamin' => 'Laki-Laki', 'alamat' => 'Jl. Menteng Raya No. 123, Menteng, Jakarta Pusat',
+                'photo' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
+            ],
+            3 => [
+                'id' => 3,
+                'nama' => 'Joko Widodo',
+                'email' => 'joko.widodo@gmail.com',
+                'ponsel' => '089876543210',
+                'area_kerja' => 'Jakarta Utara',
+                'status_akun' => 'Tidak dalam Penangguhan',
+                'nik' => '31718958332409037',
+                'tempat_lahir' => 'Surakarta',
+                'tanggal_lahir' => '21 Juni 1961',
+                'jenis_kelamin' => 'Laki-Laki',
+                'alamat' => 'Jl. Kelapa Gading Boulevard No. 88, Kelapa Gading, Jakarta Utara',
+                'photo' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=687&q=80'
+            ],
+        ];
+        return $allTerapis[$id] ?? null;
     }
 }

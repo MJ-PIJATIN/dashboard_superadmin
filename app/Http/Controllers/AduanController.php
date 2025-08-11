@@ -18,10 +18,10 @@ class AduanController extends Controller
                 'waktu' => '17:30',
                 'lokasi' => 'Pulogadung, Jakarta Timur',
                 'status_pelapor' => 'Pelanggan',
-                'nama_terlapor' => 'Karsa Wijaya',
+                'nama_terlapor' => 'Samsul Alamsyah',
                 'area_kerja' => 'Jakarta Timur',
                 'jenis_kelamin' => 'Laki-Laki',
-                'alamat_terlapor' => 'Kecamatan Pulogadung, Jakarta Timur 13230, Jakarta Timur',
+                'alamat_terlapor' => 'Jl. Raya Bekasi No. 45, Pulogadung, Jakarta Timur',
                 'detail_aduan' => [
                     'Penggunaan bahasa kasar.',
                     'Kontak fisik tidak diinginkan.',
@@ -104,7 +104,7 @@ class AduanController extends Controller
         ];
 
         $aduan = [];
-        for ($i = 1; $i <= 200; $i++) {
+        for ($i = 1; $i <= 40; $i++) {
             $template = $baseData[($i - 1) % count($baseData)];
             $template['id'] = $i;
             $template['nama_pelapor'];
@@ -126,10 +126,10 @@ class AduanController extends Controller
     {
         // Data dummy detail terapis berdasarkan nama terlapor
         $terapisDetails = [
-            'Samsul Alamayah' => [
+            'Samsul Alamsyah' => [
                 'id' => 1,
-                'nama' => 'Samsul Alamayah',
-                'email' => 'samsul.alamayah@gmail.com',
+                'nama' => 'Samsul Alamsyah',
+                'email' => 'samsul.alamsyah@gmail.com',
                 'ponsel' => '082954627818',
                 'area_kerja' => 'Jakarta Timur',
                 'status_akun' => 'Tidak dalam Penangguhan',
