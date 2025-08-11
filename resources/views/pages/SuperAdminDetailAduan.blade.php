@@ -27,10 +27,10 @@
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex items-center justify-between">
                 <div class="flex justify-center items-center">
-                    <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 mr-4 flex items-center justify-center">
-                    <img src="{{ asset('images/bel.svg') }}" 
+                    <div class="w-16 h-16 rounded-full overflow-hidden mr-4 flex items-center justify-center">
+                    <img src="{{ asset('images/orang.svg') }}" 
                         alt="Profile Photo" 
-                        class="w-5 h-5 object-cover" />
+                        class="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">{{ $detailAduan['nama_pelapor'] }}</h2>
@@ -39,9 +39,9 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan['waktu'] }}</p>
-                    <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan['lokasi'] }}</p>
+                    <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan['lokasi'] }}</p>
                     <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan['id']]) }}" 
-                    class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors mt-2
+                    class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors
                             hover:text-white hover:bg-[#2196F3]">
                     Detail Pesanan
                     </a>

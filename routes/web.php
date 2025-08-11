@@ -113,7 +113,7 @@ Route::prefix('admin')->group(function () {
     Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function () {
 
         // Halaman detail akun ditangguhkan
-        Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
+        Route::get('/{suspension_id}/detail', [SuspendedAccountController::class, 'detail'])
             ->name('detail')
             ->where('id', '[0-9]+'); // Hanya menerima ID berupa angka
         
@@ -134,7 +134,7 @@ Route::get('/aduan-pelanggan', [App\Http\Controllers\AduanController::class, 'in
 Route::get('/detail-aduan/{id}', [App\Http\Controllers\AduanController::class, 'show'])->name('detiladuan');
 Route::get('/aduan/search', [App\Http\Controllers\AduanController::class, 'search'])->name('aduan.search');
 Route::get('/detail-report-terapis/{aduan_id}', [App\Http\Controllers\AduanController::class, 'showTerapisDetail'])->name('detail.report.terapis');
-Route::post('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
+Route::delete('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
 
 // Halaman FAQ
 Route::resource('faqs', FaqController::class);
@@ -203,86 +203,4 @@ Route::get('/clean-suspended-data', function(Request $request) {
         
         $cleaned[] = $account;
     }
-    
-    // Simpan data yang sudah dibersihkan ke session
-    $request->session()->put('suspended_accounts', $cleaned);
-    $request->session()->save(); // Force save
-    
-    echo "<h2>Data yang DIHAPUS:</h2>";
-    echo "<pre>";
-    print_r($removed);
-    echo "</pre>";
-    
-    echo "<h2>Data Session SETELAH dibersihkan:</h2>";
-    echo "<pre>";
-    print_r($cleaned);
-    echo "</pre>";
-    
-    echo "<h2>Summary:</h2>";
-    echo "Data sebelumnya: " . count($suspended) . " akun<br>";
-    echo "Data dihapus: " . count($removed) . " akun<br>";
-    echo "Data tersisa: " . count($cleaned) . " akun<br>";
-    
-    echo "<br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
-    
-    return null; // Sudah echo di atas
-});
-
-// Route untuk reset session (jika diperlukan)
-Route::get('/reset-suspended-data', function(Request $request) {
-    // Data default yang bersih
-    $defaultCleanData = [
-        [
-            'id' => 3,
-            'nama' => 'Joko Widodo',
-            'kelamin' => 'Laki-Laki', 
-            'kota' => 'Jakarta Utara',
-            'durasi' => 'Permanen',
-            'waktu' => '15:53'
-        ],
-        [
-            'id' => 5,
-            'nama' => 'Indra Wijaya',
-            'kelamin' => 'Laki-Laki',
-            'kota' => 'Jakarta Pusat', 
-            'durasi' => '14 Hari',
-            'waktu' => '15:56'
-        ],
-        [
-            'id' => 2,
-            'nama' => 'Budi Santoso',
-            'kelamin' => 'Laki-Laki',
-            'kota' => 'Jakarta Pusat',
-            'durasi' => '30 Hari', 
-            'waktu' => '16:04'
-        ],
-        [
-            'id' => 1,
-            'nama' => 'Karsa Wijaya',
-            'kelamin' => 'Laki-Laki',
-            'kota' => 'Kertasari, Bandung',
-            'durasi' => '7 Hari',
-            'waktu' => '16:08'
-        ]
-    ];
-    
-    $request->session()->put('suspended_accounts', $defaultCleanData);
-    $request->session()->save();
-    
-    echo "<h2>Session berhasil direset dengan data bersih!</h2>";
-    echo "<pre>";
-    print_r($defaultCleanData);
-    echo "</pre>";
-    
-    echo "<br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
-});
-
-// Route untuk clear semua data suspended (kosongkan)
-Route::get('/clear-all-suspended', function(Request $request) {
-    $request->session()->forget('suspended_accounts');
-    $request->session()->save();
-    
-    echo "<h2>Semua data penangguhan berhasil dihapus!</h2>";
-    echo "Session 'suspended_accounts' telah dikosongkan.";
-    echo "<br><br><a href='/penangguhan' style='background: #469D89; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Lihat Halaman Penangguhan</a>";
 });
