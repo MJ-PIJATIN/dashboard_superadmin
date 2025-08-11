@@ -87,7 +87,7 @@
                                 data-terapis-id="{{ $item->id }}" 
                                 data-terapis-name="{{ $item->name }}">
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
-                                    {{ $terapis->firstItem() + $index }}
+                                    {{ $item->id }}
                                 </td>    
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
                                     {{ $item->name }}
