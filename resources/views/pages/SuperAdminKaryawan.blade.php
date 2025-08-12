@@ -71,6 +71,12 @@
                     <tbody class="text-gray-700" id="admin-tbody">
                         @foreach ($adminEmployees as $index => $employee)
                             <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-2">{{ $index + $karyawan->firstItem() }}</td>
+                                <td class="px-4 py-2">{{ $data->nama_lengkap }}</td>
+                                <td class="px-4 py-2">{{ \Carbon\Carbon::parse($data->tanggal_bergabung)->format('d M Y') }}</td>
+                                <td class="px-4 py-2">{{ $data->ponsel }}</td>
+                                <td class="px-4 py-2">{{ $data->jenis_kelamin }}</td>
+                                <td class="px-4 py-2">{{ $data->area_penempatan }}</td>
                                 <td class="px-4 py-2">{{ $index + $adminEmployees->firstItem() }}</td>
                                 <td class="px-4 py-2">{{ $employee->first_name }} {{ $employee->last_name }}</td>
                                 <td class="px-4 py-2">{{ \Carbon\Carbon::parse($employee->joining_date)->format('d M Y') }}</td>
@@ -118,6 +124,20 @@
             </div>
             
 
+        {{-- Tab Contents (Finance) --}}
+        <div id="tab-finance" class="tab-content hidden">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-white border-collapse text-left">
+                    <tr>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">#</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[220px]">Nama Lengkap</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[220px]">Tanggal Bergabung</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[220px]">Ponsel</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[220px]">Jenis Kelamin</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[220px]">Area Penempatan</th>
+                        <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">Aksi</th>
+                    </tr>
+                </thead>
             {{-- Tab Contents (Finance) --}}
             <div id="tab-finance-content" class="tab-content hidden">
                 <table class="w-full text-sm text-left">
@@ -135,6 +155,12 @@
                     <tbody class="text-gray-700" id="finance-tbody">
                         @foreach ($financeEmployees as $index => $employee)
                             <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 py-2">{{ $index + $karyawan->firstItem() }}</td>
+                                <td class="px-4 py-2">{{ $data->nama_lengkap }}</td>
+                                <td class="px-4 py-2">{{ \Carbon\Carbon::parse($data->tanggal_bergabung)->format('d M Y') }}</td>
+                                <td class="px-4 py-2">{{ $data->ponsel }}</td>
+                                <td class="px-4 py-2">{{ $data->jenis_kelamin }}</td>
+                                <td class="px-4 py-2">{{ $data->area_penempatan }}</td>
                                 <td class="px-4 py-2">{{ $index + $financeEmployees->firstItem() }}</td>
                                 <td class="px-4 py-2">{{ $employee->first_name }} {{ $employee->last_name }}</td>
                                 <td class="px-4 py-2">{{ \Carbon\Carbon::parse($employee->joining_date)->format('d M Y') }}</td>
@@ -156,6 +182,25 @@
                             </tr>
                         @endforeach
                     </tbody>
+            </table>
+            
+        {{-- Pagination Section for Finance --}}
+            <div class="flex justify-between items-center mt-4" id="admin-pagination-container">
+                @if ($karyawan->lastPage() > 1)
+                    <span class="text-base font-regular text-gray-600">Halaman {{ $karyawan->currentPage() }} dari {{ $karyawan->lastPage() }}</span>
+                    <div class="flex space-x-1 text-base font-semibold">
+                        @if ($karyawan->onFirstPage())
+                            <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
+                        @else
+                            <a href="{{ $karyawan->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                        @endif
+
+                        @foreach ($karyawan->getUrlRange(1, $karyawan->lastPage()) as $page => $url)
+                            <a href="{{ $url }}" class="px-3 py-1 rounded {{ $page == $karyawan->currentPage() ? 'bg-teal-600 text-white' : 'bg-gray-200 hover:bg-gray-300' }}">{{ $page }}</a>
+                        @endforeach
+
+                        @if ($karyawan->hasMorePages())
+                            <a href="{{ $karyawan->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
                 </table>
 
                 {{-- Pagination Section for Finance --}}
@@ -178,6 +223,32 @@
                             <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
                         @endif
                     </div>
+                @endif
+            </div>
+        </div>
+
+            
+    <!-- Delete Confirmation Drawer -->
+    <div id="delete-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center h-full">
+            <div class="bg-white rounded-lg shadow-lg" style="width: 400px; padding: 24px; min-height: 280px;">
+                <div class="flex flex-col items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Hapus Data</h2>
+                    <img src="{{ asset('images/trash can.svg') }}" alt="Hapus" class="h-20 w-20 mb-6" />
+                    <p class="text-gray-600 text-center text-base">
+                        Apakah Anda yakin ingin menghapus Akun ini
+                        <br><span id="delete-service-name" class="font-semibold text-red-600"></span>?
+                    </p>
+                </div>
+                <div class="flex justify-center gap-8 mt-8">
+                    <button id="delete-confirm" class="text-white px-6 py-2 rounded-lg hover:opacity-90 transition-colors"
+                        style="background-color: #469D89;">
+                        Hapus
+                    </button>
+                    <button id="delete-cancel"
+                        class="bg-red-500 text-white px-7 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                        Batal
+                    </button>
                 </div>
             </div>
         </div>
@@ -211,6 +282,141 @@
 </div>
 
 {{-- Script Tab Switching --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabAdminBtn = document.getElementById('tab-admin-btn');
+            const tabFinanceBtn = document.getElementById('tab-finance-btn');
+            const adminTbody = document.getElementById('admin-tbody');
+            const financeTbody = document.getElementById('finance-tbody');
+            const adminPaginationContainer = document.getElementById('admin-pagination-container');
+            const financePaginationContainer = document.getElementById('finance-pagination-container');
+            const searchInput = document.getElementById('searchInput');
+
+            let activeTab = localStorage.getItem('activeTabKaryawan') || 'admin';
+
+            function renderTable(tbodyElement, data, type) {
+                tbodyElement.innerHTML = '';
+                data.data.forEach((karyawan, index) => {
+                    const row = `
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2">${index + data.from}</td>
+                            <td class="px-4 py-2">${karyawan.nama}</td>
+                            <td class="px-4 py-2">${karyawan.tanggal_bergabung}</td>
+                            <td class="px-4 py-2">${karyawan.ponsel}</td>
+                            <td class="px-4 py-2">${karyawan.jenis_kelamin}</td>
+                            <td class="px-4 py-2">${karyawan.area_penempatan}</td>
+                            <td class="px-4 py-2 flex space-x-2 items-center">
+                                <a href="/${type}/${karyawan.id}" class="hover:text-blue-600" title="Lihat Detail Akun">
+                                    <svg width="18" height="18" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8.9103 8.94769C10.633 10.6704 10.8132 13.3515 9.45099 15.2747L9.30957 15.4644L13.5277 19.6835L13.6025 19.7702C13.8272 20.0731 13.8023 20.5026 13.5277 20.7772C13.2532 21.0517 12.8235 21.0767 12.5207 20.8521L12.434 20.7772L8.17677 16.52C6.26097 17.8118 3.63804 17.6101 1.94298 15.915C0.0190071 13.9911 0.0190071 10.8717 1.94298 8.94769C3.86695 7.02376 6.98633 7.02376 8.9103 8.94769ZM10.6307 0C11.2273 0 11.7996 0.236932 12.2216 0.658707L15.034 3.46961L17.8421 6.28199C18.2634 6.70392 18.5 7.2758 18.5 7.87206V17.7532C18.5 18.996 17.4925 20.0036 16.2496 20.0036L14.74 20.0042C14.7026 19.7111 14.5917 19.4249 14.4058 19.1743L14.2848 19.03L13.758 18.5023L16.2496 18.5033C16.6639 18.5033 16.9997 18.1674 16.9997 17.7532L16.9989 8.00442L12.7522 8.00532C11.5611 8.00532 10.5862 7.07999 10.507 5.90899L10.5018 5.75491V1.50027H4.75076C4.33647 1.50027 4.00062 1.83612 4.00062 2.2504L4.00029 6.67236C3.48132 6.79549 2.97573 6.98942 2.49892 7.25417L2.50036 2.2504C2.50036 1.00754 3.5079 0 4.75076 0H10.6307ZM3.03667 10.0414C1.71674 11.3613 1.71674 13.5014 3.03667 14.8213C4.35662 16.1413 6.49666 16.1413 7.8166 14.8213C9.13654 13.5014 9.13654 11.3613 7.8166 10.0414C6.49666 8.72145 4.35662 8.72145 3.03667 10.0414ZM12.002 2.56045V5.75491C12.002 6.13468 12.2843 6.44852 12.6504 6.49819L12.7522 6.50505L15.9437 6.50416L12.002 2.56045Z" fill="#2196F3"/>
+                                    </svg>
+                                </a>
+                                <a href="#" class="text-red-500 btn-delete" data-nama="${karyawan.nama}">
+                                    <svg width="25" height="25" viewBox="0 0 30 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.951 7.58537H17.0485C17.0485 6.45386 16.1313 5.53659 14.9998 5.53659C13.8682 5.53659 12.951 6.45386 12.951 7.58537ZM11.4144 7.58537C11.4144 5.60522 13.0196 4 14.9998 4C16.9799 4 18.5851 5.60522 18.5851 7.58537H24.4754C24.8997 7.58537 25.2437 7.92935 25.2437 8.35366C25.2437 8.77797 24.8997 9.12195 24.4754 9.12195H23.1241L21.9235 21.5285C21.733 23.4976 20.0782 25 18.0999 25H11.8996C9.92139 25 8.2666 23.4976 8.07604 21.5285L6.8754 9.12195H5.52415C5.09984 9.12195 4.75586 8.77797 4.75586 8.35366C4.75586 7.92935 5.09984 7.58537 5.52415 7.58537H11.4144ZM13.4632 12.4512C13.4632 12.0269 13.1192 11.6829 12.6949 11.6829C12.2706 11.6829 11.9266 12.0269 11.9266 12.4512V20.1341C11.9266 20.5584 12.2706 20.9024 12.6949 20.9024C13.1192 20.9024 13.4632 20.5584 13.4632 20.1341V12.4512ZM17.3046 11.6829C17.7289 11.6829 18.0729 12.0269 18.0729 12.4512V20.1341C18.0729 20.5584 17.7289 20.9024 17.3046 20.9024C16.8803 20.9024 16.5363 20.5584 16.5363 20.1341V12.4512C16.5363 12.0269 16.8803 11.6829 17.3046 11.6829ZM9.60549 21.3805C9.71982 22.562 10.7127 23.4634 11.8996 23.4634H18.0999C19.2868 23.4634 20.2797 22.562 20.394 21.3805L21.5803 9.12195H8.41916L9.60549 21.3805Z" fill="#ED5554"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        `;
+                            tbodyElement.innerHTML += row;
+                        });
+
+                        // Update pagination links
+                        if (data.last_page > 1) {
+                            let paginationHtml = `<span class="text-base font-regular text-gray-600">Halaman ${data.current_page} dari ${data.last_page}</span>
+                                <div class="flex space-x-1 text-base font-semibold">`;
+
+                            if (data.current_page > 1) {
+                                paginationHtml += `<a href="${data.prev_page_url}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>`;
+                            } else {
+                                paginationHtml += `<button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>`;
+                            }
+
+                            data.links.forEach(link => {
+                                if (link.url) {
+                                    paginationHtml += `<a href="${link.url}" class="px-3 py-1 rounded ${link.active ? 'bg-teal-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}">${link.label}</a>`;
+                                } else if (link.label === '...') {
+                                    paginationHtml += `<span class="px-2 py-1">...</span>`;
+                                } else {
+                                    paginationHtml += `<button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>${link.label}</button>`;
+                                }
+                            });
+
+                            if (data.current_page < data.last_page) {
+                                paginationHtml += `<a href="${data.next_page_url}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>`;
+                            } else {
+                                paginationHtml += `<button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>`;
+                            }
+
+                            paginationHtml += `</div>`;
+                            
+                            if (type === 'admin') {
+                                adminPaginationContainer.innerHTML = paginationHtml;
+                                adminPaginationContainer.style.display = 'flex';
+                            } else {
+                                financePaginationContainer.innerHTML = paginationHtml;
+                                financePaginationContainer.style.display = 'flex';
+                            }
+                        } else {
+                            if (type === 'admin') {
+                                adminPaginationContainer.innerHTML = '';
+                                adminPaginationContainer.style.display = 'none';
+                            } else {
+                                financePaginationContainer.innerHTML = '';
+                                financePaginationContainer.style.display = 'none';
+                            }
+                        }
+                    }
+
+            async function loadKaryawanData(url, type) {
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (type === 'admin') {
+                        renderTable(adminTbody, data, 'karyawan'); // Use 'karyawan' for admin detail route
+                    } else {
+                        renderTable(financeTbody, data, 'karyawan/finance'); // Use 'karyawan/finance' for finance detail route
+                    }
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                }
+            }
+
+            function setActiveTab(tab) {
+                const isAdmin = tab === 'admin';
+
+                // Set active tab button styles
+                if (isAdmin) {
+                    tabAdminBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative';
+                    tabFinanceBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 -ml-6 relative after:absolute after:top-0 after:left-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
+                } else {
+                    tabAdminBtn.className = 'w-32 py-3 rounded-t-xl bg-gray-200 text-gray-400 z-10 relative after:absolute after:top-0 after:right-0 after:w-6 after:h-full after:bg-gray-200 after:z-[-1]';
+                    tabFinanceBtn.className = 'w-32 py-3 rounded-t-xl bg-white text-emerald-600 z-20 relative -ml-6';
+                }
+
+                // Simpan tab yang aktif
+                localStorage.setItem('activeTabKaryawan', tab);
+
+                // Tampilkan konten tab yang sesuai
+                document.getElementById('tab-admin').classList.toggle('hidden', !isAdmin);
+                document.getElementById('tab-finance').classList.toggle('hidden', isAdmin);
+
+                // Load data for the active tab
+                const filter = searchInput.value.toLowerCase();
+                loadKaryawanData(`{{ route('karyawan.search') }}?filter=${filter}&role=${tab}`, tab);
+            }
+
+            // Initial load based on active tab
+            setActiveTab(activeTab);
+
+            // Event listeners
+            tabAdminBtn.addEventListener('click', () => setActiveTab('admin'));
+            tabFinanceBtn.addEventListener('click', () => setActiveTab('finance'));
+
+            searchInput.addEventListener('input', function () {
+                const filter = this.value.toLowerCase();
+                loadKaryawanData(`{{ route('karyawan.search') }}?filter=${filter}&role=${activeTab}`, activeTab);
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tabAdminBtn = document.getElementById('tab-admin-btn');

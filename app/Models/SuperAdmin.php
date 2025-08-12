@@ -9,7 +9,7 @@ class SuperAdmin extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'super_admins';
+    protected $table = 'super_admin';
 
     protected $fillable = [
         'email', 

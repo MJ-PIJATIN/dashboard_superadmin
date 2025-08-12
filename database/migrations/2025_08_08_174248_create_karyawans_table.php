@@ -9,16 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('karyawans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->date('tanggal_bergabung');
-            $table->string('ponsel');
-            $table->string('jenis_kelamin');
-            $table->string('area_penempatan');
-            $table->string('role'); // 'admin' or 'finance'
+            $table->string('nama_depan');
+            $table->string('nama_belakang');
+            $table->string('tempat_lahir')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
+            $table->string('email')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('provinsi');
+            $table->string('kota');
+            $table->string('ponsel')->nullable();
+            $table->string('foto')->nullable();
+            $table->enum('role', ['admin', 'finance']);
+            $table->string('password');
             $table->timestamps();
         });
     }

@@ -8,10 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Karyawan extends Model
 {
     use HasFactory;
+    protected $table = 'karyawans'; 
 
     protected $table = 'employees';
 
     protected $fillable = [
+
+        'nama_depan',
+        'nama_belakang',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'email',
+        'alamat',
+        'provinsi',
+        'kota',
+        'ponsel',
+        'foto',
+        'role',
+        'password',
         'id',
         'first_name',
         'last_name',
@@ -29,6 +44,18 @@ class Karyawan extends Model
         'created_at',
         'updated_at',
     ];
+
+        // Accessor untuk nama lengkap
+    public function getNamaLengkapAttribute()
+    {
+        return "{$this->nama_depan} {$this->nama_belakang}";
+    }
+
+    // Accessor untuk area penempatan
+    public function getAreaPenempatanAttribute()
+    {
+        return "{$this->kota}, {$this->provinsi}";
+    }
 
     protected $casts = [
         'joining_date' => 'date',
