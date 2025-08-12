@@ -74,20 +74,20 @@
                     <tbody class="text-gray-700">
                         @foreach ($transfer as $booking)
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4">{{ $transfer->firstItem() + $loop->index }}</td>
+                                <td class="py-2 px-4">{{ $booking->id }}</td>
                                 <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
-                                            @if ($booking->customer?->gender === 'male') bg-blue-200 
-                                            @elseif ($booking->customer?->gender === 'female') bg-pink-200 
+                                            @if ($booking->customer?->gender === 'LakiLaki') bg-blue-200 
+                                            @elseif ($booking->customer?->gender === 'Perempuan') bg-pink-200 
                                             @endif">
-                                            @if ($booking->customer?->gender === 'male')
+                                            @if ($booking->customer?->gender === 'LakiLaki')
                                                 <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
                                                 </svg>
-                                            @elseif ($booking->customer?->gender === 'female')
+                                            @elseif ($booking->customer?->gender === 'Perempuan')
                                                 <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -129,7 +129,7 @@
                                             </svg>
                                         </a>
                                         <button class="text-red-600 hover:text-red-800 btn-delete" data-id="{{ $booking->id }}"
-                                        data-nama="{{ $booking->customer?->name ?? '-' }}" data-tipe="transfer">
+                                        data-name="{{ $booking->customer?->name ?? '-' }}" data-tipe="transfer">
                                             <svg width="25" height="25" viewBox="0 0 30 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                <path d="M12.951 7.58537H17.0485C17.0485 6.45386 16.1313 5.53659 14.9998 5.53659C13.8682 5.53659 12.951 6.45386 12.951 7.58537ZM11.4144 7.58537C11.4144 5.60522 13.0196 4 14.9998 4C16.9799 4 18.5851 5.60522 18.5851 7.58537H24.4754C24.8997 7.58537 25.2437 7.92935 25.2437 8.35366C25.2437 8.77797 24.8997 9.12195 24.4754 9.12195H23.1241L21.9235 21.5285C21.733 23.4976 20.0782 25 18.0999 25H11.8996C9.92139 25 8.2666 23.4976 8.07604 21.5285L6.8754 9.12195H5.52415C5.09984 9.12195 4.75586 8.77797 4.75586 8.35366C4.75586 7.92935 5.09984 7.58537 5.52415 7.58537H11.4144ZM13.4632 12.4512C13.4632 12.0269 13.1192 11.6829 12.6949 11.6829C12.2706 11.6829 11.9266 12.0269 11.9266 12.4512V20.1341C11.9266 20.5584 12.2706 20.9024 12.6949 20.9024C13.1192 20.9024 13.4632 20.5584 13.4632 20.1341V12.4512ZM17.3046 11.6829C17.7289 11.6829 18.0729 12.0269 18.0729 12.4512V20.1341C18.0729 20.5584 17.7289 20.9024 17.3046 20.9024C16.8803 20.9024 16.5363 20.5584 16.5363 20.1341V12.4512C16.5363 12.0269 16.8803 11.6829 17.3046 11.6829ZM9.60549 21.3805C9.71982 22.562 10.7127 23.4634 11.8996 23.4634H18.0999C19.2868 23.4634 20.2797 22.562 20.394 21.3805L21.5803 9.12195H8.41916L9.60549 21.3805Z" fill="#ED5554"/>
                                             </svg>
@@ -178,20 +178,20 @@
                     <tbody class="text-gray-700">
                         @foreach ($cash as $booking)
                             <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4">{{ $cash->firstItem() + $loop->index }}</td>
+                            <td class="py-2 px-4">{{ $booking->id }}</td>
                                <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
-                                            @if ($booking->customer?->gender === 'male') bg-blue-200 
-                                            @elseif ($booking->customer?->gender === 'female') bg-pink-200 
+                                            @if ($booking->customer?->gender === 'LakiLaki') bg-blue-200 
+                                            @elseif ($booking->customer?->gender === 'Perempuan') bg-pink-200 
                                             @endif">
-                                            @if ($booking->customer?->gender === 'male')
+                                            @if ($booking->customer?->gender === 'LakiLaki')
                                                 <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
                                                         d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
                                                 </svg>
-                                            @elseif ($booking->customer?->gender === 'female')
+                                            @elseif ($booking->customer?->gender === 'Perempuan')
                                                 <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
                                                     xmlns="http://www.w3.org/2000/svg">
                                                     <path
@@ -226,14 +226,14 @@
                                 </td>
                                 <td class="py-2 px-4">
                                     <div class="flex justify-center items-center gap-3">
-                                        <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $booking->id]) }}"
+                                        <a href="{{ route('pesanan.detail', ['tipe' => 'cash', 'id' => $booking->id]) }}"
                                             class="text-blue-600 hover:underline">
                                             <svg width="18" height="18" viewBox="0 0 19 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M8.9103 8.94769C10.633 10.6704 10.8132 13.3515 9.45099 15.2747L9.30957 15.4644L13.5277 19.6835L13.6025 19.7702C13.8272 20.0731 13.8023 20.5026 13.5277 20.7772C13.2532 21.0517 12.8235 21.0767 12.5207 20.8521L12.434 20.7772L8.17677 16.52C6.26097 17.8118 3.63804 17.6101 1.94298 15.915C0.0190071 13.9911 0.0190071 10.8717 1.94298 8.94769C3.86695 7.02376 6.98633 7.02376 8.9103 8.94769ZM10.6307 0C11.2273 0 11.7996 0.236932 12.2216 0.658707L15.034 3.46961L17.8421 6.28199C18.2634 6.70392 18.5 7.2758 18.5 7.87206V17.7532C18.5 18.996 17.4925 20.0036 16.2496 20.0036L14.74 20.0042C14.7026 19.7111 14.5917 19.4249 14.4058 19.1743L14.2848 19.03L13.758 18.5023L16.2496 18.5033C16.6639 18.5033 16.9997 18.1674 16.9997 17.7532L16.9989 8.00442L12.7522 8.00532C11.5611 8.00532 10.5862 7.07999 10.507 5.90899L10.5018 5.75491V1.50027H4.75076C4.33647 1.50027 4.00062 1.83612 4.00062 2.2504L4.00029 6.67236C3.48132 6.79549 2.97573 6.98942 2.49892 7.25417L2.50036 2.2504C2.50036 1.00754 3.5079 0 4.75076 0H10.6307ZM3.03667 10.0414C1.71674 11.3613 1.71674 13.5014 3.03667 14.8213C4.35662 16.1413 6.49666 16.1413 7.8166 14.8213C9.13654 13.5014 9.13654 11.3613 7.8166 10.0414C6.49666 8.72145 4.35662 8.72145 3.03667 10.0414ZM12.002 2.56045V5.75491C12.002 6.13468 12.2843 6.44852 12.6504 6.49819L12.7522 6.50505L15.9437 6.50416L12.002 2.56045Z" fill="#2196F3"/>
                                             </svg>
                                         </a>
                                         <button class="text-red-600 hover:text-red-800 btn-delete" data-id="{{ $booking->id }}"
-                                        data-nama="{{ $booking->customer?->name ?? '-' }}" data-tipe="transfer">
+                                        data-name="{{ $booking->customer?->name ?? '-' }}" data-tipe="cash">
                                             <svg width="25" height="25" viewBox="0 0 30 29" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                <path d="M12.951 7.58537H17.0485C17.0485 6.45386 16.1313 5.53659 14.9998 5.53659C13.8682 5.53659 12.951 6.45386 12.951 7.58537ZM11.4144 7.58537C11.4144 5.60522 13.0196 4 14.9998 4C16.9799 4 18.5851 5.60522 18.5851 7.58537H24.4754C24.8997 7.58537 25.2437 7.92935 25.2437 8.35366C25.2437 8.77797 24.8997 9.12195 24.4754 9.12195H23.1241L21.9235 21.5285C21.733 23.4976 20.0782 25 18.0999 25H11.8996C9.92139 25 8.2666 23.4976 8.07604 21.5285L6.8754 9.12195H5.52415C5.09984 9.12195 4.75586 8.77797 4.75586 8.35366C4.75586 7.92935 5.09984 7.58537 5.52415 7.58537H11.4144ZM13.4632 12.4512C13.4632 12.0269 13.1192 11.6829 12.6949 11.6829C12.2706 11.6829 11.9266 12.0269 11.9266 12.4512V20.1341C11.9266 20.5584 12.2706 20.9024 12.6949 20.9024C13.1192 20.9024 13.4632 20.5584 13.4632 20.1341V12.4512ZM17.3046 11.6829C17.7289 11.6829 18.0729 12.0269 18.0729 12.4512V20.1341C18.0729 20.5584 17.7289 20.9024 17.3046 20.9024C16.8803 20.9024 16.5363 20.5584 16.5363 20.1341V12.4512C16.5363 12.0269 16.8803 11.6829 17.3046 11.6829ZM9.60549 21.3805C9.71982 22.562 10.7127 23.4634 11.8996 23.4634H18.0999C19.2868 23.4634 20.2797 22.562 20.394 21.3805L21.5803 9.12195H8.41916L9.60549 21.3805Z" fill="#ED5554"/>
                                             </svg>
@@ -336,7 +336,6 @@
 </div>
 
     <script>
-    {{-- Script Tab Switching --}}    
         document.addEventListener('DOMContentLoaded', function () {
             const tabTransferBtn = document.getElementById('tab-transfer-btn');
             const tabCashBtn = document.getElementById('tab-cash-btn');
@@ -364,7 +363,6 @@
             tabTransferBtn.addEventListener('click', () => setActiveTab('transfer'));
             tabCashBtn.addEventListener('click', () => setActiveTab('cash'));
 
-            // Load dari localStorage
             const savedTab = localStorage.getItem('activeTab') || 'transfer';
             setActiveTab(savedTab);
 
@@ -382,35 +380,74 @@
                 });
             });
 
+             const deleteDrawer = document.getElementById('delete-drawer');
+    const deleteServiceName = document.getElementById('delete-service-name');
+    const deleteConfirmBtn = document.getElementById('delete-confirm');
+    const deleteCancelBtn = document.getElementById('delete-cancel');
 
-            const deleteDrawer = document.getElementById('delete-drawer');
-            const deleteServiceName = document.getElementById('delete-service-name');
-            const deleteConfirmBtn = document.getElementById('delete-confirm');
-            const deleteCancelBtn = document.getElementById('delete-cancel');
+    let rowToDelete = null;
+    let deleteData = null;
 
-            let rowToDelete = null;
+    document.querySelectorAll('.btn-delete').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const tipe = this.dataset.tipe;
+            
+            deleteServiceName.textContent = name;
+            rowToDelete = this.closest('tr');
+            deleteData = { id: id, tipe: tipe };
+            deleteDrawer.classList.remove('hidden');
+        });
+    });
 
-            document.querySelectorAll('.btn-delete').forEach(button => {
-                button.addEventListener('click', function () {
-                    const nama = this.dataset.nama;
-                    deleteServiceName.textContent = nama;
-                    rowToDelete = this.closest('tr');
-                    deleteDrawer.classList.remove('hidden');
-                });
-            });
+    deleteConfirmBtn.addEventListener('click', function () {
+        if (deleteData && rowToDelete) {
+            deleteConfirmBtn.textContent = 'Menghapus...';
+            deleteConfirmBtn.disabled = true;
 
-            deleteConfirmBtn.addEventListener('click', function () {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                    rowToDelete = null;
+            fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
-                deleteDrawer.classList.add('hidden');
-            });
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    rowToDelete.remove();
+                    
+                    alert('Pesanan berhasil dihapus');
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus pesanan');
+            })
+            .finally(() => {
+                deleteConfirmBtn.textContent = 'Hapus';
+                deleteConfirmBtn.disabled = false;
 
-            deleteCancelBtn.addEventListener('click', function () {
                 deleteDrawer.classList.add('hidden');
                 rowToDelete = null;
+                deleteData = null;
             });
-        });
+        }
+    });
+
+    deleteCancelBtn.addEventListener('click', function () {
+        deleteDrawer.classList.add('hidden');
+        rowToDelete = null;
+        deleteData = null;
+    });
+});
     </script>
 @endsection

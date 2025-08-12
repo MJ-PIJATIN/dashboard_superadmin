@@ -8,8 +8,8 @@
 @endsection
 
 @section('content')
-   <div class="w-full min-h-screen bg-gray-50">
-    <div class="ml-[26px] mr-[26px] px-6 pt-[95px] pb-[101px] space-y-6">
+    <div class="w-full min-h-screen bg-gray-50">
+        <div class="ml-[26px] mr-[26px] px-6 pt-[95px] pb-[101px] space-y-6">
 
             <!-- Heading -->
             <div class="flex justify-between items-center">
@@ -46,15 +46,16 @@
                         </select>
                     </div>
 
-                        <!-- Card Detail -->
-                        <div class="w-full bg-white p-6 rounded-xl shadow-md">
-                            <h3 class="text-2xl font-bold text-gray-800 mb-1">{{ $pesanan['layanan'] }}</h3>
-                            <p class="text-sm font-semibold text-gray-600 mb-4">Pesanan {{ $pesanan['nama'] }}</p>
-                           <div class="text-sm text-gray-700 font-semibold mb-4 flex flex-col gap-y-3">
+                    <!-- Card Detail -->
+                    <div class="w-full bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-1">{{ $pesanan['layanan'] }}</h3>
+                        <p class="text-sm font-semibold text-gray-600 mb-4">Pesanan {{ $pesanan['nama'] }}</p>
+                        <div class="text-sm text-gray-700 font-semibold mb-4 flex flex-col gap-y-3">
                             @php $labelWidth = 'lg:w-[180px]'; @endphp
 
                             <div class="flex flex-col lg:flex-row lg:items-start">
-                                <span class="{{ $labelWidth }} text-teal-600 shrink-0">Harga Layanan {{ $pesanan['layanan'] }} :</span>
+                                <span class="{{ $labelWidth }} text-teal-600 shrink-0">Harga Layanan
+                                    {{ $pesanan['layanan'] }} :</span>
                                 <span class="text-teal-600">{{ number_format($pesanan['harga'] ?? 0, 0, ',', '.') }}</span>
                             </div>
                             <div class="flex flex-col lg:flex-row lg:items-start">
@@ -77,15 +78,15 @@
                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Nama Customer :</span>
                                 <div class="flex items-center gap-2">
-                                <span>{{ $pesanan['nama'] ?? '-' }}</span>
+                                    <span>{{ $pesanan['nama'] ?? '-' }}</span>
                                     <div class="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-md">
-                                        @if (($pesanan['gender'] ?? '') === 'male')
+                                        @if (($pesanan['gender'] ?? '') === 'LakiLaki')
                                             <svg width="16" height="16" fill="#ffffff" viewBox="0 0 16 16"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
-                                                        d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                                                    d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
                                             </svg>
-                                        @elseif (($pesanan['gender'] ?? '') === 'female')
+                                        @elseif (($pesanan['gender'] ?? '') === 'Perempuan')
                                             <svg width="11" height="16" fill="#ffffff" viewBox="0 0 11 16"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -102,17 +103,32 @@
                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Nama Terapis :</span>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-left max-w-[265px]" id="terapis-nama"></span>
+                                    <span class="text-left max-w-[265px]"
+                                        id="terapis-nama">{{ $pesanan['therapist_name'] ?? '' }}</span>
                                     <div id="terapis-gender-icon"
-                                        class="invisible flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
+                                        class="{{ $pesanan['therapist_name'] ? '' : 'invisible' }} flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
+                                        @if ($pesanan['therapist_gender'] === 'LakiLaki')
+                                            <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                                            </svg>
+                                        @elseif ($pesanan['therapist_gender'] === 'Perempuan')
+                                            <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
+                                            </svg>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
-                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Ponsel Terapis :</span>
-                                <span class="text-left max-w-[280px]" id="terapis-ponsel"></span>
+                                <span class="text-left max-w-[280px]"
+                                    id="terapis-ponsel">{{ $pesanan['therapist_phone'] ?? '' }}</span>
                             </div>
-                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Layanan Tambahan :</span>
                                 <ul class="space-y-1 text-right">
                                     @foreach($pesanan['layanan_tambahan'] ?? [] as $tambahan)
@@ -120,10 +136,10 @@
                                     @endforeach
                                 </ul>
                             </div>
-                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
+                            <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Harga :</span>
                                 <span class="text-left max-w-[280px]">
-                                    Rp{{ number_format($pesanan['harga'] ?? '.') }}
+                                    Rp{{ number_format($pesanan['harga'] ?? 0, 0, ',', '.') }}
                                 </span>
                             </div>
                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
@@ -133,7 +149,7 @@
                             <div class="py-1 flex flex-wrap justify-between items-start gap-y-1">
                                 <span class="min-w-[265px] pr-2">Total Biaya Layanan :</span>
                                 <span class="text-left max-w-[280px]">
-                                    Rp{{ number_format($pesanan['total_layanan'] ?? '.') }}
+                                    Rp{{ number_format($pesanan['total_layanan'] ?? 0, 0, ',', '.') }}
                                 </span>
                             </div>
                             <div class="flex flex-wrap justify-between items-start mt-6 gap-y-1">
@@ -144,17 +160,17 @@
                                 <div class="flex gap-1 text-lg font-bold">
                                     <span>Total Harga:</span>
                                     <span class="text-green-800">
-                                            Rp{{ number_format($pesanan['total_harga'] ?? 0, 2, ',', '.') }}
+                                        Rp{{ number_format($pesanan['total_harga'] ?? 0, 2, ',', '.') }}
                                     </span>
                                 </div>
+                            </div>
                         </div>
-                    </div>
-                      
+
                         <hr class="border-t-4 border-black mt-4 mb-5">
 
                         @php
                             $statusClass = match ($pesanan['status']) {
-                                'Djadwalkan' => 'text-cyan-400',
+                                'Dijadwalkan' => 'text-cyan-400',
                                 'Selesai' => 'text-teal-500',
                                 'Dibatalkan' => 'text-red-500',
                                 'Pending' => 'text-amber-500',
@@ -163,13 +179,13 @@
                                 default => 'text-teal-400',
                             };
                         @endphp
-                        <div class="text-2xl font-bold text-right {{ $statusClass }}">
+                        <div class="text-2xl font-bold text-right {{ $statusClass }}" id="status-display">
                             {{ ucfirst($pesanan['status']) }}
                         </div>
                     </div>
                 </div>
 
-                <!-- Card Daftar Terapis -->
+                <!-- Card Terapis -->
                 @if (!in_array($pesanan['status'], ['Selesai', 'Dibatalkan']))
                         <div class="lg:col-span-7">
                             <div class="w-full bg-white p-6 rounded-xl shadow-md mt-[-1.25rem]">
@@ -178,7 +194,7 @@
                                 <!-- Search Bar -->
                                 <div class="w-full mb-4">
                                     <div class="flex w-full">
-                                        <input type="text"
+                                        <input type="text" id="search-terapis"
                                             class="flex-grow px-4 py-2 rounded-l-lg bg-gray-100 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-400 placeholder:text-gray-400"
                                             placeholder="Cari terapis...">
                                         <button class="bg-teal-400 hover:bg-teal-500 text-white px-4 py-2 rounded-r-lg">
@@ -193,83 +209,361 @@
                                 </div>
 
                                 <!-- List Terapis -->
-                                <div
-                                    class="max-h-screen overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100 space-y-2 min-w-screen mx-auto">
-                                    @foreach($terapisList as $index => $terapis)
-                                        <div
-                                            class="flex items-center justify-between px-4 py-2 {{ $index % 2 === 1 ? 'bg-teal-100' : 'bg-white' }}">
-                                            <div class="flex items-center gap-2 text-sm text-gray-800 font-medium">
-                                                <div class="flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
-                                                    @if ($terapis['gender'] === 'male')
-                                                        <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
-                                                        </svg>
+                                <div class="max-h-screen overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-teal-400 scrollbar-track-gray-100 space-y-2 min-w-screen mx-auto"
+                                    id="terapis-list">
+                                    @if(count($terapisList) === 0)
+                                        <div class="flex items-center justify-center py-8 text-gray-500">
+                                            <div class="text-center">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                                <p class="text-sm font-medium">Tidak ada terapis tersedia</p>
+                                                <p class="text-xs text-gray-400 mt-1">
+                                                    @if($pesanan['therapist_name'])
+                                                        {{ $pesanan['therapist_name'] }} sedang ditugaskan untuk pesanan ini
                                                     @else
-                                                        <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
-                                                            xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
-                                                        </svg>
+                                                        Semua terapis sedang bertugas
                                                     @endif
-                                                </div>
-                                                {{ $terapis['nama_terapis'] }}
+                                                </p>
                                             </div>
-                                            <button
-                                                class="tugaskan-btn bg-teal-400 hover:bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold shadow-sm"
-                                                data-nama="{{ $terapis['nama_terapis'] }}"
-                                                data-ponsel="{{ $terapis['ponsel_terapis'] }}" data-gender="{{ $terapis['gender'] }}">
-                                                Tugaskan
-                                            </button>
-
                                         </div>
-                                    @endforeach
+                                    @else
+                                        @foreach($terapisList as $index => $terapis)
+                                            <div class="terapis-item flex items-center justify-between px-4 py-2 {{ $index % 2 === 1 ? 'bg-teal-100' : 'bg-white' }}"
+                                                data-nama="{{ strtolower($terapis['nama_terapis']) }}">
+                                                <div class="flex items-center gap-2 text-sm text-gray-800 font-medium">
+                                                    <div class="flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
+                                                        @if ($terapis['gender'] === 'LakiLaki')
+                                                            <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path
+                                                                    d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                                                            </svg>
+                                                        @else
+                                                            <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path
+                                                                    d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
+                                                            </svg>
+                                                        @endif
+                                                    </div>
+                                                    {{ $terapis['nama_terapis'] }}
+                                                </div>
+                                                <button
+                                                    class="tugaskan-btn bg-teal-400 hover:bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold shadow-sm"
+                                                    data-id="{{ $terapis['id'] }}" data-nama="{{ $terapis['nama_terapis'] }}"
+                                                    data-ponsel="{{ $terapis['ponsel_terapis'] }}" data-gender="{{ $terapis['gender'] }}">
+                                                    Tugaskan
+                                                </button>
+
+                                            </div>
+                                        @endforeach
+                                    @endif
                                 </div>
                             </div>
                         </div>
                     </div>
                 @endif
-            </div>
         </div>
+    </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const buttons = document.querySelectorAll('.tugaskan-btn');
+            const statusSelect = document.getElementById('status');
+            const statusDisplay = document.getElementById('status-display');
+            const searchInput = document.getElementById('search-terapis');
+            const terapisList = document.getElementById('terapis-list');
 
-            buttons.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const nama = this.dataset.nama;
-                    const ponsel = this.dataset.ponsel;
-                    const gender = this.dataset.gender;
+            function refreshTherapistList() {
+                const url = "{{ route('pesanan.getAvailableTherapists', ['tipe' => strtolower($pesanan['metode']), 'id' => $pesanan['id']]) }}";
 
-                    const namaEl = document.getElementById('terapis-nama');
-                    const ponselEl = document.getElementById('terapis-ponsel');
-                    const genderIcon = document.getElementById('terapis-gender-icon');
-
-                    if (namaEl && ponselEl && genderIcon) {
-                        namaEl.textContent = nama;
-                        ponselEl.textContent = ponsel;
-
-                        genderIcon.classList.remove('invisible');
-
-                        if (gender === 'male') {
-                            genderIcon.innerHTML = `
-                                <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
-                                </svg>`;
-                        } else if (gender === 'female') {
-                            genderIcon.innerHTML = `
-                                <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
-                                </svg>`;
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateTherapistListUI(data.data);
                         } else {
-                            genderIcon.innerHTML = '';
+                            console.error('Failed to refresh therapist list:', data.message);
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing therapist list:', error);
+                    });
+            }
+
+            function updateTherapistListUI(therapists) {
+                if (!terapisList) return;
+
+                terapisList.innerHTML = '';
+
+                if (therapists.length === 0) {
+                    const noTherapistDiv = document.createElement('div');
+                    noTherapistDiv.className = 'flex items-center justify-center py-8 text-gray-500';
+                    noTherapistDiv.innerHTML = `
+                            <div class="text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                <p class="text-sm font-medium">Tidak ada terapis tersedia</p>
+                                <p class="text-xs text-gray-400 mt-1">Semua terapis sedang bertugas</p>
+                            </div>
+                        `;
+                    terapisList.appendChild(noTherapistDiv);
+                    return;
+                }
+
+                therapists.forEach((terapis, index) => {
+                    const div = document.createElement('div');
+                    div.className = `terapis-item flex items-center justify-between px-4 py-2 ${index % 2 === 1 ? 'bg-teal-100' : 'bg-white'}`;
+                    div.setAttribute('data-nama', terapis.nama_terapis.toLowerCase());
+
+                    const genderIcon = terapis.gender === 'LakiLaki' ?
+                        `<svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                            </svg>` :
+                        `<svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
+                            </svg>`;
+
+                    div.innerHTML = `
+                            <div class="flex items-center gap-2 text-sm text-gray-800 font-medium">
+                                <div class="flex items-center justify-center w-6 h-6 bg-blue-200 rounded-md">
+                                    ${genderIcon}
+                                </div>
+                                ${terapis.nama_terapis}
+                            </div>
+                            <button
+                                class="tugaskan-btn bg-teal-400 hover:bg-teal-500 text-white px-4 py-1 rounded-md text-xs font-semibold shadow-sm"
+                                data-id="${terapis.id}"
+                                data-nama="${terapis.nama_terapis}"
+                                data-ponsel="${terapis.ponsel_terapis}" 
+                                data-gender="${terapis.gender}">
+                                Tugaskan
+                            </button>
+                        `;
+
+                    terapisList.appendChild(div);
+                });
+
+                attachTugaskanListeners();
+
+                if (searchInput && searchInput.value) {
+                    filterTherapists(searchInput.value);
+                }
+            }
+
+            function filterTherapists(searchTerm) {
+                const terapisItems = document.querySelectorAll('.terapis-item');
+                const lowerSearchTerm = searchTerm.toLowerCase();
+
+                terapisItems.forEach(function (item) {
+                    const nama = item.getAttribute('data-nama');
+                    if (nama && nama.includes(lowerSearchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
                     }
                 });
+            }
+
+            statusSelect.addEventListener('change', function () {
+                const newStatus = this.value;
+                const url = "{{ route('pesanan.updateStatus', ['tipe' => strtolower($pesanan['metode']), 'id' => $pesanan['id']]) }}";
+
+                fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            statusDisplay.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+
+                            statusDisplay.className = 'text-2xl font-bold text-right '; // Reset classes
+                            switch (newStatus) {
+                                case 'Dijadwalkan':
+                                    statusDisplay.classList.add('text-cyan-400');
+                                    break;
+                                case 'Selesai':
+                                    statusDisplay.classList.add('text-teal-500');
+                                    break;
+                                case 'Dibatalkan':
+                                    statusDisplay.classList.add('text-red-500');
+                                    break;
+                                case 'Pending':
+                                    statusDisplay.classList.add('text-amber-500');
+                                    break;
+                                case 'Berlangsung':
+                                    statusDisplay.classList.add('text-green-600');
+                                    break;
+                                case 'Menunggu':
+                                    statusDisplay.classList.add('text-yellow-400');
+                                    break;
+                                default:
+                                    statusDisplay.classList.add('text-teal-400');
+                            }
+
+                            if (newStatus === 'Selesai' || newStatus === 'Dibatalkan') {
+                                location.reload();
+                            } else {
+                                refreshTherapistList();
+                            }
+                        } else {
+                            alert('Gagal mengupdate status: ' + data.message);
+                            statusSelect.value = '{{ $pesanan['status'] }}';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat mengupdate status');
+                        statusSelect.value = '{{ $pesanan['status'] }}';
+                    });
             });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function () {
+                    filterTherapists(this.value);
+                });
+            }
+
+            function attachTugaskanListeners() {
+                const buttons = document.querySelectorAll('.tugaskan-btn');
+
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const terapisId = this.dataset.id;
+                        const nama = this.dataset.nama;
+                        const ponsel = this.dataset.ponsel;
+                        const gender = this.dataset.gender;
+
+                        if (!confirm(`Apakah Anda yakin ingin menugaskan terapis ${nama}?`)) {
+                            return;
+                        }
+
+                        this.disabled = true;
+                        this.textContent = 'Menugaskan...';
+
+                        const url = "{{ route('pesanan.assignTherapist', ['tipe' => strtolower($pesanan['metode']), 'id' => $pesanan['id']]) }}";
+
+                        console.log('Assign therapist request:', {
+                            url: url,
+                            therapist_id: terapisId,
+                            nama: nama
+                        });
+
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                therapist_id: terapisId
+                            })
+                        })
+                            .then(response => {
+                                console.log('Response status:', response.status);
+                                console.log('Response headers:', response.headers);
+
+                                if (!response.ok) {
+                                    throw new Error(`HTTP error! status: ${response.status}`);
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Response data:', data);
+
+                                if (data.success) {
+                                    const namaEl = document.getElementById('terapis-nama');
+                                    const ponselEl = document.getElementById('terapis-ponsel');
+                                    const genderIcon = document.getElementById('terapis-gender-icon');
+
+                                    if (namaEl && ponselEl && genderIcon) {
+                                        namaEl.textContent = data.data.therapist_name;
+                                        ponselEl.textContent = data.data.therapist_phone;
+
+                                        genderIcon.classList.remove('invisible');
+
+                                        if (data.data.therapist_gender === 'LakiLaki') {
+                                            genderIcon.innerHTML = `
+                                                <svg width="16" height="16" fill="#2196F3" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M10.5865 1.14676C10.5865 0.791723 10.8743 0.503906 11.2294 0.503906H14.6579C15.013 0.503906 15.3008 0.791723 15.3008 1.14676V4.57533C15.3008 4.93038 15.013 5.21819 14.6579 5.21819C14.3029 5.21819 14.0151 4.93038 14.0151 4.57533V2.69483L10.5998 6.0979C11.3955 7.08878 11.8722 8.34824 11.8722 9.71819C11.8722 12.9135 9.28185 15.5039 6.0865 15.5039C2.89113 15.5039 0.300781 12.9135 0.300781 9.71819C0.300781 6.52284 2.89113 3.93248 6.0865 3.93248C7.44815 3.93248 8.70076 4.40349 9.68885 5.19055L13.102 1.78962H11.2294C10.8743 1.78962 10.5865 1.5018 10.5865 1.14676ZM6.0865 5.21819C3.60121 5.21819 1.5865 7.23292 1.5865 9.71819C1.5865 12.2035 3.60121 14.2182 6.0865 14.2182C8.57177 14.2182 10.5865 12.2035 10.5865 9.71819C10.5865 8.47145 10.0804 7.34418 9.26071 6.52849C8.44635 5.718 7.32539 5.21819 6.0865 5.21819Z" />
+                                                </svg>`;
+                                        } else if (data.data.therapist_gender === 'Perempuan') {
+                                            genderIcon.innerHTML = `
+                                                <svg width="11" height="16" fill="#E6007F" viewBox="0 0 11 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M0.0078125 5.69621C0.0078125 2.82858 2.33249 0.503906 5.20012 0.503906C8.06775 0.503906 10.3924 2.82858 10.3924 5.69621C10.3924 8.36883 8.37316 10.5698 5.77704 10.8568V12.8116H6.73858C7.05721 12.8116 7.31551 13.0699 7.31551 13.3885C7.31551 13.7071 7.05721 13.9654 6.73858 13.9654H5.77704V14.927C5.77704 15.2456 5.51875 15.5039 5.20012 15.5039C4.88149 15.5039 4.6232 15.2456 4.6232 14.927V13.9654H3.66166C3.34303 13.9654 3.08474 13.7071 3.08474 13.3885C3.08474 13.0699 3.34303 12.8116 3.66166 12.8116H4.6232V10.8568C2.02707 10.5698 0.0078125 8.36883 0.0078125 5.69621ZM5.20012 1.65775C2.96974 1.65775 1.16166 3.46583 1.16166 5.69621C1.16166 7.92659 2.96974 9.73468 5.20012 9.73468C7.43049 9.73468 9.23858 7.92659 9.23858 5.69621C9.23858 3.46583 7.4305 1.65775 5.20012 1.65775Z" />
+                                                </svg>`;
+                                        } else {
+                                            genderIcon.innerHTML = '';
+                                        }
+                                    }
+
+                                    if (data.data.new_status) {
+                                        statusSelect.value = data.data.new_status;
+                                        statusDisplay.textContent = data.data.new_status;
+
+                                        statusDisplay.className = 'text-2xl font-bold text-right ';
+                                        switch (data.data.new_status) {
+                                            case 'Dijadwalkan':
+                                                statusDisplay.classList.add('text-cyan-400');
+                                                break;
+                                            case 'Selesai':
+                                                statusDisplay.classList.add('text-teal-500');
+                                                break;
+                                            case 'Dibatalkan':
+                                                statusDisplay.classList.add('text-red-500');
+                                                break;
+                                            case 'Pending':
+                                                statusDisplay.classList.add('text-amber-500');
+                                                break;
+                                            case 'Berlangsung':
+                                                statusDisplay.classList.add('text-green-600');
+                                                break;
+                                            case 'Menunggu':
+                                                statusDisplay.classList.add('text-yellow-400');
+                                                break;
+                                            default:
+                                                statusDisplay.classList.add('text-teal-400');
+                                        }
+                                    }
+
+                                    refreshTherapistList();
+
+                                    alert('Terapis berhasil ditugaskan!');
+                                } else {
+                                    console.error('Assignment failed:', data);
+                                    alert('Gagal menugaskan terapis: ' + (data.message || 'Unknown error'));
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Fetch error:', error);
+                                alert('Terjadi kesalahan saat menugaskan terapis: ' + error.message);
+                            })
+                            .finally(() => {
+                                this.disabled = false;
+                                this.textContent = 'Tugaskan';
+                            });
+                    });
+                });
+            }
+
+            attachTugaskanListeners();
         });
     </script>
 

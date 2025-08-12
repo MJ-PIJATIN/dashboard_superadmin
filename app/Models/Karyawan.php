@@ -10,7 +10,10 @@ class Karyawan extends Model
     use HasFactory;
     protected $table = 'karyawans'; 
 
+    protected $table = 'employees';
+
     protected $fillable = [
+
         'nama_depan',
         'nama_belakang',
         'tempat_lahir',
@@ -24,6 +27,22 @@ class Karyawan extends Model
         'foto',
         'role',
         'password',
+        'id',
+        'first_name',
+        'last_name',
+        'joining_date',
+        'birth_place',
+        'birth_date',
+        'gender',
+        'phone',
+        'address',
+        'photo',
+        'branch_id',
+        'email',
+        'password',
+        'role',
+        'created_at',
+        'updated_at',
     ];
 
         // Accessor untuk nama lengkap
@@ -39,6 +58,6 @@ class Karyawan extends Model
     }
 
     protected $casts = [
-        'tanggal_bergabung' => 'date',
+        'joining_date' => 'date',
     ];
 }

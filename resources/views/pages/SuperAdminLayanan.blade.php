@@ -108,22 +108,22 @@
                     <thead class="bg-white border-b border-gray-300">
                         <tr>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Nama</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Harga</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <button class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>Durasi</span>
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
-                                </div>
+                                </button>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">Deskripsi</th>
                             <th class="px-4 py-2"></th>
@@ -172,7 +172,7 @@
     <!-- Overlay -->
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"></div>
 
-    <!-- Buat Layanan Utama Drawer -->
+    <!-- Create Main Service Drawer -->
     <div id="drawer-main-service" class="fixed top-1/2 left-1/2 z-50 w-full max-w-md bg-white rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out opacity-0 scale-95 pointer-events-none">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">Buat Layanan Utama</h2>
@@ -223,7 +223,7 @@
         </form>
     </div>
 
-    <!-- Ubah Layanan Utama Drawer -->
+    <!-- Edit main service drawer -->
     <div id="drawer-edit-main-service" class="fixed top-1/2 left-1/2 z-50 w-full max-w-md bg-white rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out opacity-0 scale-95 pointer-events-none">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">Ubah Layanan Utama</h2>
@@ -274,7 +274,7 @@
         </form>
     </div>
 
-    <!-- Buat Layanan Tambahan Drawer -->
+    <!-- Create Additional Service Drawer -->
     <div id="drawer-additional-service" class="fixed top-1/2 left-1/2 z-50 w-full max-w-md bg-white rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out opacity-0 scale-95 pointer-events-none">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">Buat Layanan Tambahan</h2>
@@ -325,7 +325,7 @@
         </form>
     </div>
 
-    <!-- Ubah Layanan Tambahan Drawer -->
+    <!-- Edit Additional Service Drawer -->
     <div id="drawer-edit-additional-service" class="fixed top-1/2 left-1/2 z-50 w-full max-w-md bg-white rounded-lg shadow-xl transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-in-out opacity-0 scale-95 pointer-events-none">
         <div class="flex items-center justify-between p-4 border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-800">Ubah Layanan Tambahan</h2>
@@ -458,6 +458,11 @@
     opacity: 1;
     pointer-events: auto;
 }
+
+.sort-icon {
+    opacity: 0.5;
+    transition: all 0.3s ease-in-out;
+}
 </style>
 
 <script>
@@ -467,6 +472,18 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentDeleteRow = null;
     let currentEditRow = null;
     let successTimeout = null;
+    let sortStates = {
+        main: { // Sorting states for main services
+            name: 'none', // none, asc, desc
+            price: 'none',
+            duration: 'none'
+        },
+        additional: { // Sorting states for additional services
+            name: 'none',
+            price: 'none',
+            duration: 'none'
+        }
+    };
 
     // Utility functions
     function showModal(modalId) {
@@ -500,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 drawer.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
                 drawer.classList.remove('opacity-100', 'scale-100');
                 
-                // Tunggu transisi selesai
+                // Wait for the transition to end before resolving
                 const handleTransitionEnd = () => {
                     if (drawer.classList.contains('opacity-0')) {
                         drawer.removeEventListener('transitionend', handleTransitionEnd);
@@ -534,6 +551,215 @@ document.addEventListener('DOMContentLoaded', function () {
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
             });
         }
+    }
+
+    // Sorting functions
+    function sortTable(column, tbody, tableType) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        let sortDirection = 'asc';
+        
+        // Reset other sort states for current table
+        Object.keys(sortStates[tableType]).forEach(key => {
+            if (key !== column) sortStates[tableType][key] = 'none';
+        });
+        
+        // Determine sort direction
+        if (sortStates[tableType][column] === 'none' || sortStates[tableType][column] === 'desc') {
+            sortStates[tableType][column] = 'asc';
+            sortDirection = 'asc';
+        } else {
+            sortStates[tableType][column] = 'desc';
+            sortDirection = 'desc';
+        }
+
+        rows.sort((a, b) => {
+            let aValue, bValue;
+            
+            switch(column) {
+                case 'name':
+                    aValue = a.getAttribute('data-service-name').toLowerCase();
+                    bValue = b.getAttribute('data-service-name').toLowerCase();
+                    break;
+                case 'price':
+                    aValue = parseInt(a.getAttribute('data-service-price')) || 0;
+                    bValue = parseInt(b.getAttribute('data-service-price')) || 0;
+                    break;
+                case 'duration':
+                    // Extract number from duration (e.g., "60 Menit" -> 60)
+                    aValue = parseInt(a.getAttribute('data-service-duration')) || 0;
+                    bValue = parseInt(b.getAttribute('data-service-duration')) || 0;
+                    break;
+                default:
+                    return 0;
+            }
+            
+            if (column === 'name') {
+                // String comparison
+                if (sortDirection === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            } else {
+                // Numeric comparison
+                if (sortDirection === 'asc') {
+                    return aValue - bValue;
+                } else {
+                    return bValue - aValue;
+                }
+            }
+        });
+
+        // Clear tbody and append sorted rows with animation
+        tbody.innerHTML = '';
+        rows.forEach((row, index) => {
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(-10px)';
+            tbody.appendChild(row);
+            
+            setTimeout(() => {
+                row.style.transition = 'all 0.2s ease-in-out';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+            }, index * 30);
+        });
+
+        // Update sort icons for current table
+        updateSortIcons(tableType);
+    }
+
+    function updateSortIcons(tableType) {
+        // Reset all sort icons for current table
+        const sortIcons = document.querySelectorAll(`[data-table-type="${tableType}"] .sort-icon`);
+        sortIcons.forEach(icon => {
+            icon.style.transform = 'rotate(0deg)';
+            icon.style.opacity = '0.5';
+        });
+
+        // Update active sort icon for current table
+        Object.keys(sortStates[tableType]).forEach(column => {
+            if (sortStates[tableType][column] !== 'none') {
+                const icon = document.querySelector(`[data-table-type="${tableType}"] [data-sort="${column}"] .sort-icon`);
+                if (icon) {
+                    icon.style.opacity = '1';
+                    if (sortStates[tableType][column] === 'desc') {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+        });
+    }
+
+    // Add sorting event listeners to both tables
+    function initializeSorting() {
+        const tables = document.querySelectorAll('tbody.bg-white');
+        
+        // Main service table (first tbody)
+        const mainServiceTbody = tables[0];
+        if (mainServiceTbody) {
+            const mainServiceTable = mainServiceTbody.closest('table');
+            const headerRow = mainServiceTable.querySelector('thead tr');
+            
+            if (headerRow) {
+                // Add table type identifier to header row
+                headerRow.setAttribute('data-table-type', 'main');
+                const headers = headerRow.children;
+                
+                // Add click handlers and data attributes to sortable columns
+                if (headers[0]) { // Name column
+                    const nameHeader = headers[0].querySelector('div');
+                    if (nameHeader) {
+                        nameHeader.style.cursor = 'pointer';
+                        nameHeader.setAttribute('data-sort', 'name');
+                        nameHeader.classList.add('sortable-header');
+                        nameHeader.querySelector('img').classList.add('sort-icon');
+                        nameHeader.addEventListener('click', () => sortTable('name', mainServiceTbody, 'main'));
+                    }
+                }
+                
+                if (headers[1]) { // Price column
+                    const priceHeader = headers[1].querySelector('div');
+                    if (priceHeader) {
+                        priceHeader.style.cursor = 'pointer';
+                        priceHeader.setAttribute('data-sort', 'price');
+                        priceHeader.classList.add('sortable-header');
+                        priceHeader.querySelector('img').classList.add('sort-icon');
+                        priceHeader.addEventListener('click', () => sortTable('price', mainServiceTbody, 'main'));
+                    }
+                }
+                
+                if (headers[2]) { // Duration column
+                    const durationHeader = headers[2].querySelector('div');
+                    if (durationHeader) {
+                        durationHeader.style.cursor = 'pointer';
+                        durationHeader.setAttribute('data-sort', 'duration');
+                        durationHeader.classList.add('sortable-header');
+                        durationHeader.querySelector('img').classList.add('sort-icon');
+                        durationHeader.addEventListener('click', () => sortTable('duration', mainServiceTbody, 'main'));
+                    }
+                }
+            }
+        }
+
+        // Additional service table (second tbody)
+        const additionalServiceTbody = tables[1];
+        if (additionalServiceTbody) {
+            const additionalServiceTable = additionalServiceTbody.closest('table');
+            const headerRow = additionalServiceTable.querySelector('thead tr');
+            
+            if (headerRow) {
+                // Add table type identifier to header row
+                headerRow.setAttribute('data-table-type', 'additional');
+                const headers = headerRow.children;
+                
+                // Add click handlers and data attributes to sortable columns
+                if (headers[0]) { // Name column
+                    const nameHeader = headers[0].querySelector('button');
+                    if (nameHeader) {
+                        nameHeader.style.cursor = 'pointer';
+                        nameHeader.setAttribute('data-sort', 'name');
+                        nameHeader.classList.add('sortable-header');
+                        nameHeader.querySelector('img').classList.add('sort-icon');
+                        nameHeader.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            sortTable('name', additionalServiceTbody, 'additional');
+                        });
+                    }
+                }
+                
+                if (headers[1]) { // Price column
+                    const priceHeader = headers[1].querySelector('button');
+                    if (priceHeader) {
+                        priceHeader.style.cursor = 'pointer';
+                        priceHeader.setAttribute('data-sort', 'price');
+                        priceHeader.classList.add('sortable-header');
+                        priceHeader.querySelector('img').classList.add('sort-icon');
+                        priceHeader.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            sortTable('price', additionalServiceTbody, 'additional');
+                        });
+                    }
+                }
+                
+                if (headers[2]) { // Duration column
+                    const durationHeader = headers[2].querySelector('button');
+                    if (durationHeader) {
+                        durationHeader.style.cursor = 'pointer';
+                        durationHeader.setAttribute('data-sort', 'duration');
+                        durationHeader.classList.add('sortable-header');
+                        durationHeader.querySelector('img').classList.add('sort-icon');
+                        durationHeader.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            sortTable('duration', additionalServiceTbody, 'additional');
+                        });
+                    }
+                }
+            }
+        }
+
+        // Initialize sort icon styles for both tables
+        updateSortIcons('main');
+        updateSortIcons('additional');
     }
 
     // Tooltip functions
@@ -575,18 +801,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                // Close the drawer first and wait for it to finish
                 hideDrawer('drawer-main-service').then(() => {
-                    // Tampilkan loading
+                    // Show loading
                     showModal('loading-drawer');
                     
                     setTimeout(() => {
                         hideModal('loading-drawer');
                         
-                        // Tambahkan data ke tabel setelah drawer tertutup
+                        // Add data to table after drawer is closed
                         addRowToTable(data, formData, 'main');
                         
-                        // Tampilkan success message
+                        // Show success message
                         showSuccess();
                         form.reset();
                     }, 1000);
@@ -620,18 +846,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                // Close the drawer first and wait for it to finish
                 hideDrawer('drawer-additional-service').then(() => {
-                    // Tampilkan loading
+                    // Show loading
                     showModal('loading-drawer');
                     
                     setTimeout(() => {
                         hideModal('loading-drawer');
                         
-                        // Tambahkan data ke tabel setelah drawer tertutup
+                        // Add data to table after drawer is closed
                         addRowToTable(data, formData, 'additional');
                         
-                        // Tampilkan success message
+                        // Show success message
                         showSuccess();
                         form.reset();
                     }, 1000);
@@ -656,7 +882,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('edit-main-duration').value,
             description: document.getElementById('edit-main-description').value
         };
-        const rowToUpdate = currentEditRow; // Simpan referensi row
+        const rowToUpdate = currentEditRow; // Save reference to the row being edited
 
         fetch("{{ route('layanan-utama.update') }}", {
             method: "POST",
@@ -669,18 +895,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                // Close edit drawer first and wait for it to finish
                 hideDrawer('drawer-edit-main-service').then(() => {
-                    // Tampilkan loading
+                    // Show loading
                     showModal('loading-drawer');
                     
                     setTimeout(() => {
                         hideModal('loading-drawer');
                         
-                        // Update data di tabel setelah drawer tertutup
+                        // Update table row setelah drawer tertutup
                         updateTableRow(rowToUpdate, formData);
                         
-                        // Tampilkan success message
+                        // Show success message
                         showSuccess();
                         currentEditRow = null;
                     }, 1000);
@@ -705,7 +931,7 @@ document.addEventListener('DOMContentLoaded', function () {
             duration: document.getElementById('edit-additional-duration').value,
             description: document.getElementById('edit-additional-description').value
         };
-        const rowToUpdate = currentEditRow; // Simpan referensi row
+        const rowToUpdate = currentEditRow; // Save reference to the row being edited
 
         fetch("{{ route('layanan-tambahan.update') }}", {
             method: "POST",
@@ -718,18 +944,18 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup drawer terlebih dahulu dan tunggu sampai selesai
+                // Close the drawer first and wait for it to finish
                 hideDrawer('drawer-edit-additional-service').then(() => {
-                    // Tampilkan loading
+                    // Show loading
                     showModal('loading-drawer');
                     
                     setTimeout(() => {
                         hideModal('loading-drawer');
                         
-                        // Update data di tabel setelah drawer tertutup
+                        // Update table row after drawer is closed
                         updateTableRow(rowToUpdate, formData, true);
                         
-                        // Tampilkan success message
+                        // Show success message
                         showSuccess();
                         currentEditRow = null;
                     }, 1000);
@@ -810,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateTableRow(row, formData, isAdditional = false) {
-        // Tambahkan efek highlight sementara
+        // Add highlight effect
         row.style.backgroundColor = '#E5F9F9';
         row.style.transition = 'background-color 0.3s ease-in-out';
         
@@ -833,7 +1059,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (key !== 'id') row.setAttribute(`data-service-${key}`, value);
         });
         
-        // Hilangkan highlight setelah 2 detik
+        // Remove highlight after a short delay
         setTimeout(() => {
             row.style.backgroundColor = '';
         }, 2000);
@@ -868,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const currentStatus = currentStatusButton.getAttribute('data-current-status');
         const newStatus = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
         const serviceId = currentStatusButton.getAttribute('data-service-id');
-        const buttonToUpdate = currentStatusButton; // Simpan referensi
+        const buttonToUpdate = currentStatusButton; // Save reference to the button
 
         fetch("{{ route('layanan-utama.updateStatus') }}", {
             method: "POST",
@@ -881,19 +1107,19 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup modal terlebih dahulu
+                // Close status modal
                 hideModal('status-drawer');
                 
-                // Tampilkan loading
+                // Show loading
                 showModal('loading-drawer');
                 
                 setTimeout(() => {
                     hideModal('loading-drawer');
                     
-                    // Update status setelah modal tertutup
+                    // Update status button after modal closed
                     updateStatusButton(buttonToUpdate, newStatus);
                     
-                    // Tampilkan success message
+                    // Show success message
                     showSuccess();
                     currentStatusButton = null;
                 }, 1000);
@@ -916,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const serviceId = currentDeleteRow.getAttribute('data-service-id');
         const isAdditional = currentDeleteRow.closest('tbody') === document.querySelectorAll('tbody.bg-white')[1];
         const url = isAdditional ? "{{ route('layanan-tambahan.delete') }}" : "{{ route('layanan-utama.delete') }}";
-        const rowToDelete = currentDeleteRow; // Simpan referensi
+        const rowToDelete = currentDeleteRow; // Save reference to the row
 
         fetch(url, {
             method: "DELETE",
@@ -929,16 +1155,16 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Tutup modal terlebih dahulu
+                // Hide delete modal
                 hideModal('delete-drawer');
                 
-                // Tampilkan loading
+                // Show loading
                 showModal('loading-drawer');
                 
                 setTimeout(() => {
                     hideModal('loading-drawer');
                     
-                    // Hapus row setelah modal tertutup dengan animasi
+                    // Delete row after modal closed
                     rowToDelete.style.transition = 'all 0.3s ease-in-out';
                     rowToDelete.style.opacity = '0';
                     rowToDelete.style.transform = 'translateX(100px)';
@@ -947,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         rowToDelete.remove();
                     }, 300);
                     
-                    // Tampilkan success message
+                    // Show success message
                     showSuccess();
                     currentDeleteRow = null;
                 }, 1000);
@@ -959,7 +1185,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function updateStatusButton(button, newStatus) {
-        // Tambahkan efek animasi saat status berubah
+        // Add animation effect when status changes
         button.style.transform = 'scale(0.95)';
         button.style.transition = 'all 0.2s ease-in-out';
         
@@ -1057,6 +1283,9 @@ document.addEventListener('DOMContentLoaded', function () {
     ['price', 'additional-service-price', 'edit-main-price', 'edit-additional-price'].forEach(id => {
         formatPriceInput(document.getElementById(id));
     });
+
+    // Initialize sorting functionality
+    initializeSorting();
 
     // Keyboard events
     document.addEventListener('keydown', function(e) {

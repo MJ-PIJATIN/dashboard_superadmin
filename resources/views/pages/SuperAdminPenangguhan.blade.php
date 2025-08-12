@@ -63,11 +63,11 @@
                     </thead>
                     <tbody id="tableBody">
                         @forelse($suspendedAccounts ?? [] as $account)
-                        <tr id="account-row-{{ $account['id'] }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail({{ $account['id'] }}, event)">
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['id'] }}</td>
+                        <tr id="account-row-{{ $account['suspension_id'] }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail('{{ $account['suspension_id'] }}', event)">
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['suspension_id'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $account['nama'] }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kelamin'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kota'] }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['area_kerja'] }}</td>
                             <td class="px-6 py-4">
                                 @php
                                     $durasi = $account['durasi'];
@@ -94,9 +94,9 @@
                                     
                                     <!-- Button - tersembunyi normal, muncul saat hover -->
                                     <div class="absolute inset-y-0 right-4 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-6">
-                                        <button onclick="openModal({{ $account['id'] }}, '{{ $account['nama'] }}'); event.stopPropagation();"
+                                        <button onclick="openModal('{{ $account['suspension_id'] }}', '{{ $account['nama'] }}'); event.stopPropagation();"
                                             title="Pulihkan"
-                                            class="flex items-center justify-center transition duration-200 hover:bg-green-200 rounded-md p-1">
+                                            class="flex items-center justify-center transition duration-200 hover:bg-green-100 rounded-md p-1">
                                             <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
                                         </button>
                                     </div>
@@ -169,30 +169,30 @@
 
 <!-- Modal Popup -->
 <div id="restoreModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 text-center shadow-2xl">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-lg w-full mx-4 text-center shadow-2xl h-[300px]">
         
         <!-- Title -->
-        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Pemulihan Akun</h3>
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Pulihkan</h3>
 
         <!-- Icon -->
         <div class="mb-4 sm:mb-6">
             <div class="w-16 sm:w-20 h-16 sm:h-20 mx-auto rounded-full flex items-center justify-center">
-                <img src="/images/iconpersonrestore.svg" alt="Sukses" class="w-12 sm:w-15 h-12 sm:h-15 text-green-600" />
+                <img src="/images/iconpersonrestore.svg" alt="Peringatan" class="w-24 sm:w-24 h-24 sm:h-15" />
             </div>
         </div>
         
         <!-- Message -->
-        <p class="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base" id="modalMessage">Apakah anda yakin ingin memulihkan akun tersebut?</p>
+        <p class="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base" id="modalMessage">Apakah Anda yakin ingin memulihkan data penangguhan ini?</p>
         
         <!-- Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <button onclick="closeModal()" 
-                    class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm sm:text-base order-2 sm:order-1">
+                    class="w-28 px-4 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm sm:text-base order-2 sm:order-1">
                 Batal
             </button>
             <button onclick="confirmRestore()" 
                     id="restoreButton"
-                    class="px-6 py-2 bg-[#3FC1C0] text-white rounded-lg hover:bg-[#3AB3B2] transition-colors font-medium text-sm sm:text-base order-1 sm:order-2">
+                    class="w-28 px-4 py-1 bg-teal-400 text-white rounded-lg hover:bg-teal-500 transition-colors font-medium text-sm sm:text-base order-1 sm:order-2">
                 Pulihkan
             </button>
         </div>
@@ -267,7 +267,7 @@ function navigateToDetail(id, event) {
 function openModal(userId, userName) {
     currentUserId = userId;
     currentUserName = userName;
-    document.getElementById('modalMessage').textContent = `Apakah anda yakin ingin memulihkan akun ${userName}?`;
+    document.getElementById('modalMessage').textContent = `Apakah Anda yakin ingin memulihkan akun ${userName}?`;
     document.getElementById('restoreModal').classList.remove('hidden');
 }
 
@@ -301,42 +301,43 @@ function confirmRestore() {
     
     // AJAX request untuk memulihkan akun - menggunakan hanya ID dari URL parameter
     fetch("{{ route('suspended-account.restore', ['id' => ':id']) }}".replace(':id', currentUserId), {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
-            'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
             'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            // Tidak perlu mengirim account_id lagi karena sudah ada di URL
-        })
+        }
     })
     .then(response => {
-        console.log('Response status:', response.status);
-        return response.json();
-    }).then(data => {
-    console.log('Response data:', data);
-    
-    // Hide loading drawer
-    hideLoadingDrawer();
-    
-    // Show success drawer with custom message
-    // showSuccessDrawer(`Akun ${currentUserName} berhasil dipulihkan!`);
-    showSuccessDrawer(`Akun berhasil dipulihkan!`);
-    
-    // Refresh halaman untuk update data setelah success drawer hilang
-    setTimeout(() => {
-        window.location.reload();
-    }, 3500);
-})
-    .catch(error => {
-        console.error('Fetch error:', error);
-        
-        // Hide loading drawer
         hideLoadingDrawer();
-        
-        // Show error in success drawer
-        showSuccessDrawer('Terjadi kesalahan saat memulihkan akun. Silakan coba lagi.');
+        if (response.ok) {
+            return response.json();
+        } else {
+            // Coba parse error JSON, jika gagal, lempar error umum
+            return response.json().then(err => { throw new Error(err.message || 'Gagal memulihkan akun.'); }).catch(() => { throw new Error('Gagal memulihkan akun.'); });
+        }
+    })
+    .then(data => {
+        if (data.success) {
+            showSuccessDrawer(data.message || 'Akun berhasil dipulihkan!');
+            // Hapus baris dari tabel tanpa reload halaman
+            const row = document.getElementById(`account-row-${currentUserId}`);
+            if (row) row.remove();
+            // Optional: refresh setelah beberapa saat jika diperlukan untuk update data lain
+            setTimeout(() => {
+                // Cek jika tabel kosong, tampilkan pesan
+                const tableBody = document.getElementById('tableBody');
+                if (tableBody && tableBody.children.length === 0) {
+                    location.reload(); // Reload jika tabel kosong untuk menampilkan pesan
+                }
+            }, 1500);
+        } else {
+            throw new Error(data.message || 'Operasi gagal.');
+        }
+    })
+    .catch(error => {
+        hideLoadingDrawer();
+        console.error('Fetch error:', error);
+        showSuccessDrawer(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
     });
 }
 
@@ -473,21 +474,21 @@ function updateTable(accounts) {
         }
         
         tableHTML += `
-            <tr class="border-b border-gray-100 hover:bg-gray-50 group cursor-pointer" 
-                onclick="navigateToDetail(${account.id}, event)">
+            <tr class="border-b border-gray-100 hover:bg-gray-50 group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01]" 
+                onclick="navigateToDetail(${account.suspension_id}, event)">
                 <td class="px-6 py-4 text-sm text-gray-700">${account.id}</td>
                 <td class="px-6 py-4 text-sm text-gray-900">${account.nama}</td>
                 <td class="px-6 py-4 text-sm text-gray-700">${account.kelamin}</td>
-                <td class="px-6 py-4 text-sm text-gray-700">${account.kota}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">${account.area_kerja}</td>
                 <td class="px-6 py-4">
                     <span class="px-3 py-1 rounded-full text-xs font-medium ${durationClass}">
                         ${account.durasi}
                     </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500 relative">
-                    <span class="group-hover:opacity-0 transition-opacity duration-200">-</span>
+                <td class="px-6 py-4 text-sm text-gray-500 relative flex items-center justify-end">
+                    <span class="group-hover:opacity-0 transition-opacity duration-200"> ${account.waktu} </span>
                     <button onclick="openModal(${account.id}, '${account.nama}'); event.stopPropagation();" 
-                        class="opacity-0 group-hover:opacity-100 absolute center top-1/2 -translate-y-1/2 flex items-center justify-center transition-opacity duration-200">
+                        class="opacity-0 group-hover:opacity-100 absolute inset-y-0 right-4 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-8">
                         <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />
                     </button>
                 </td>

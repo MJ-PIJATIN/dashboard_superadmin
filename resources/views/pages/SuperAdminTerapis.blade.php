@@ -74,8 +74,8 @@
                                     <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
                                 </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800 ml-8">
+                            <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 w-[100px]">
+                                <div class="flex items-center justify-center space-x-1 hover:text-gray-800">
                                     <span>Aksi</span>
                                 </div>
                             </th>
@@ -87,7 +87,7 @@
                                 data-terapis-id="{{ $item->id }}" 
                                 data-terapis-name="{{ $item->name }}">
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
-                                    {{ $terapis->firstItem() + $index }}
+                                    {{ $item->id }}
                                 </td>    
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
                                     {{ $item->name }}
@@ -104,12 +104,12 @@
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
                                     {{ $item->area_kerja }}
                                 </td>
-                                <td class="px-4 py-1 text-right">
-                                    <div class="flex items-center justify-end space-x-2">
+                                <td class="px-4 py-1 text-center">
+                                    <div class="flex justify-center items-center gap-3">
                                         <a href="{{ route('detail-terapis', $item->id) }}" 
-                                           class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" 
-                                           data-terapis-id="{{ $item->id }}"
-                                           title="Lihat Detail Terapis">
+                                        class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" 
+                                        data-terapis-id="{{ $item->id }}"
+                                        title="Lihat Detail Terapis">
                                             <img src="{{ asset('images/isi tabel.svg') }}" alt="View" class="w-4.5 h-4.5">
                                         </a>
                                         <button class="text-red-600 hover:text-red-800 p-1 rounded delete-terapis-button" 
@@ -139,9 +139,8 @@
                     <span class="text-gray-500">
                         @if($terapis->hasPages())
                             Halaman {{ $terapis->currentPage() }} dari {{ $terapis->lastPage() }}
-                            ({{ $terapis->total() }} total data)
                         @else
-                            Halaman 1 dari 1 ({{ $terapis->total() }} total data)
+                            Halaman 1 dari 1
                         @endif
                     </span>
                     <div class="flex space-x-1">

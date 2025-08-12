@@ -3,123 +3,336 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pesanan;
+use App\Models\Terapis;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Log;
 
 class PesananController extends Controller
 {
     public function index(Request $request)
     {
-        $faker = Faker::create();
-        $statuses = ['Dijadwalkan', 'Pending', 'Berlangsung', 'Menunggu', 'Selesai', 'Dibatalkan'];
+        $transferData = Pesanan::with(['customer', 'mainService'])
+            ->where('payment', 'transfer')
+            ->paginate(10, ['*'], 'transfer_page');
 
-        // Dummy data for transfer
-        $transferData = [];
-        for ($i = 0; $i < 20; $i++) {
-            $booking = new \stdClass();
-            $booking->id = $i + 1;
-            $booking->customer = new \stdClass();
-            $booking->customer->name = $faker->name;
-            $booking->customer->gender = $faker->randomElement(['male', 'female']);
-            $booking->mainService = new \stdClass();
-            $booking->mainService->name = $faker->randomElement(['Pijat Full Body', 'Pijat Refleksi', 'Pijat Kepala']);
-            $booking->bookings_date = $faker->dateTimeThisMonth();
-            $booking->status = $faker->randomElement($statuses);
-            $transferData[] = $booking;
-        }
+        $cashData = Pesanan::with(['customer', 'mainService'])
+            ->where('payment', 'cash')
+            ->paginate(10, ['*'], 'cash_page');
 
-        // Dummy data for cash
-        $cashData = [];
-        for ($i = 0; $i < 25; $i++) {
-            $booking = new \stdClass();
-            $booking->id = $i + 21;
-            $booking->customer = new \stdClass();
-            $booking->customer->name = $faker->name;
-            $booking->customer->gender = $faker->randomElement(['male', 'female']);
-            $booking->mainService = new \stdClass();
-            $booking->mainService->name = $faker->randomElement(['Pijat Full Body', 'Pijat Refleksi', 'Pijat Kepala']);
-            $booking->bookings_date = $faker->dateTimeThisMonth();
-            $booking->status = $faker->randomElement($statuses);
-            $cashData[] = $booking;
-        }
-
-        $perPage = 10;
-        $transferPage = $request->input('transfer_page', 1);
-        $cashPage = $request->input('cash_page', 1);
-
-        $transfer = new LengthAwarePaginator(
-            array_slice($transferData, ($transferPage - 1) * $perPage, $perPage),
-            count($transferData),
-            $perPage,
-            $transferPage,
-            ['path' => $request->url(), 'pageName' => 'transfer_page']
-        );
-
-        $cash = new LengthAwarePaginator(
-            array_slice($cashData, ($cashPage - 1) * $perPage, $perPage),
-            count($cashData),
-            $perPage,
-            $cashPage,
-            ['path' => $request->url(), 'pageName' => 'cash_page']
-        );
-
-        return view('pages.SuperAdminPesanan', compact('transfer', 'cash'));
+        return view('pages.SuperAdminPesanan', [
+            'transfer' => $transferData,
+            'cash' => $cashData,
+        ]);
     }
 
-    public function detail($tipe, $id)
+    public function detail(Request $request, $tipe, $id)
     {
-        $faker = Faker::create('id_ID');
-        $statuses = ['Dijadwalkan', 'Pending', 'Berlangsung', 'Menunggu', 'Selesai', 'Dibatalkan'];
-
-        // Regenerate dummy data to find the booking
-        $allData = [];
-        for ($i = 0; $i < 25; $i++) {
-            $harga = $faker->numberBetween(100000, 200000);
-            $total_layanan = $harga + 25000;
-            $total_harga = $total_layanan;
-            $booking = [
-                'id' => $i + 1,
-                'layanan' => $faker->randomElement(['Pijat Full Body', 'Pijat Refleksi', 'Pijat Kepala']),
-                'nama' => $faker->name,
-                'harga' => $harga,
-                'jadwal' => $faker->dateTimeThisMonth()->format('d M Y, H:i'),
-                'tanggal_pemesanan' => $faker->dateTimeThisMonth()->format('d M Y'),
-                'alamat' => $faker->address,
-                'gender' => $faker->randomElement(['male', 'female']),
-                'ponsel' => $faker->phoneNumber,
-                'layanan_tambahan' => $faker->randomElements(['Kerokan', 'Scrub', 'Masker Wajah'], $faker->numberBetween(0, 3)),
-                'durasi' => $faker->randomElement(['60 Menit', '90 Menit', '120 Menit']),
-                'total_layanan' => $total_layanan,
-                'metode' => $faker->randomElement(['cash', 'transfer']),
-                'total_harga' => $total_harga,
-                'status' => $faker->randomElement($statuses),
-            ];
-            $allData[] = $booking;
+        // Validasi tipe
+        if (!in_array($tipe, ['transfer', 'cash'])) {
+            abort(404, 'Tipe pesanan tidak valid');
         }
 
-        $pesanan = null;
-        foreach ($allData as $data) {
-            if ($data['id'] == $id) {
-                $pesanan = $data;
-                break;
+        // Debug log untuk melihat parameter yang diterima
+        Log::info("Detail pesanan - Tipe: {$tipe}, ID: {$id}");
+
+        try {
+            // Cari pesanan dengan kondisi gabungan
+            $pesanan = Pesanan::with(['customer', 'therapist', 'mainService', 'additionalService'])
+                ->where('payment', $tipe)
+                ->where('id', $id)
+                ->first();
+
+            if (!$pesanan) {
+                Log::error("Pesanan tidak ditemukan - Tipe: {$tipe}, ID: {$id}");
+                abort(404, 'Pesanan tidak ditemukan');
             }
-        }
 
-        if (!$pesanan) {
-            abort(404);
-        }
+            // Ambil daftar terapis yang tersedia
+            // Jika pesanan ini sudah punya terapis dan statusnya bukan 'Selesai'/'Dibatalkan', 
+            // exclude terapis tersebut dari list
+            $terapisQuery = Terapis::query();
+            
+            if ($pesanan->therapist_id && !in_array($pesanan->status, ['Selesai', 'Dibatalkan'])) {
+                // Terapis sudah ditugaskan dan pesanan belum selesai/dibatalkan
+                // Tampilkan semua terapis kecuali yang sedang ditugaskan
+                $terapisQuery->where('id', '!=', $pesanan->therapist_id);
+            }
+            
+            $terapisList = $terapisQuery->get();
 
-        // Dummy terapis list
-        $terapisList = [];
-        for ($i=0; $i < 5; $i++) { 
-            $terapisList[] = [
-                'nama_terapis' => $faker->name,
-                'ponsel_terapis' => $faker->phoneNumber,
-                'gender' => $faker->randomElement(['male', 'female'])
+            $pesananData = [
+                'id' => $pesanan->id,
+                'layanan' => $pesanan->mainService->name ?? 'N/A',
+                'nama' => $pesanan->customer->name ?? 'N/A',
+                'harga' => $pesanan->mainService->price ?? 0,
+                'jadwal' => ($pesanan->bookings_date ?? '') . ', ' . ($pesanan->bookings_time ?? ''),
+                'tanggal_pemesanan' => $pesanan->created_at ? $pesanan->created_at->format('d M Y') : 'N/A',
+                'alamat' => $pesanan->customer->kota ?? $pesanan->customer->address ?? 'N/A',
+                'gender' => $pesanan->customer->gender ?? 'N/A',
+                'ponsel' => $pesanan->customer->phone ?? 'N/A',
+                'layanan_tambahan' => $pesanan->additionalService ? [$pesanan->additionalService->name] : [],
+                'durasi' => ($pesanan->mainService->duration ?? 0) . ' Menit',
+                'total_layanan' => ($pesanan->mainService->price ?? 0) + ($pesanan->additionalService ? ($pesanan->additionalService->price ?? 0) : 0),
+                'metode' => $pesanan->payment ?? 'N/A',
+                'total_harga' => ($pesanan->mainService->price ?? 0) + ($pesanan->additionalService ? ($pesanan->additionalService->price ?? 0) : 0),
+                'status' => $pesanan->status ?? 'N/A',
+                'therapist_id' => $pesanan->therapist_id,
+                'therapist_name' => $pesanan->therapist->name ?? '',
+                'therapist_phone' => $pesanan->therapist->phone ?? '',
+                'therapist_gender' => $pesanan->therapist->gender ?? '',
             ];
+
+            $terapisListData = $terapisList->map(function ($terapis) {
+                return [
+                    'id' => $terapis->id,
+                    'nama_terapis' => $terapis->name ?? 'N/A',
+                    'ponsel_terapis' => $terapis->phone ?? 'N/A',
+                    'gender' => $terapis->gender ?? 'N/A',
+                ];
+            });
+
+            return view('pages.SuperAdminDetailPesanan', [
+                'pesanan' => $pesananData,
+                'terapisList' => $terapisListData,
+                'tipe' => $tipe
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Error dalam detail pesanan: " . $e->getMessage());
+            abort(500, 'Terjadi kesalahan server');
+        }
+    }
+
+    public function updateStatus(Request $request, $tipe, $id)
+    {
+        if (!in_array($tipe, ['transfer', 'cash'])) {
+            return response()->json(['success' => false, 'message' => 'Tipe pesanan tidak valid'], 400);
         }
 
-        return view('pages.SuperAdminDetailPesanan', compact('pesanan', 'terapisList'));
+        $newStatus = $request->input('status');
+        
+        if (!$newStatus) {
+            return response()->json(['success' => false, 'message' => 'Status tidak boleh kosong'], 400);
+        }
+
+        try {
+            $pesanan = Pesanan::where('payment', $tipe)
+                            ->where('id', $id)
+                            ->first();
+
+            if (!$pesanan) {
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
+            }
+
+            $pesanan->status = $newStatus;
+            $pesanan->save();
+
+            Log::info("Status pesanan berhasil diupdate - ID: {$id}, Status baru: {$newStatus}");
+
+            return response()->json(['success' => true, 'message' => 'Status berhasil diperbarui']);
+
+        } catch (\Exception $e) {
+            Log::error("Error update status: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat mengupdate status'], 500);
+        }
+    }
+
+    public function assignTherapist(Request $request, $tipe, $id)
+    {
+        // Normalize tipe ke lowercase untuk konsistensi
+        $tipe = strtolower($tipe);
+        
+        // Log semua parameter yang diterima untuk debugging
+        Log::info("ASSIGN THERAPIST REQUEST", [
+            'tipe' => $tipe,
+            'original_tipe' => $request->route('tipe'),
+            'id' => $id,
+            'request_data' => $request->all(),
+            'method' => $request->method(),
+            'url' => $request->url()
+        ]);
+
+        if (!in_array($tipe, ['transfer', 'cash'])) {
+            Log::error("Tipe tidak valid: {$tipe}");
+            return response()->json(['success' => false, 'message' => 'Tipe pesanan tidak valid'], 400);
+        }
+
+        $therapistId = $request->input('therapist_id');
+        
+        if (!$therapistId) {
+            Log::error("Therapist ID kosong");
+            return response()->json(['success' => false, 'message' => 'ID terapis tidak boleh kosong'], 400);
+        }
+
+        try {
+            // Cari pesanan
+            $pesanan = Pesanan::where('payment', $tipe)
+                            ->where('id', $id)
+                            ->first();
+
+            if (!$pesanan) {
+                Log::error("Pesanan tidak ditemukan - Tipe: {$tipe}, ID: {$id}");
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
+            }
+
+            Log::info("Pesanan ditemukan", ['pesanan' => $pesanan->toArray()]);
+
+            // Cek apakah terapis exist
+            $terapis = Terapis::find($therapistId);
+            if (!$terapis) {
+                Log::error("Terapis tidak ditemukan - ID: {$therapistId}");
+                return response()->json(['success' => false, 'message' => 'Terapis tidak ditemukan'], 404);
+            }
+
+            Log::info("Terapis ditemukan", ['terapis' => $terapis->toArray()]);
+
+            // Simpan status lama untuk debugging
+            $oldStatus = $pesanan->status;
+            $oldTherapistId = $pesanan->therapist_id;
+
+            // Update therapist_id dan status
+            $pesanan->therapist_id = $therapistId;
+            
+            // Jika status masih pending atau menunggu, ubah ke dijadwalkan
+            if (in_array($pesanan->status, ['Pending', 'Menunggu'])) {
+                $pesanan->status = 'Dijadwalkan';
+            }
+
+            Log::info("Sebelum save", [
+                'old_therapist_id' => $oldTherapistId,
+                'new_therapist_id' => $pesanan->therapist_id,
+                'old_status' => $oldStatus,
+                'new_status' => $pesanan->status
+            ]);
+            
+            $saved = $pesanan->save();
+
+            if (!$saved) {
+                Log::error("Gagal menyimpan pesanan");
+                return response()->json(['success' => false, 'message' => 'Gagal menyimpan perubahan'], 500);
+            }
+
+            Log::info("Terapis berhasil ditugaskan", [
+                'pesanan_id' => $id,
+                'terapis_id' => $therapistId,
+                'status_changed' => $oldStatus !== $pesanan->status
+            ]);
+
+            return response()->json([
+                'success' => true, 
+                'message' => 'Terapis berhasil ditugaskan',
+                'data' => [
+                    'therapist_name' => $terapis->name,
+                    'therapist_phone' => $terapis->phone,
+                    'therapist_gender' => $terapis->gender,
+                    'new_status' => $pesanan->status,
+                    'old_status' => $oldStatus
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Error assign therapist", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            return response()->json([
+                'success' => false, 
+                'message' => 'Terjadi kesalahan saat menugaskan terapis: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getAvailableTherapists(Request $request, $tipe, $id)
+    {
+        try {
+            $pesanan = Pesanan::where('payment', $tipe)->where('id', $id)->first();
+            
+            if (!$pesanan) {
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
+            }
+
+            $terapisQuery = Terapis::query();
+            
+            if ($pesanan->therapist_id && !in_array($pesanan->status, ['Selesai', 'Dibatalkan'])) {
+                $terapisQuery->where('id', '!=', $pesanan->therapist_id);
+            }
+            
+            $terapisList = $terapisQuery->get();
+
+            $terapisListData = $terapisList->map(function ($terapis, $index) {
+                return [
+                    'id' => $terapis->id,
+                    'nama_terapis' => $terapis->name ?? 'N/A',
+                    'ponsel_terapis' => $terapis->phone ?? 'N/A',
+                    'gender' => $terapis->gender ?? 'N/A',
+                    'index' => $index
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $terapisListData
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Error get available therapists: " . $e->getMessage());
+            return response()->json([
+                'success' => false, 
+                'message' => 'Terjadi kesalahan saat mengambil daftar terapis'
+            ], 500);
+        }
+    }
+
+    public function destroy($tipe, $id)
+    {
+        Log::info("DELETE REQUEST - Tipe: {$tipe}, ID: {$id}");
+        
+        if (!in_array($tipe, ['transfer', 'cash'])) {
+            Log::error("Tipe tidak valid: {$tipe}");
+            return response()->json(['success' => false, 'message' => 'Tipe pesanan tidak valid'], 400);
+        }
+
+        try {
+            $allWithId = Pesanan::where('id', $id)->get();
+            Log::info("Semua pesanan dengan ID {$id}: " . $allWithId->toJson());
+            
+            $allWithPayment = Pesanan::where('payment', $tipe)->get(['id', 'payment']);
+            Log::info("Semua pesanan dengan payment {$tipe}: " . $allWithPayment->toJson());
+            
+            $pesanan = Pesanan::where('payment', $tipe)
+                            ->where('id', $id)
+                            ->first();
+                            
+            if (!$pesanan) {
+                Log::error("Pesanan tidak ditemukan - Tipe: {$tipe}, ID: {$id}");
+                
+                $pesananById = Pesanan::where('id', $id)->first();
+                if ($pesananById) {
+                    Log::info("Pesanan ditemukan dengan ID {$id} tapi payment: {$pesananById->payment}");
+                    return response()->json([
+                        'success' => false, 
+                        'message' => "Pesanan ditemukan dengan payment method: {$pesananById->payment}, bukan {$tipe}"
+                    ], 404);
+                }
+                
+                return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
+            }
+            
+            Log::info("Pesanan ditemukan: " . $pesanan->toJson());
+            
+            $pesanan->delete();
+
+            Log::info("Pesanan berhasil dihapus - ID: {$id}");
+
+            return response()->json(['success' => true, 'message' => 'Pesanan berhasil dihapus']);
+            
+        } catch (\Exception $e) {
+            Log::error("Error deleting pesanan - ID: {$id}, Error: " . $e->getMessage());
+            Log::error("Stack trace: " . $e->getTraceAsString());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
     }
 }
