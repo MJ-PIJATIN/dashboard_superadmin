@@ -74,7 +74,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($transfer as $booking)
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4">{{ $booking->id }}</td>
+                                <td class="py-2 px-4">{{ $booking->booking_code }}</td>
                                 <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
@@ -178,7 +178,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($cash as $booking)
                             <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4">{{ $booking->id }}</td>
+                            <td class="py-2 px-4">{{ $booking->booking_code }}</td>
                                <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 

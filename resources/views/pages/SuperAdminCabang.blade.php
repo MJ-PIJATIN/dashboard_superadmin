@@ -54,7 +54,7 @@
                 <tbody>
                     @foreach($branches as $branch)
                         <tr class="hover:bg-gray-50 transition">
-                            <td class="px-6 py-3 break-words min-w-[100px]">{{ $branches->firstItem() + $loop->index }}</td>
+                            <td class="px-6 py-3 break-words min-w-[100px]">{{ $branch->branch_code }}</td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[150px] truncate overflow-hidden whitespace-nowrap">
                                 {{ $branch->city }}</td>
@@ -148,6 +148,5 @@
             });
         });
     </script>
-
 
 @endsection
