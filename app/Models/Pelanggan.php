@@ -24,7 +24,7 @@ class Pelanggan extends Model
         'gender',
     ];
 
-    public function pesanans()
+    public function bookings()
     {
         return $this->hasMany(Pesanan::class, 'customer_id');
     }
