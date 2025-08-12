@@ -139,9 +139,8 @@
                     <span class="text-gray-500">
                         @if($terapis->hasPages())
                             Halaman {{ $terapis->currentPage() }} dari {{ $terapis->lastPage() }}
-                            ({{ $terapis->total() }} total data)
                         @else
-                            Halaman 1 dari 1 ({{ $terapis->total() }} total data)
+                            Halaman 1 dari 1
                         @endif
                     </span>
                     <div class="flex space-x-1">
