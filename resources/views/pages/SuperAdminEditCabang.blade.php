@@ -34,7 +34,6 @@
         @csrf
         @method('PUT')
 
-        {{-- Provinsi --}}
         <div>
           <label for="province" class="block text-sm font-semibold text-gray-700 mb-1">Provinsi Cabang</label>
           <input type="text" id="province" name="province" maxlength="50" value="{{ $branch->province }}"

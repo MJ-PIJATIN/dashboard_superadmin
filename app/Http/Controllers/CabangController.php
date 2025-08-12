@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Karyawan;
+use App\Models\Terapis;
+use App\Models\Pelanggan;
+use App\Models\Pesanan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -19,15 +23,19 @@ class CabangController extends Controller
     {
         $branch = Cabang::findOrFail($id);
 
-        // $users = User::where('cabang_id', $id)->get();
+        // Karyawan
+        $pegawaiAdmin = \App\Models\Karyawan::where('branch_id', $id)->where('role', 'admin')->count();
+        $pegawaiFinance = \App\Models\Karyawan::where('branch_id', $id)->where('role', 'finance')->count();
+        $totalPegawai = $pegawaiAdmin + $pegawaiFinance;
 
-        $pegawaiAdmin = 0;
-        $pegawaiFinance = 0;
-        $totalPegawai = 0;
+        // Pengguna
+        $penggunaTerapis = \App\Models\Terapis::where('branch_id', $id)->count();
+        
+        // Find customers who have booked a therapist from this branch
+        $therapistIds = \App\Models\Terapis::where('branch_id', $id)->pluck('id');
+        $penggunaCustomer = \App\Models\Pesanan::whereIn('therapist_id', $therapistIds)->distinct()->count('customer_id');
 
-        $penggunaTerapis = 0;
-        $penggunaCustomer = 0;
-        $totalPengguna = 0;
+        $totalPengguna = $penggunaTerapis + $penggunaCustomer;
 
         return view('pages.SuperAdminDetailCabang', compact(
             'branch',
@@ -52,7 +60,7 @@ class CabangController extends Controller
 
         $last = Cabang::selectRaw('MAX(CAST(SUBSTRING(id, 4) AS UNSIGNED)) as last_id')->first();
         $lastId = $last->last_id ?? 0;
-        $newId = 'CAB' . str_pad($lastId + 1, 3, '0', STR_PAD_LEFT);
+        $newId = 'CAB' . str_pad($lastId + 1, 4, '0', STR_PAD_LEFT);
 
         Cabang::create([
             'id' => $newId,

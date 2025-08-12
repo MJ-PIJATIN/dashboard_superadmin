@@ -13,10 +13,12 @@ class PesananController extends Controller
     {
         $transferData = Pesanan::with(['customer', 'mainService'])
             ->where('payment', 'transfer')
+            ->orderBy('booking_code', 'asc')
             ->paginate(10, ['*'], 'transfer_page');
 
         $cashData = Pesanan::with(['customer', 'mainService'])
             ->where('payment', 'cash')
+            ->orderBy('booking_code', 'asc')
             ->paginate(10, ['*'], 'cash_page');
 
         return view('pages.SuperAdminPesanan', [
@@ -27,16 +29,13 @@ class PesananController extends Controller
 
     public function detail(Request $request, $tipe, $id)
     {
-        // Validasi tipe
         if (!in_array($tipe, ['transfer', 'cash'])) {
             abort(404, 'Tipe pesanan tidak valid');
         }
 
-        // Debug log untuk melihat parameter yang diterima
         Log::info("Detail pesanan - Tipe: {$tipe}, ID: {$id}");
 
         try {
-            // Cari pesanan dengan kondisi gabungan
             $pesanan = Pesanan::with(['customer', 'therapist', 'mainService', 'additionalService'])
                 ->where('payment', $tipe)
                 ->where('id', $id)
@@ -47,14 +46,11 @@ class PesananController extends Controller
                 abort(404, 'Pesanan tidak ditemukan');
             }
 
-            // Ambil daftar terapis yang tersedia
-            // Jika pesanan ini sudah punya terapis dan statusnya bukan 'Selesai'/'Dibatalkan', 
-            // exclude terapis tersebut dari list
+
             $terapisQuery = Terapis::query();
             
             if ($pesanan->therapist_id && !in_array($pesanan->status, ['Selesai', 'Dibatalkan'])) {
-                // Terapis sudah ditugaskan dan pesanan belum selesai/dibatalkan
-                // Tampilkan semua terapis kecuali yang sedang ditugaskan
+
                 $terapisQuery->where('id', '!=', $pesanan->therapist_id);
             }
             
@@ -67,7 +63,7 @@ class PesananController extends Controller
                 'harga' => $pesanan->mainService->price ?? 0,
                 'jadwal' => ($pesanan->bookings_date ?? '') . ', ' . ($pesanan->bookings_time ?? ''),
                 'tanggal_pemesanan' => $pesanan->created_at ? $pesanan->created_at->format('d M Y') : 'N/A',
-                'alamat' => $pesanan->customer->kota ?? $pesanan->customer->address ?? 'N/A',
+                'alamat' => $pesanan->customer->address ?? 'N/A',
                 'gender' => $pesanan->customer->gender ?? 'N/A',
                 'ponsel' => $pesanan->customer->phone ?? 'N/A',
                 'layanan_tambahan' => $pesanan->additionalService ? [$pesanan->additionalService->name] : [],
