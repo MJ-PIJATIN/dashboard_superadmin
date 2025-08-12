@@ -89,9 +89,7 @@ Route::get('/terapis', [TerapisController::class, 'index'])->name('terapis');
 Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tambah-terapis');
 Route::get('/terapis/{id}/detail', [TerapisController::class, 'show'])->name('detail-terapis');
 Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
-
 Route::post('/terapis/{id}/suspend', [SuspendedAccountController::class, 'suspend'])->name('terapis.suspend')->where('id', '[0-9]+');
-
 Route::delete('/terapis/{id}', [TerapisController::class, 'destroy'])->name('terapis.destroy');
 Route::get('/terapis/{id}/photo', [TerapisController::class, 'showPhoto'])->name('terapis.photo');
 
