@@ -74,7 +74,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($transfer as $booking)
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4">{{ $transfer->firstItem() + $loop->index }}</td>
+                                <td class="py-2 px-4">{{ $booking->id }}</td>
                                 <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
@@ -178,7 +178,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($cash as $booking)
                             <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4">{{ $cash->firstItem() + $loop->index }}</td>
+                            <td class="py-2 px-4">{{ $booking->id }}</td>
                                <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
@@ -336,7 +336,6 @@
 </div>
 
     <script>
-    {{-- Script Tab Switching --}}    
         document.addEventListener('DOMContentLoaded', function () {
             const tabTransferBtn = document.getElementById('tab-transfer-btn');
             const tabCashBtn = document.getElementById('tab-cash-btn');
@@ -364,7 +363,6 @@
             tabTransferBtn.addEventListener('click', () => setActiveTab('transfer'));
             tabCashBtn.addEventListener('click', () => setActiveTab('cash'));
 
-            // Load dari localStorage
             const savedTab = localStorage.getItem('activeTab') || 'transfer';
             setActiveTab(savedTab);
 
@@ -388,9 +386,8 @@
     const deleteCancelBtn = document.getElementById('delete-cancel');
 
     let rowToDelete = null;
-    let deleteData = null; // Menyimpan data untuk delete
+    let deleteData = null;
 
-    // Event listener untuk tombol delete
     document.querySelectorAll('.btn-delete').forEach(button => {
         button.addEventListener('click', function () {
             const id = this.dataset.id;
@@ -399,19 +396,16 @@
             
             deleteServiceName.textContent = name;
             rowToDelete = this.closest('tr');
-            deleteData = { id: id, tipe: tipe }; // Simpan data untuk delete
+            deleteData = { id: id, tipe: tipe };
             deleteDrawer.classList.remove('hidden');
         });
     });
 
-    // Konfirmasi delete - kirim request ke server
     deleteConfirmBtn.addEventListener('click', function () {
         if (deleteData && rowToDelete) {
-            // Tampilkan loading state
             deleteConfirmBtn.textContent = 'Menghapus...';
             deleteConfirmBtn.disabled = true;
 
-            // Kirim request DELETE ke server
             fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
                 method: 'DELETE',
                 headers: {
@@ -423,18 +417,14 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Berhasil dihapus dari server, hapus dari tampilan
                     rowToDelete.remove();
                     
-                    // Tampilkan notifikasi sukses (optional)
                     alert('Pesanan berhasil dihapus');
                     
-                    // Refresh halaman untuk update pagination
                     setTimeout(() => {
                         window.location.reload();
                     }, 500);
                 } else {
-                    // Gagal delete
                     alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
                 }
             })
@@ -443,11 +433,9 @@
                 alert('Terjadi kesalahan saat menghapus pesanan');
             })
             .finally(() => {
-                // Reset button state
                 deleteConfirmBtn.textContent = 'Hapus';
                 deleteConfirmBtn.disabled = false;
-                
-                // Tutup modal
+
                 deleteDrawer.classList.add('hidden');
                 rowToDelete = null;
                 deleteData = null;
@@ -455,7 +443,6 @@
         }
     });
 
-    // Cancel delete
     deleteCancelBtn.addEventListener('click', function () {
         deleteDrawer.classList.add('hidden');
         rowToDelete = null;

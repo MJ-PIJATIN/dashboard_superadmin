@@ -42,16 +42,31 @@ Route::post('/layanan-tambahan/store', [App\Http\Controllers\LayananController::
 Route::post('/layanan-tambahan/update', [App\Http\Controllers\LayananController::class, 'updateTambahan'])->name('layanan-tambahan.update');
 Route::delete('/layanan-tambahan/delete', [App\Http\Controllers\LayananController::class, 'destroyTambahan'])->name('layanan-tambahan.delete');
 
+
 // Halaman Pesanan
 Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
 Route::prefix('pesanan')->group(function () {
     Route::get('/detail/{tipe}/{id}', [PesananController::class, 'detail'])
          ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
          ->name('pesanan.detail');
-    
+
     Route::patch('/{tipe}/{id}/update-status', [PesananController::class, 'updateStatus'])
          ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
          ->name('pesanan.updateStatus');
+    
+    Route::post('/{tipe}/{id}/assign-therapist', [PesananController::class, 'assignTherapist'])
+         ->where([
+             'tipe' => 'transfer|cash|Cash|Transfer',
+             'id' => '[A-Za-z0-9]+'
+         ])
+         ->name('pesanan.assignTherapist');
+
+    Route::get('/{tipe}/{id}/available-therapists', [PesananController::class, 'getAvailableTherapists'])
+         ->where([
+             'tipe' => 'transfer|cash|Cash|Transfer',
+             'id' => '[A-Za-z0-9]+'
+         ])
+         ->name('pesanan.getAvailableTherapists');
          
     Route::delete('/{tipe}/{id}', [PesananController::class, 'destroy'])
          ->where(['tipe' => 'transfer|cash', 'id' => '[A-Za-z0-9]+'])
@@ -61,16 +76,21 @@ Route::prefix('pesanan')->group(function () {
 // Halaman Cabang
 Route::prefix('cabang')->group(function () {
     Route::get('/', [CabangController::class, 'index'])->name('cabang');
+
     Route::get('/tambah', fn () => view('pages.SuperAdminTambahCabang'))->name('cabang.tambah');
+
     Route::post('/tambah', [CabangController::class, 'store'])->name('cabang.store');
+
     Route::get('/{id}', [CabangController::class, 'show'])
         ->where('id', '[A-Za-z0-9]+')
         ->name('cabang.detail');
+
     Route::patch('/{id}/toggle-status', [CabangController::class, 'toggleStatus'])->name('cabang.toggleStatus');
 });
 
 Route::prefix('superadmin/cabang')->group(function () {
     Route::get('/{id}/edit', [CabangController::class, 'edit'])->name('cabang.edit');
+    
     Route::put('/{id}/update', [CabangController::class, 'update'])->name('cabang.update');
 });
 
