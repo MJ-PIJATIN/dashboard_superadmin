@@ -169,7 +169,7 @@
 
 <!-- Modal Popup -->
 <div id="restoreModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 text-center shadow-2xl">
+    <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-lg w-full mx-4 text-center shadow-2xl h-[300px]">
         
         <!-- Title -->
         <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-6">Pulihkan</h3>
@@ -187,12 +187,12 @@
         <!-- Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <button onclick="closeModal()" 
-                    class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition-colors font-medium text-sm sm:text-base order-2 sm:order-1">
+                    class="w-28 px-4 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm sm:text-base order-2 sm:order-1">
                 Batal
             </button>
             <button onclick="confirmRestore()" 
                     id="restoreButton"
-                    class="px-6 py-2 bg-[#06923E] text-white rounded-lg hover:bg-[#16610E] transition-colors font-medium text-sm sm:text-base order-1 sm:order-2">
+                    class="w-28 px-4 py-1 bg-teal-400 text-white rounded-lg hover:bg-teal-500 transition-colors font-medium text-sm sm:text-base order-1 sm:order-2">
                 Pulihkan
             </button>
         </div>
@@ -260,7 +260,7 @@ function hideSuccessDrawer() {
 // Fungsi untuk navigasi ke halaman detail
 function navigateToDetail(id, event) {
     // Menggunakan route helper Laravel untuk konsistensi
-    window.location.href = "{{ route('detiladuan', ['id' => ':id']) }}".replace(':id', id);
+    window.location.href = "{{ route('suspended-account.detail', ['id' => ':id']) }}".replace(':id', id);
 }
 
 // Fungsi untuk membuka modal konfirmasi restore

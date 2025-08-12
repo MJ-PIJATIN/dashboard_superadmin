@@ -126,14 +126,12 @@ Route::prefix('admin')->group(function () {
     Route::prefix('akun-ditangguhkan')->name('suspended-account.')->group(function () {
 
         // Halaman detail akun ditangguhkan
-        Route::get('/{suspension_id}/detail', [SuspendedAccountController::class, 'detail'])
-            ->name('detail')
-            ->where('id', '[0-9]+'); // Hanya menerima ID berupa angka
+        Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
+            ->name('detail');
         
         // API untuk memulihkan akun (AJAX)
         Route::post('/{id}/restore', [SuspendedAccountController::class, 'restore'])
-            ->name('restore')
-            ->where('id', '[0-9]+');
+            ->name('restore');
         
         // API untuk pencarian akun
         Route::get('/search', [SuspendedAccountController::class, 'search'])
