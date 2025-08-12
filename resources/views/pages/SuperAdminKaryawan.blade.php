@@ -72,7 +72,7 @@
                         @foreach ($karyawan->where('role', 'admin') as $index => $data)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-4 py-2">{{ $index + $karyawan->firstItem() }}</td>
-                                <td class="px-4 py-2">{{ $data->nama }}</td>
+                                <td class="px-4 py-2">{{ $data->nama_lengkap }}</td>
                                 <td class="px-4 py-2">{{ \Carbon\Carbon::parse($data->tanggal_bergabung)->format('d M Y') }}</td>
                                 <td class="px-4 py-2">{{ $data->ponsel }}</td>
                                 <td class="px-4 py-2">{{ $data->jenis_kelamin }}</td>
@@ -121,7 +121,7 @@
         
 
         {{-- Tab Contents (Finance) --}}
-        <div id="tab-finance-content" class="tab-content hidden">
+        <div id="tab-finance" class="tab-content hidden">
             <table class="w-full text-sm text-left">
                 <thead class="bg-white border-collapse text-left">
                     <tr>
@@ -138,7 +138,7 @@
                         @foreach ($karyawan->where('role', 'finance') as $index => $data)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-4 py-2">{{ $index + $karyawan->firstItem() }}</td>
-                                <td class="px-4 py-2">{{ $data->nama }}</td>
+                                <td class="px-4 py-2">{{ $data->nama_lengkap }}</td>
                                 <td class="px-4 py-2">{{ \Carbon\Carbon::parse($data->tanggal_bergabung)->format('d M Y') }}</td>
                                 <td class="px-4 py-2">{{ $data->ponsel }}</td>
                                 <td class="px-4 py-2">{{ $data->jenis_kelamin }}</td>
@@ -160,6 +160,32 @@
                     </tbody>
             </table>
             
+        {{-- Pagination Section for Finance --}}
+            <div class="flex justify-between items-center mt-4" id="admin-pagination-container">
+                @if ($karyawan->lastPage() > 1)
+                    <span class="text-base font-regular text-gray-600">Halaman {{ $karyawan->currentPage() }} dari {{ $karyawan->lastPage() }}</span>
+                    <div class="flex space-x-1 text-base font-semibold">
+                        @if ($karyawan->onFirstPage())
+                            <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
+                        @else
+                            <a href="{{ $karyawan->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                        @endif
+
+                        @foreach ($karyawan->getUrlRange(1, $karyawan->lastPage()) as $page => $url)
+                            <a href="{{ $url }}" class="px-3 py-1 rounded {{ $page == $karyawan->currentPage() ? 'bg-teal-600 text-white' : 'bg-gray-200 hover:bg-gray-300' }}">{{ $page }}</a>
+                        @endforeach
+
+                        @if ($karyawan->hasMorePages())
+                            <a href="{{ $karyawan->nextPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&gt;</a>
+                        @else
+                            <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&gt;</button>
+                        @endif
+                    </div>
+                @endif
+            </div>
+        </div>
+
+            
     <!-- Delete Confirmation Drawer -->
     <div id="delete-drawer" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden">
         <div class="flex items-center justify-center h-full">
@@ -168,7 +194,7 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-6">Hapus Data</h2>
                     <img src="{{ asset('images/trash can.svg') }}" alt="Hapus" class="h-20 w-20 mb-6" />
                     <p class="text-gray-600 text-center text-base">
-                        Apakah Anda yakin ingin menghapus layanan
+                        Apakah Anda yakin ingin menghapus Akun ini
                         <br><span id="delete-service-name" class="font-semibold text-red-600"></span>?
                     </p>
                 </div>
@@ -272,7 +298,7 @@
                                 financePaginationContainer.style.display = 'none';
                             }
                         }
-                    });
+                    }
 
             async function loadKaryawanData(url, type) {
                 try {

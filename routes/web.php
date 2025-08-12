@@ -163,6 +163,20 @@ Route::get('/karyawan/finance/{id}', function ($id) {
     return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
 })->where('id', '[0-9]+')->name('detail.akun.finance');
 
+// Tambah Karyawan (POST)
+Route::post('/karyawan/store', [KaryawanController::class, 'store'])->name('karyawan.store');
+
+//Show Detail akun admin
+Route::get('/karyawan/{id}', [KaryawanController::class, 'show'])->name('detail.karyawan');
+
+//Hapus Akun
+Route::delete('/karyawan/{id}', [KaryawanController::class, 'destroy'])
+    ->name('karyawan.delete');
+
+//SHow Detail Akun Finance
+Route::get('/karyawan/finance/{id}', [KaryawanController::class, 'showFinance'])->name('detail.akun.finance');
+
+
 //PAGE PELANGGAN
 // detail akun pelanggan
 Route::get('/pelanggan/{id}', function ($id) {
