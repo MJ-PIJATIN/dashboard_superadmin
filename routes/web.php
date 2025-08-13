@@ -26,6 +26,11 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+// Routing Notifikasi
+Route::get('/notifikasi', function () {
+    return view('pages.SuperAdminNotifikasi');
+})->name('notifikasi');
+
 // Routing Sidebar Super Admin
 Route::get('/dashboard', function () {
     return view('pages.SuperAdminDashboard');
