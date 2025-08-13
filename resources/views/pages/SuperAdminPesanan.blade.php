@@ -339,6 +339,47 @@
         document.addEventListener('DOMContentLoaded', function () {
             const tabTransferBtn = document.getElementById('tab-transfer-btn');
             const tabCashBtn = document.getElementById('tab-cash-btn');
+            const searchInput = document.getElementById('search-input');
+
+            function filterTable() {
+                const filter = searchInput.value.toLowerCase().trim();
+                const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                if (!activeTab) return;
+
+                const tableBody = activeTab.querySelector('tbody');
+                const rows = tableBody.querySelectorAll('tr');
+                let visibleRows = 0;
+
+                rows.forEach(row => {
+                    if (row.classList.contains('no-results-message')) {
+                        row.remove();
+                        return;
+                    }
+                    const textContent = row.textContent.toLowerCase();
+                    if (filter === '' || textContent.includes(filter)) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                const existingMessage = tableBody.querySelector('.no-results-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                if (visibleRows === 0 && filter !== '') {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-message';
+                    noResultsRow.innerHTML = `
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            Tidak ada data yang ditemukan untuk pencarian "${filter}"
+                        </td>
+                    `;
+                    tableBody.appendChild(noResultsRow);
+                }
+            }
 
             function setActiveTab(tab) {
                 const isTransfer = tab === 'transfer';
@@ -358,6 +399,8 @@
 
                 document.getElementById('pagination-transfer').classList.toggle('hidden', !isTransfer);
                 document.getElementById('pagination-cash').classList.toggle('hidden', isTransfer);
+                
+                filterTable(); // a filter when tab changes
             }
 
             tabTransferBtn.addEventListener('click', () => setActiveTab('transfer'));
@@ -366,88 +409,76 @@
             const savedTab = localStorage.getItem('activeTab') || 'transfer';
             setActiveTab(savedTab);
 
-            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterTable);
 
-            searchInput.addEventListener('input', function () {
-                const filter = this.value.toLowerCase();
+            const deleteDrawer = document.getElementById('delete-drawer');
+            const deleteServiceName = document.getElementById('delete-service-name');
+            const deleteConfirmBtn = document.getElementById('delete-confirm');
+            const deleteCancelBtn = document.getElementById('delete-cancel');
 
-                ['transfer', 'cash'].forEach(tipe => {
-                    const rows = document.querySelectorAll(`#tab-${tipe} tbody tr`);
-                    rows.forEach(row => {
-                        const textRow = row.textContent.toLowerCase();
-                        row.style.display = textRow.includes(filter) ? '' : 'none';
-                    });
+            let rowToDelete = null;
+            let deleteData = null;
+
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const tipe = this.dataset.tipe;
+                    
+                    deleteServiceName.textContent = name;
+                    rowToDelete = this.closest('tr');
+                    deleteData = { id: id, tipe: tipe };
+                    deleteDrawer.classList.remove('hidden');
                 });
             });
 
-             const deleteDrawer = document.getElementById('delete-drawer');
-    const deleteServiceName = document.getElementById('delete-service-name');
-    const deleteConfirmBtn = document.getElementById('delete-confirm');
-    const deleteCancelBtn = document.getElementById('delete-cancel');
+            deleteConfirmBtn.addEventListener('click', function () {
+                if (deleteData && rowToDelete) {
+                    deleteConfirmBtn.textContent = 'Menghapus...';
+                    deleteConfirmBtn.disabled = true;
 
-    let rowToDelete = null;
-    let deleteData = null;
+                    fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            rowToDelete.remove();
+                            
+                            alert('Pesanan berhasil dihapus');
+                            
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menghapus pesanan');
+                    })
+                    .finally(() => {
+                        deleteConfirmBtn.textContent = 'Hapus';
+                        deleteConfirmBtn.disabled = false;
 
-    document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', function () {
-            const id = this.dataset.id;
-            const name = this.dataset.name;
-            const tipe = this.dataset.tipe;
-            
-            deleteServiceName.textContent = name;
-            rowToDelete = this.closest('tr');
-            deleteData = { id: id, tipe: tipe };
-            deleteDrawer.classList.remove('hidden');
-        });
-    });
-
-    deleteConfirmBtn.addEventListener('click', function () {
-        if (deleteData && rowToDelete) {
-            deleteConfirmBtn.textContent = 'Menghapus...';
-            deleteConfirmBtn.disabled = true;
-
-            fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                        deleteDrawer.classList.add('hidden');
+                        rowToDelete = null;
+                        deleteData = null;
+                    });
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    rowToDelete.remove();
-                    
-                    alert('Pesanan berhasil dihapus');
-                    
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                } else {
-                    alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus pesanan');
-            })
-            .finally(() => {
-                deleteConfirmBtn.textContent = 'Hapus';
-                deleteConfirmBtn.disabled = false;
+            });
 
+            deleteCancelBtn.addEventListener('click', function () {
                 deleteDrawer.classList.add('hidden');
                 rowToDelete = null;
                 deleteData = null;
             });
-        }
-    });
-
-    deleteCancelBtn.addEventListener('click', function () {
-        deleteDrawer.classList.add('hidden');
-        rowToDelete = null;
-        deleteData = null;
-    });
-});
+        });
     </script>
 @endsection

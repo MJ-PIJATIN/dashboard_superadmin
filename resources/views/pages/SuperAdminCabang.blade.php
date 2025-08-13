@@ -57,12 +57,15 @@
                             <td class="px-6 py-3 break-words min-w-[100px]">{{ $branch->branch_code }}</td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[150px] truncate overflow-hidden whitespace-nowrap">
-                                {{ $branch->city }}</td>
+                                {{ $branch->city }}
+                            </td>
                             <td
                                 class="px-6 py-3 break-words min-w-[100px] max-w-[250px] truncate overflow-hidden whitespace-nowrap">
-                                {{ $branch->province }}</td>
+                                {{ $branch->province }}
+                            </td>
                             <td class="px-6 py-3 break-words min-w-[100px]">
-                                {{ \Carbon\Carbon::parse($branch->inauguration_date)->format('d-m-Y') }}</td>
+                                {{ \Carbon\Carbon::parse($branch->inauguration_date)->format('d-m-Y') }}
+                            </td>
 
                             <td class="px-6 py-3 break-words min-w-[100px]">
                                 @php
@@ -73,7 +76,7 @@
                                     @method('PATCH')
                                     <button type="submit"
                                         class="flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-[4px] w-[120px]
-                                                    {{ $isActive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
+                                                            {{ $isActive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
                                         <span
                                             class="w-2 h-2 rounded-full {{ $isActive ? 'bg-green-500' : 'bg-red-500' }}"></span>
                                         {{ $isActive ? 'Aktif' : 'Tidak Aktif' }}
@@ -111,7 +114,8 @@
                 @if ($branches->onFirstPage())
                     <button class="px-3 py-1 rounded bg-gray-200 text-gray-500" disabled>&lt;</button>
                 @else
-                    <a href="{{ $branches->previousPageUrl() }}" class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
+                    <a href="{{ $branches->previousPageUrl() }}"
+                        class="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300">&lt;</a>
                 @endif
 
                 {{-- Page Numbers --}}
@@ -138,15 +142,46 @@
             const searchInput = document.getElementById('search-input');
 
             searchInput.addEventListener('input', function () {
-                const filter = this.value.toLowerCase();
+                const filter = this.value.toLowerCase().trim();
                 const rows = document.querySelectorAll('table tbody tr');
 
                 rows.forEach(row => {
-                    const textRow = row.textContent.toLowerCase();
-                    row.style.visibility = textRow.includes(filter) ? 'visible' : 'collapse';
+                    const textContent = row.textContent.toLowerCase();
+
+                    if (filter === '' || textContent.includes(filter)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none'; 
+                    }
                 });
+
+                const visibleRows = document.querySelectorAll('table tbody tr[style=""], table tbody tr:not([style*="none"])');
+                const tableBody = document.querySelector('table tbody');
+
+                const existingMessage = document.querySelector('.no-results-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                if (visibleRows.length === 0 && filter !== '') {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-message';
+                    noResultsRow.innerHTML = `
+                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                            <div class="flex flex-col items-center space-y-2">
+                                <p class="text-base">Tidak ada data  yang ditemukan untuk pencarian "${filter}"</p>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(noResultsRow);
+                }
             });
         });
+
+        function performSearch() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.dispatchEvent(new Event('input'));
+        }
     </script>
 
 @endsection

@@ -24,16 +24,13 @@ class CabangController extends Controller
         $branch = Cabang::findOrFail($id);
 
         // Karyawan
-        $pegawaiAdmin = \App\Models\Karyawan::where('branch_id', $id)->where('role', 'admin')->count();
-        $pegawaiFinance = \App\Models\Karyawan::where('branch_id', $id)->where('role', 'finance')->count();
+        $pegawaiAdmin = \App\Models\Karyawan::where('work_area', $branch->city)->where('role', 'admin')->count();
+        $pegawaiFinance = \App\Models\Karyawan::where('work_area', $branch->city)->where('role', 'finance')->count();
         $totalPegawai = $pegawaiAdmin + $pegawaiFinance;
 
         // Pengguna
-        $penggunaTerapis = \App\Models\Terapis::where('branch_id', $id)->count();
-        
-        // Find customers who have booked a therapist from this branch
-        $therapistIds = \App\Models\Terapis::where('branch_id', $id)->pluck('id');
-        $penggunaCustomer = \App\Models\Pesanan::whereIn('therapist_id', $therapistIds)->distinct()->count('customer_id');
+        $penggunaTerapis = \App\Models\Terapis::where('work_area', $branch->city)->count();
+        $penggunaCustomer = \App\Models\Pelanggan::where('city', $branch->city)->count();
 
         $totalPengguna = $penggunaTerapis + $penggunaCustomer;
 
@@ -115,7 +112,6 @@ class CabangController extends Controller
             'description' => $validated['description'],
         ]);
 
-        return redirect()->route('cabang', ['id' => $id])->with('success', 'Cabang berhasil diperbarui!');
-    }
+        return redirect()->route('cabang')->with('success', 'Cabang berhasil diperbarui!');    }
 
 }
