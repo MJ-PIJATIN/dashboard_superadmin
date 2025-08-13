@@ -102,7 +102,9 @@ Route::get('/karyawan/search', [KaryawanController::class, 'search'])->name('kar
 Route::get('/pelanggan', [PelangganController::class, 'index'])->name('pelanggan');
 Route::get('/pelanggan/search', [PelangganController::class, 'search'])->name('pelanggan.search');
 Route::patch('/pelanggan/{id}/toggle-status', [PelangganController::class, 'toggleStatus'])->name('pelanggan.toggleStatus');
-Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])->name('detail.akun.pelanggan');
+Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])
+    ->name('detail.akun.pelanggan');
+
 
 // Halaman Terapis
 Route::get('/terapis', [TerapisController::class, 'index'])->name('terapis');
@@ -178,9 +180,7 @@ Route::get('/tambah/karyawan', function () {
 Route::get('/karyawan/{id}', [KaryawanController::class, 'show'])->where('id', '[0-9]+')->name('detail.karyawan');
 
 // detail karyawan finance 
-
 Route::get('/karyawan/finance/{id}', [KaryawanController::class, 'showFinance'])->where('id', '[0-9]+')->name('detail.akun.finance');
-
 
 Route::get('/karyawan/finance/{id}', function ($id) {
     return view('pages.SuperAdminKaryawanDetailAkunFInance', ['id' => $id]);
@@ -202,11 +202,11 @@ Route::get('/karyawan/finance/{id}', [KaryawanController::class, 'showFinance'])
 
 //PAGE PELANGGAN
 // detail akun pelanggan
-Route::get('/pelanggan/{id}', function ($id) {
-    return view('pages.SuperAdminPelangganDetailAkun', ['id' => $id]);
-})->where('id', '[0-9]+')->name('detail.akun.pelanggan');
+Route::get('/pelanggan/{id}', [PelangganController::class, 'show'])
+    ->where('id', '[0-9]+')
+    ->name('detail.akun.pelanggan');
 
-// Tambahkan route ini di web.php (temporary untuk cleaning)
+// temporary untuk cleaning
 Route::get('/clean-suspended-data', function(Request $request) {
     // Ambil data session saat ini
     $suspended = $request->session()->get('suspended_accounts', []);

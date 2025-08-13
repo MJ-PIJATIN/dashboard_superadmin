@@ -36,6 +36,8 @@ class PelangganController extends Controller
     public function show($id)
     {
         $customer = Pelanggan::findOrFail($id);
-        return view('pages.SuperAdminPelangganDetailAkun', ['pelanggan' => $customer]);
+        return view('pages.SuperAdminPelangganDetailAkun', compact('customer'));
     }
+
+
 }
