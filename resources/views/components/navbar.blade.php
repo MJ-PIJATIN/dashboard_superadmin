@@ -9,11 +9,22 @@
         @endif
     </div>
 
-    <!-- Ikon Notifikasi -->
-    <div class="flex items-center space-x-4">
-        <!-- Tombol Notifikasi dengan Asset Sendiri dan bg-rounded -->
-        <button class="relative p-2 mr-[26px] rounded-full bg-gray-100 hover:bg-gray-200 transition duration-200">
-            <img src="{{ asset('images/bel.svg') }}" alt="Notifikasi" class="w-6 h-6">
-        </button>
-    </div>
+<!-- Ikon Notifikasi -->
+<div class="flex items-center space-x-4">
+    <!-- Tombol Notifikasi -->
+    <a href="{{ route('notifikasi') }}"
+       class="relative p-2 mr-[26px] rounded-full transition duration-200
+              @if(request()->routeIs('notifikasi'))
+                  bg-[#469D89]/65
+              @else
+                  bg-gray-100 hover:bg-gray-200
+              @endif">
+        <img src="{{ asset('images/bel.svg') }}" 
+             alt="Notifikasi" 
+             class="w-6 h-6
+                    @if(request()->routeIs('notifikasi'))
+                        brightness-0 invert
+                    @endif">
+    </a>
+</div>
 </nav>
