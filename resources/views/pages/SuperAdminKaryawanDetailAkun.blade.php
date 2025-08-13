@@ -28,8 +28,6 @@
                     class="w-40 h-40 rounded-full object-cover shadow mb-2">
                 <h2 class="text-sm font-semibold text-gray-800">{{ $karyawan->nama_depan }} {{ $karyawan->nama_belakang }}</h2>
                 <p class="text-xs text-gray-500">{{ ucfirst($karyawan->role) }}</p>
-                <h2 class="text-sm font-semibold text-gray-800">{{ $employee->nama }}</h2>
-                <p class="text-xs text-gray-500">{{ $employee->role }}</p>
             </div>
 
             <h3 class="text-normal font-bold text-gray-800 mb-5 text-left w-full">Informasi Akun</h3>
@@ -53,23 +51,6 @@
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Area Penempatan</span>
                     <span class="font-semibold text-gray-800">{{ $karyawan->kota }}, {{ $karyawan->provinsi }}</span>
-                    <span class="font-semibold text-gray-800">ADM{{ str_pad($employee->id, 3, '0', STR_PAD_LEFT) }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Peran Akun</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->role }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Alamat Email</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->email ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Ponsel</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->ponsel }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Area Penempatan</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->area_penempatan }}</span>
                 </div>
             </div>
 
@@ -106,23 +87,6 @@
                 <div class="flex justify-between border-b pb-1">
                     <span class="font-semibold text-gray-500">Alamat</span>
                     <span class="font-semibold text-gray-800">{{ $karyawan->alamat ?? '-' }}</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->nama }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Tempat Lahir</span>
-                    <span class="font-semibold text-gray-800">-</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Tanggal Lahir</span>
-                    <span class="font-semibold text-gray-800">-</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Jenis Kelamin</span>
-                    <span class="font-semibold text-gray-800">{{ $employee->jenis_kelamin }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-1">
-                    <span class="font-semibold text-gray-500">Alamat</span>
-                    <span class="font-semibold text-gray-800">-</span>
                 </div>
             </div>
         </div>
@@ -199,5 +163,4 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
-@endsection
 @endsection

@@ -212,7 +212,7 @@
                         paginationContainer.innerHTML = '';
                         paginationContainer.style.display = 'none'; // Hide pagination
                     }
-                });
+                
                 }
 
             searchInput.addEventListener('input', performSearch);

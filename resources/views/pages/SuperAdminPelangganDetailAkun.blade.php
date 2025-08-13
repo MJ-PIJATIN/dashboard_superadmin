@@ -21,16 +21,17 @@
 
     <div class="grid grid-cols-12 gap-4 mb-4 ">
         {{-- Card Informasi Akun --}}
-        <div class="col-span-6 lg:col-span-8 bg-white rounded-lg shadow p-4 space-y-10">
+        <div class="col-span-6 lg:col-span-6 bg-white rounded-lg shadow p-4 space-y-5">
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center space-x-3 ">
-                    <img src="https://i.pinimg.com/736x/f6/61/ea/f661ea61616909838a9fbfeda0d2ea14.jpg" alt="Foto" class="w-24 h-24 rounded-full object-cover">
+                    <img src="{{ $customer->foto ? asset('storage/'.$customer->foto) : 'https://via.placeholder.com/150' }}" 
+                    alt="Foto" class="w-24 h-24 rounded-full object-cover shadow">
                     <div>
                         <h3 class="text-sm font-semibold flex items-center gap-1">
-                            {{ $pelanggan->nama }} 
-                            @if(strtolower($pelanggan->gender) === 'male')
+                            {{ $customer->nama }} 
+                            @if(strtolower($customer->gender) === 'male')
                                 <span class="text-blue-500 text-base">♂️</span>
-                            @elseif(strtolower($pelanggan->gender) === 'female')
+                            @elseif(strtolower($customer->gender) === 'female')
                                 <span class="text-pink-500 text-base">♀️</span>
                             @endif
                         </h3>
@@ -38,27 +39,44 @@
                     </div>
                 </div>
 
-                <div class="text-xs font-semibold text-gray-500">#CTS{{ str_pad($pelanggan->id, 6, '0', STR_PAD_LEFT) }}</div>
+                <div class="text-xs font-semibold text-gray-500">#CTS{{ str_pad($customer->id, 6, '0', STR_PAD_LEFT) }}</div>
             </div>
 
-            <div class="space-y-4 mb-3 text-xs text-gray-500 ">
-                <div class="flex justify-between">
-                    <span>Status Akun:</span>
-                    <span class="text-lime-500 font-medium">{{ $pelanggan->status }}</span>
+            <div class="space-y-2 mb-3 text-xs text-gray-500 ">
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Nama</p>
+                    <p class="font-semibold">{{ $customer->name }}</p>
+                </div>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Email</p>
+                    <p class="font-semibold">{{ $customer->email }}</p>
                 </div>
                 <div class="flex justify-between">
-                    <span>Alamat Email:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->email }}</span>
+                    <p class="text-gray-400 text-sm">No. Telepon</p>
+                    <p class="font-semibold">{{ $customer->phone }}</p>
                 </div>
-                <div class="flex justify-between">
-                    <span>Nomor Telepon:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->ponsel ?? '-' }}</span>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Jenis Kelamin</p>
+                    <p class="font-semibold">{{ $customer->gender }}</p>
                 </div>
-                <div class="flex justify-between">
-                    <span>Alamat:</span>
-                    <span class="text-gray-900 font-medium text-right">{{ $pelanggan->kota }}</span>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Kota</p>
+                    <p class="font-semibold">{{ $customer->city }}</p>
                 </div>
-            </div>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Alamat</p>
+                    <p class="font-semibold">{{ $customer->address }}</p>
+                </div>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">NIK</p>
+                    <p class="font-semibold">{{ $customer->NIK }}</p>
+                </div>
+                 <div class="flex justify-between">
+                    <p class="text-gray-400 text-sm">Status</p>
+                    <span class="px-2 py-1 text-xs rounded {{ $customer->status === 'Aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                        {{ $customer->status }}
+                    </span>
+                </div>
 
             <div class="flex justify-end mt-3 space-x-2">
                 <button class="px-3 py-1 border border-emerald-500 text-emerald-600 text-xs font-medium rounded hover:bg-emerald-50">Verifikasi</button>
@@ -66,25 +84,26 @@
                 <button class="px-3 py-1 border border-yellow-400 text-yellow-500 text-xs font-medium rounded hover:bg-yellow-50">Kirim Peringatan</button>
             </div>
         </div>
+    </div>
 
         {{-- Card Identitas Diri --}}
         <div class="col-span-6 lg:col-span-4 bg-white rounded-lg shadow p-4">
-            <div class="flex justify-between items-start mb-3 space-y-5">
+            <div class="flex justify-between items-start mb-3 space-y-15">
                 <h4 class="font-bold text-gray-700 text-sm">Identitas Diri</h4>
                 <button class="px-3 py-1 text-xs text-blue-600 border border-blue-500 font-medium rounded hover:bg-blue-50">Lihat Foto KTP</button>
             </div>
-            <div class="space-y-4 mb-4 text-xs text-gray-500">
+            <div class="space-y-2 mb-4 text-xs text-gray-500">
                 <div class="flex justify-between">
                     <span>NIK:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->nik ?? '-' }}</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->NIK }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Nama Lengkap:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->nama }}</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->name }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Jenis Kelamin:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->gender }}</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->gender }}</span>
                 </div>
             </div>
 
@@ -94,15 +113,15 @@
             <div class="space-y-4 text-xs text-gray-500">
                 <div class="flex justify-between">
                     <span>Tanggal Bergabung:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->created_at->format('d M Y') }}</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->created_at->format('d M Y') }}</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Total Layanan:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->pesanans->count() }} Layanan</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->bookings->count() }} Layanan</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Total Dibatalkan:</span>
-                    <span class="text-gray-900 font-medium">{{ $pelanggan->pesanans->where('status', 'Dibatalkan')->count() }} Layanan</span>
+                    <span class="text-gray-900 font-medium">{{ $customer->bookings->where('status', 'Dibatalkan')->count() }} Layanan</span>
                 </div>
                 <div class="flex justify-between">
                     <span>Peringatan Diterima:</span>
@@ -163,18 +182,18 @@
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        @foreach ($pelanggan->pesanans->where('payment', 'transfer') as $index => $pesanan)
+                        @foreach ($customer->bookings->where('payment', 'transfer') as $index => $pesanan)
                             <tr class="bg-white rounded shadow-sm">
                                 <td class="px-3 py-2">{{ $index + 1 }}</td>
                                 <td class="px-3 py-2 flex items-center gap-2">
                                     <span class="text-lg">
-                                        @if($pesanan->therapist->gender == 'female')
+                                        @if($booking->therapist->gender == 'female')
                                             <span class="text-pink-500">♀️</span>
                                         @else
                                             <span class="text-blue-500">♂️</span>
                                         @endif
                                     </span>
-                                    {{ $pesanan->therapist->name }}
+                                    {{ $booking->therapist->name }}
                                 </td>
                                 <td class="px-3 py-2">{{ $pesanan->mainService->name }}</td>
                                 <td class="px-3 py-2">{{ $pesanan->bookings_date }}</td>
@@ -230,23 +249,23 @@
                         </tr>
                     </thead>
                     <tbody class="text-gray-700">
-                        @foreach ($pelanggan->pesanans->where('payment', 'cash') as $index => $pesanan)
+                        @foreach ($customer->bookings->where('payment', 'cash') as $index => $pesanan)
                             <tr class="bg-white rounded shadow-sm">
                                 <td class="px-3 py-2">{{ $index + 1 }}</td>
                                 <td class="px-3 py-2 flex items-center gap-2">
                                     <span class="text-lg">
-                                        @if($pesanan->therapist->gender == 'female')
+                                        @if($booking->therapist->gender == 'female')
                                             <span class="text-pink-500">♀️</span>
                                         @else
                                             <span class="text-blue-500">♂️</span>
                                         @endif
                                     </span>
-                                    {{ $pesanan->therapist->name }}
+                                    {{ $bookings->therapist->name }}
                                 </td>
-                                <td class="px-3 py-2">{{ $pesanan->mainService->name }}</td>
-                                <td class="px-3 py-2">{{ $pesanan->bookings_date }}</td>
+                                <td class="px-3 py-2">{{ $booking->mainService->name }}</td>
+                                <td class="px-3 py-2">{{ $booking->bookings_date }}</td>
                                 <td class="px-3 py-2">
-                                    @if($pesanan->status == 'Selesai')
+                                    @if($booking->status == 'Selesai')
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-green-100 text-green-600">● Selesai</span>
                                     @else
                                         <span class="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-100 text-red-600">● Dibatalkan</span>

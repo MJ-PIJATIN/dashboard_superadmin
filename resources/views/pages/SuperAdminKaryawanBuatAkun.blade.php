@@ -58,6 +58,7 @@
                         <div class="mt-2">
                             <label class="text-sm font-semibold">Provinsi*</label>
                             <select name="provinsi" class="w-full border border-gray-300 rounded-lg px-4 py-2 mt-1 text-sm">
+                                    <option>Pilih Provinsi</option>    
                                         <option value="Aceh">Aceh</option>
                                         <option value="Sumatera Utara">Sumatera Utara</option>
                                         <option value="Sumatera Barat">Sumatera Barat</option>
@@ -152,7 +153,7 @@
         'Tapanuli Utara',
         'Toba Samosir',
         'Labuh Batu ',
-        'Asahan', //stop
+        'Asahan', 
         'Simalungun',
         'Dairi',
         'Karo',
