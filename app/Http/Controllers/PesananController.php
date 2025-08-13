@@ -47,14 +47,15 @@ class PesananController extends Controller
             }
 
 
-            $terapisQuery = Terapis::query();
-            
-            if ($pesanan->therapist_id && !in_array($pesanan->status, ['Selesai', 'Dibatalkan'])) {
+            // Get IDs of therapists assigned to active orders
+            $busyTherapistIds = Pesanan::whereNotIn('status', ['Selesai', 'Dibatalkan'])
+                                       ->whereNotNull('therapist_id')
+                                       ->pluck('therapist_id')
+                                       ->unique();
 
-                $terapisQuery->where('id', '!=', $pesanan->therapist_id);
-            }
-            
-            $terapisList = $terapisQuery->get();
+            // Get all available therapists
+            $terapisList = Terapis::whereNotIn('id', $busyTherapistIds)->get();
+            $totalTerapisCount = Terapis::count();
 
             $pesananData = [
                 'id' => $pesanan->id,
@@ -90,7 +91,8 @@ class PesananController extends Controller
             return view('pages.SuperAdminDetailPesanan', [
                 'pesanan' => $pesananData,
                 'terapisList' => $terapisListData,
-                'tipe' => $tipe
+                'tipe' => $tipe,
+                'totalTerapisCount' => $totalTerapisCount,
             ]);
 
         } catch (\Exception $e) {
@@ -250,13 +252,14 @@ class PesananController extends Controller
                 return response()->json(['success' => false, 'message' => 'Pesanan tidak ditemukan'], 404);
             }
 
-            $terapisQuery = Terapis::query();
-            
-            if ($pesanan->therapist_id && !in_array($pesanan->status, ['Selesai', 'Dibatalkan'])) {
-                $terapisQuery->where('id', '!=', $pesanan->therapist_id);
-            }
-            
-            $terapisList = $terapisQuery->get();
+            // Get IDs of therapists assigned to active orders
+            $busyTherapistIds = Pesanan::whereNotIn('status', ['Selesai', 'Dibatalkan'])
+                                       ->whereNotNull('therapist_id')
+                                       ->pluck('therapist_id')
+                                       ->unique();
+
+            // Get all available therapists
+            $terapisList = Terapis::whereNotIn('id', $busyTherapistIds)->get();
 
             $terapisListData = $terapisList->map(function ($terapis, $index) {
                 return [
