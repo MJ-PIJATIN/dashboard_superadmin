@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Complaint;
 
 class Pesanan extends Model
 {
@@ -47,5 +48,10 @@ class Pesanan extends Model
     public function additionalService()
     {
         return $this->belongsTo(LayananTambahan::class, 'additional_service_id', 'id');
+    }
+
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class, 'booking_id');
     }
 }

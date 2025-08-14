@@ -26,6 +26,7 @@ class Terapis extends Model
         'email',
         'NIK',
         'addres',
+        'work_area',
         'suspended_duration',
     ];
 
@@ -322,4 +323,10 @@ class Terapis extends Model
         $array['photo_data_url'] = $this->photo_data_url;
         return $array;
     }
+
+public function reportedBy()
+{
+    return $this->hasMany(Report::class, 'target_id')
+                ->where('reports.target_type', 'therapist');
+}
 }
