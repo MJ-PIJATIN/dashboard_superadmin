@@ -33,18 +33,20 @@
                         class="w-full h-full object-cover" />
                     </div>
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-700">{{ $detailAduan['nama_pelapor'] }}</h2>
-                        <p class="text-gray-600 mt-2">{{ $detailAduan['status_pelapor'] }}</p>
+                        <h2 class="text-xl font-semibold text-gray-700">{{ $detailAduan->customer->name ?? 'Pelanggan tidak ditemukan' }}</h2>
+                        <p class="text-gray-600 mt-2">Pelanggan</p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan['waktu'] }}</p>
-                    <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan['lokasi'] }}</p>
-                    <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan['id']]) }}" 
+                    <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan->created_at->format('H:i, d M Y') }}</p>
+                    <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan->customer->address ?? 'Alamat tidak tersedia' }}</p>
+                    @if($detailAduan->order)
+                    <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan->order->id]) }}" 
                     class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors
                             hover:text-white hover:bg-[#2196F3]">
                     Detail Pesanan
                     </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -59,36 +61,19 @@
                 <div class="space-y-4">
                     <div class="flex justify-between py-2 border-b border-gray-300">
                         <span class="text-gray-500 font-medium mb-2">Pelapor</span>
-                        <span class="text-gray-700 font-bold">{{ $detailAduan['nama_pelapor'] }}</span>
+                        <span class="text-gray-700 font-bold">{{ $detailAduan->customer->name ?? 'N/A' }}</span>
                     </div>
                     
                     <div class="flex justify-between py-2 border-b border-gray-300">
-                        <span class="text-gray-500 font-medium mb-2">Alasan Aduan</span>
-                        <span class="text-gray-700 font-bold">{{ $detailAduan['jenis_aduan'] }}</span>
+                        <span class="text-gray-500 font-medium mb-2">Status Aduan</span>
+                        <span class="text-gray-700 font-bold">{{ Str::ucfirst($detailAduan->reason) }}</span>
                     </div>
                     
                     <div class="pt-4">
                         <h4 class="text-gray-500 font-medium mb-3 mt-1">Detail Aduan</h4>
                         <p class="text-gray-700 text-justify leading-relaxed mb-3">
-                            {{ $detailAduan['deskripsi'] }}
+                            {{ $detailAduan->descript }}
                         </p>
-                        
-                        @if(!empty($detailAduan['detail_aduan']))
-                        <ul class="space-y-2 text-gray-700 mb-3">
-                            @foreach($detailAduan['detail_aduan'] as $detail)
-                            <li class="flex items-start">
-                                <span class="text-gray-600 mr-2">•</span>
-                                <span>{{ $detail }}</span>
-                            </li>
-                            @endforeach
-                        </ul>
-                        @endif
-                        
-                        @if(!empty($detailAduan['penutup_aduan']))
-                        <p class="text-gray-700 text-justify leading-relaxed">
-                            {{ $detailAduan['penutup_aduan'] }}
-                        </p>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -97,27 +82,51 @@
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <h3 class="text-lg font-semibold text-gray-700 mb-6">Data Terlapor</h3>
                 
-                <div class="space-y-4">
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Nama Lengkap</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan['nama_terlapor'] }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Area Kerja</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan['area_kerja'] }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan['jenis_kelamin'] }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Alamat</span>
-                        <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan['alamat_terlapor'] }}</span>
-                    </div>
-                </div>
+                @if($detailAduan->target)
+                    {{-- Case 1: The reported person is a THERAPIST --}}
+                    @if($detailAduan->target_type === 'therapist')
+                        <div class="space-y-4">
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Tipe</span>
+                                <span class="text-gray-700 font-medium">Terapis</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Nama Lengkap</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Area Kerja</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->work_area ?? '-' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->gender ?? '-' }}</span>
+                            </div>
+                        </div>
+                    {{-- Case 2: The reported person is a CUSTOMER --}}
+                    @elseif($detailAduan->target_type === 'customer')
+                        <div class="space-y-4">
+                             <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Tipe</span>
+                                <span class="text-gray-700 font-medium">Pelanggan</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Nama Lengkap</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->gender ?? '-' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Alamat</span>
+                                <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->target->address ?? '-' }}</span>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <p class="text-gray-500">Data teradu tidak dapat ditemukan.</p>
+                @endif
             </div>
         </div>
 <script>

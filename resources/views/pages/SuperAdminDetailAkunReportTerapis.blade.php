@@ -36,7 +36,7 @@
                             alt="Foto Profil"
                             class="w-full h-full object-cover" />
                     </div>
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $detailTerapis['nama'] }}</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $detailTerapis->name ?? '-' }}</h2>
                     <div class="flex justify-center">
                         <p class="bg-[#469d89]/30 text-[#469d89] font-semibold text-sm px-2 py-1 rounded-md w-fit">Terapis</p>
                     </div>
@@ -49,29 +49,35 @@
                     <div class="grid grid-cols-1 gap-5">
                         <div class="flex justify-between py-2 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Nomor ID</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['id'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->id ?? '-' }}</span>
                         </div>
                         
-                        <div class="flex justify-between py-2 border-b border-gray-400">
-                            <span class="text-gray-400 font-medium">Status Akun</span>
-                            <span class="py-1 text-medium font-medium {{ $detailTerapis['status_akun'] == 'Tidak dalam Penangguhan' ? 'text-[#85B804]' : 'text-red-600' }}">
-                                {{ $detailTerapis['status_akun'] }}
+                       <div class="flex justify-between py-2 border-b border-gray-400">
+                        <span class="text-gray-400 font-medium">Status Akun</span>
+                        @if(empty($detailTerapis->suspended_duration))
+                            <span class="py-1 text-medium font-medium text-[#85B804]">
+                                Tidak dalam penangguhan
                             </span>
-                        </div>
+                        @else
+                            <span class="py-1 text-medium font-medium text-red-600">
+                                Akun dalam penangguhan ({{ $detailTerapis->suspended_duration }})
+                            </span>
+                        @endif
+                    </div>
                         
                         <div class="flex justify-between py-2 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Alamat Email</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['email'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->email ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-2 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Ponsel</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['ponsel'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->phone ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-2 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Area Kerja</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['area_kerja'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->work_area ?? '-' }}</span>
                         </div>
                     </div>
 
@@ -112,32 +118,32 @@
                     <div class="space-y-5">
                         <div class="flex justify-between py-1 border-b border-gray-400 mt-4">
                             <span class="text-gray-400">NIK</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['nik'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->NIK ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Nama Lengkap</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['nama'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->name ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tempat Lahir</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['tempat_lahir'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->address ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tanggal Lahir</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['tanggal_lahir'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_birth_date ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Jenis Kelamin</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['jenis_kelamin'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_gender ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Alamat</span>
-                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis['alamat'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis->address ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -154,22 +160,22 @@
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tanggal Bergabung</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['tanggal_bergabung'] }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_joining_date ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Total layanan diselesaikan</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['total_layanan'] }} Layanan</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->total_layanan ?? 0 }} Layanan</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Total Layanan Ditolak</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['layanan_ditolak'] }} Layanan</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->layanan_ditolak ?? 0 }} Layanan</span>
                         </div>
 
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Total Peringatan Diterima</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis['total_peringatan'] }}x Peringatan</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->total_peringatan ?? 0 }}x Peringatan</span>
                         </div>
                     </div>
                 </div>
@@ -502,7 +508,7 @@ function submitWarning() {
     setTimeout(() => {
         hideLoadingDrawer();
 
-        let message = `Peringatan Berhasil dikirimkan kepada {{ $detailTerapis['nama'] }}`;
+        let message = `Peringatan Berhasil dikirimkan kepada {{ $detailTerapis->nama ?? '' }}`;
         if (hasSuspension && duration) {
             const truncatedReason = truncateString(reason, 70); // Truncate reason for suspension message
             message = `Akun berhasil ditangguhkan dengan alasan ${truncatedReason}`;
@@ -552,7 +558,7 @@ function submitSuspension() {
 
     const reasonValue = reason.value;
     const durationValue = duration.value;
-    const terapisId = {{ $detailTerapis['id'] }};
+    const terapisId = {{ $detailTerapis->id ?? 'null' }};
 
     const formData = new FormData();
     formData.append('reason', reasonValue);
@@ -563,7 +569,7 @@ function submitSuspension() {
     closeSuspendDrawer();
     showLoadingDrawer();
 
-    fetch(`{{ route('terapis.suspend', ['id' => $detailTerapis['id']]) }}`, {
+    fetch(`{{ route('terapis.suspend', ['id' => $detailTerapis->id ?? '']) }}`, {
         method: 'POST',
         body: formData,
         headers: {

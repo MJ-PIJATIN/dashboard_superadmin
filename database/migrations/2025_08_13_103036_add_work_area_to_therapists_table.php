@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelanggans', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama');
-            $table->string('email');
-            $table->string('kota');
-            $table->string('status');
-            $table->string('gender');
-            $table->timestamps();
+        Schema::table('therapists', function (Blueprint $table) {
+            $table->string('work_area')->nullable();
         });
     }
 
@@ -27,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pelanggans');
+        Schema::table('therapists', function (Blueprint $table) {
+            $table->dropColumn('work_area');
+        });
     }
 };
