@@ -20,9 +20,10 @@ class Terapis extends Model
         'name',
         'joining_date',
         'birth_date',
+        'birth_place',
         'gender',
         'phone',
-        'photo', // BLOB data
+        'photo',
         'email',
         'NIK',
         'addres',

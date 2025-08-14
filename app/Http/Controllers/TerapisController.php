@@ -109,6 +109,7 @@ class TerapisController extends Controller
             $terapis->name = $request->nama_lengkap;
             $terapis->joining_date = now()->format('Y-m-d');
             $terapis->birth_date = $birthDate;
+            $terapis->birth_place = $birthPlace = $request->tempat_lahir;
             $terapis->gender = $genderValue;
             $terapis->phone = $request->no_ponsel;
             $terapis->photo = $photoPath;
@@ -253,6 +254,7 @@ class TerapisController extends Controller
                 'email' => $terapis->email,
                 'nik' => $terapis->NIK,
                 'birth_date' => $terapis->birth_date,
+                'birth_place' => $terapis->birth_place,
                 'gender' => $terapis->gender,
                 'joining_date' => $terapis->joining_date,
                 'photo' => $terapis->photo,
