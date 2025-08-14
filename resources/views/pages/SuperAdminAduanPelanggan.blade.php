@@ -6,6 +6,22 @@
 <div class="bg-gray-100 min-h-screen">
     <div class="bg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px] mr-[26px]">
         <h1 class="text-lg sm:text-xl font-bold text-gray-700 mb-4 sm:mb-6">Data Aduan Pelanggan</h1>
+
+        {{-- Session Message --}}
+        @if (session('error'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
+            </div>
+        @endif
+
+        @if (session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Success!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+
         <!-- Main Container -->
         <div class="w-full bg-white rounded-lg shadow-sm">
             <!-- Search Section -->
@@ -33,7 +49,7 @@
 
             <div class="bg-white rounded-lg mt-0 shadow-lg">
                 <div class="overflow-x-auto">
-                    @if(count($paginatedAduan) > 0)
+                    @if($paginatedAduan->count() > 0)
                         <table class="min-w-full text-sm text-gray-700">
                             <thead class="bg-white">
                                 <tr class="bg-white">
@@ -50,30 +66,32 @@
                             <tbody id="aduTableBody">
                                 @foreach ($paginatedAduan as $adu)
                                 <tr class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md"
-                                    onclick="window.location.href='{{ route('detiladuan', ['id' => $adu['id']]) }}'">
-                                    <td class="px-6 py-4 whitespace-nowrap" data-field="nama_pelapor">{{ $adu['nama_pelapor'] }}</td>
+                                    onclick="window.location.href='{{ route('detiladuan', ['id' => $adu->id]) }}'">
+                                    <td class="px-6 py-4 whitespace-nowrap" data-field="nama_pelapor">
+                                        {{ $adu->customer->name ?? 'Nama tidak tersedia' }}
+                                    </td>
                                     <td class="px-6 py-4 max-w-lg">
                                         <div class="text-sm text-gray-700">
-                                            <span class="@if(empty($adu['read_at'])) font-bold @endif text-gray-600">{{ $adu['jenis_aduan'] }}</span>
+                                            <span class="font-bold text-gray-600">{{ Str::ucfirst($adu->reason ?? 'Tidak ada alasan') }}</span>
                                             <span class="text-gray-700 mx-2">•</span>
-                                            <span class="text-gray-600">{{ Str::limit($adu['deskripsi'], 100, '...') }}</span>
+                                            <span class="text-gray-600">{{ Str::limit($adu->detail_report ?? 'Tidak ada deskripsi', 100, '...') }}</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 relative">
                                         <div class="flex items-center justify-end">
                                             <!-- Waktu - tampil normal, hilang saat hover -->
                                             <span class="group-hover:opacity-0 transition-opacity duration-200">
-                                                {{ $adu['waktu'] }}
+                                                {{ $adu->created_at->format('H:i') }}
                                             </span>
                                             
                                             <!-- Buttons - tersembunyi normal, muncul saat hover -->
                                             <div class="absolute inset-y-0 right-0 flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-6">
-                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
+                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu->id]) }}'; event.stopPropagation();"
                                                     title="Peringatkan"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-yellow-200 rounded-md p-1">
                                                     <img src="/images/peringatan.svg" alt="Peringatkan" class="w-4 h-4" />
                                                 </button>
-                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu['id']]) }}'; event.stopPropagation();"
+                                                <button onclick="window.location.href='{{ route('detail.report.terapis', ['aduan_id' => $adu->id]) }}'; event.stopPropagation();"
                                                     title="Tangguhkan"
                                                     class="flex items-center justify-center transition duration-200 hover:bg-red-200 rounded-md p-1">
                                                     <img src="/images/tangguhkan.svg" alt="Tangguhkan" class="w-4 h-4" />
@@ -104,70 +122,9 @@
                     @endif
 
                     <!-- Pagination -->
-                    @if($paginationData['total'] > 0)
-                        <div class="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-4 border-gray-200 gap-4">
-                        <span class="text-sm text-gray-500 order-2 sm:order-1">
-                            Halaman {{ $paginationData['current_page'] }} dari {{ $paginationData['total_pages'] }}
-                        </span>
-                            
-                            @if($paginationData['total_pages'] > 1)
-                                <div class="flex items-center gap-1 order-1 sm:order-2">
-                                    <!-- Previous Page -->
-                                    @if($paginationData['current_page'] > 1)
-                                        <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['current_page'] - 1]) }}" 
-                                           class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">
-                                            ←
-                                        </a>
-                                    @endif
-
-                                    <!-- Page Numbers -->
-                                    @php
-                                        $start = max(1, $paginationData['current_page'] - 2);
-                                        $end = min($paginationData['total_pages'], $paginationData['current_page'] + 2);
-                                    @endphp
-
-                                    @if($start > 1)
-                                        <a href="{{ request()->fullUrlWithQuery(['page' => 1]) }}" 
-                                           class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">
-                                            1
-                                        </a>
-                                        @if($start > 2)
-                                            <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700">...</span>
-                                        @endif
-                                    @endif
-
-                                    @for($i = $start; $i <= $end; $i++)
-                                        @if($i == $paginationData['current_page'])
-                                            <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-white bg-teal-600 rounded">
-                                                {{ $i }}
-                                            </span>
-                                        @else
-                                            <a href="{{ request()->fullUrlWithQuery(['page' => $i]) }}" 
-                                               class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">
-                                                {{ $i }}
-                                            </a>
-                                        @endif
-                                    @endfor
-
-                                    @if($end < $paginationData['total_pages'])
-                                        @if($end < $paginationData['total_pages'] - 1)
-                                            <span class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700">...</span>
-                                        @endif
-                                        <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['total_pages']]) }}" 
-                                           class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">
-                                            {{ $paginationData['total_pages'] }}
-                                        </a>
-                                    @endif
-
-                                    <!-- Next Page -->
-                                    @if($paginationData['current_page'] < $paginationData['total_pages'])
-                                        <a href="{{ request()->fullUrlWithQuery(['page' => $paginationData['current_page'] + 1]) }}" 
-                                           class="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50">
-                                            →
-                                        </a>
-                                    @endif
-                                </div>
-                            @endif
+                    @if ($paginatedAduan->hasPages())
+                        <div class="px-4 sm:px-6 py-4 border-t bg-white">
+                            {{ $paginatedAduan->links() }}
                         </div>
                     @endif
                 </div>
