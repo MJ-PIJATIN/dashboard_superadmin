@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Pelanggan; // Menambahkan import yang hilang
+use App\Models\Pesanan;
 
 class Report extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $table = 'reports';
     
@@ -92,5 +96,14 @@ class Report extends Model
     public function getDescriptAttribute()
     {
         return $this->detail_report;
+    }
+
+    /**
+     * Relasi dengan Pesanan (Order)
+     */
+    public function order()
+    {
+        // Menggunakan foreign key 'booking_id' untuk relasi ke model Pesanan
+        return $this->belongsTo(Pesanan::class, 'booking_id');
     }
 }

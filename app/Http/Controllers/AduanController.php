@@ -49,7 +49,9 @@ class AduanController extends Controller
      */
     public function show($id)
     {
+        // Eager load relasi customer. Relasi 'target' akan di-load saat diakses (lazy-loaded).
         $report = Report::with(['customer'])->findOrFail($id);
+        
         return view('pages.SuperAdminDetailAduan', ['detailAduan' => $report]);
     }
 
@@ -58,19 +60,53 @@ class AduanController extends Controller
      */
     public function showTerapisDetail($aduan_id)
     {
-        $report = Report::findOrFail($aduan_id);
-        
-        // Load customer relation
-        $report->load('customer');
-        
-        // Load target berdasarkan type
-        if ($report->target_type === 'therapist') {
-            $report->target = Terapis::find($report->target_id);
-        } elseif ($report->target_type === 'customer') {
-            $report->target = Pelanggan::find($report->target_id);
+        // Eager load the order and its therapist for the fallback path.
+        $report = Report::with('order.therapist')->findOrFail($aduan_id);
+
+        $therapist = null;
+
+        // Priority 1: Check if the direct target is a therapist.
+        // The 'target' attribute will lazy-load the related model (Terapis or Pelanggan).
+        if ($report->target_type === 'therapist' && $report->target instanceof \App\Models\Terapis) {
+            $therapist = $report->target;
+        } 
+        // Priority 2: If not, get the therapist from the associated order.
+        elseif ($report->order && $report->order->therapist) {
+            $therapist = $report->order->therapist;
         }
+
+        // If no therapist could be found via either method, then we cannot proceed.
+        if (!$therapist) {
+            return redirect()->route('aduan-pelanggan')
+                             ->with('error', 'Tidak dapat menemukan terapis yang terkait dengan aduan ini, baik sebagai target laporan maupun dari pesanan terkait.');
+        }
+
+        // Format jenis kelamin untuk ditampilkan
+        $therapist->formatted_gender = $this->formatGender($therapist->gender);
         
-        return view('pages.SuperAdminDetailTerapisAduan', ['detailAduan' => $report]);
+        return view('pages.SuperAdminDetailAkunReportTerapis', [
+            'detailTerapis' => $therapist,
+            'detailAduan' => $report
+        ]);
+    }
+
+    /**
+     * Format gender untuk tampilan
+     */
+    private function formatGender($gender)
+    {
+        if (!$gender) {
+            return '-';
+        }
+
+        switch (strtoupper($gender)) {
+            case 'L':
+                return 'Laki-laki';
+            case 'P':
+                return 'Perempuan';
+            default:
+                return $gender; // Return as is jika tidak L atau P
+        }
     }
 
     /**

@@ -82,27 +82,51 @@
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <h3 class="text-lg font-semibold text-gray-700 mb-6">Data Terlapor</h3>
                 
-                <div class="space-y-4">
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Nama Lengkap</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan->order?->therapist?->nama ?? 'Data tidak tersedia' }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Area Kerja</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan->order?->therapist?->area_kerja ?? '-' }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
-                        <span class="text-gray-700 font-medium">{{ $detailAduan->order?->therapist?->gender ?? '-' }}</span>
-                    </div>
-                    
-                    <div class="flex justify-between py-2 border-b border-gray-100">
-                        <span class="text-gray-500 font-semibold">Alamat</span>
-                        <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->order?->therapist?->alamat ?? '-' }}</span>
-                    </div>
-                </div>
+                @if($detailAduan->target)
+                    {{-- Case 1: The reported person is a THERAPIST --}}
+                    @if($detailAduan->target_type === 'therapist')
+                        <div class="space-y-4">
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Tipe</span>
+                                <span class="text-gray-700 font-medium">Terapis</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Nama Lengkap</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Area Kerja</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->work_area ?? '-' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->gender ?? '-' }}</span>
+                            </div>
+                        </div>
+                    {{-- Case 2: The reported person is a CUSTOMER --}}
+                    @elseif($detailAduan->target_type === 'customer')
+                        <div class="space-y-4">
+                             <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Tipe</span>
+                                <span class="text-gray-700 font-medium">Pelanggan</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Nama Lengkap</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
+                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->gender ?? '-' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Alamat</span>
+                                <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->target->address ?? '-' }}</span>
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <p class="text-gray-500">Data teradu tidak dapat ditemukan.</p>
+                @endif
             </div>
         </div>
 <script>

@@ -52,12 +52,18 @@
                             <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->id ?? '-' }}</span>
                         </div>
                         
-                        <div class="flex justify-between py-2 border-b border-gray-400">
-                            <span class="text-gray-400 font-medium">Status Akun</span>
-                            <span class="py-1 text-medium font-medium {{ ($detailTerapis->status_akun ?? '-') == 'Tidak dalam Penangguhan' ? 'text-[#85B804]' : 'text-red-600' }}">
-                                {{ $detailTerapis->status_akun ?? '-' }}
+                       <div class="flex justify-between py-2 border-b border-gray-400">
+                        <span class="text-gray-400 font-medium">Status Akun</span>
+                        @if(empty($detailTerapis->suspended_duration))
+                            <span class="py-1 text-medium font-medium text-[#85B804]">
+                                Tidak dalam penangguhan
                             </span>
-                        </div>
+                        @else
+                            <span class="py-1 text-medium font-medium text-red-600">
+                                Akun dalam penangguhan ({{ $detailTerapis->suspended_duration }})
+                            </span>
+                        @endif
+                    </div>
                         
                         <div class="flex justify-between py-2 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Alamat Email</span>
@@ -112,7 +118,7 @@
                     <div class="space-y-5">
                         <div class="flex justify-between py-1 border-b border-gray-400 mt-4">
                             <span class="text-gray-400">NIK</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->nik ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->NIK ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
@@ -122,22 +128,22 @@
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tempat Lahir</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->tempat_lahir ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->address ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tanggal Lahir</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->birth_date ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_birth_date ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Jenis Kelamin</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->gender ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_gender ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Alamat</span>
-                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis->addres ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis->address ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
@@ -154,7 +160,7 @@
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tanggal Bergabung</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->tanggal_bergabung ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->formatted_joining_date ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
