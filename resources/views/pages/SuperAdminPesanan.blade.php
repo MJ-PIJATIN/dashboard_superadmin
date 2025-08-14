@@ -1,4 +1,4 @@
-@extends('layouts.pesanan')
+"""@extends('layouts.pesanan')
 @section('navtitle', 'Pesanan')
 
 @section('content')
@@ -45,27 +45,27 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="nama" data-sort-dir="asc">
                                     <span>Nama Pemesan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="layanan" data-sort-dir="asc">
                                     <span>Jenis Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="jadwal" data-sort-dir="desc">
                                     <span>Jadwal Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="status" data-sort-dir="asc">
                                     <span>Status Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 text-center w-[100px]">Aksi</th>
@@ -149,27 +149,27 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="nama" data-sort-dir="asc">
                                     <span>Nama Pemesan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="layanan" data-sort-dir="asc">
                                     <span>Jenis Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="jadwal" data-sort-dir="desc">
                                     <span>Jadwal Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="status" data-sort-dir="asc">
                                     <span>Status Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 text-center w-[100px]">Aksi</th>
@@ -479,6 +479,74 @@
                 rowToDelete = null;
                 deleteData = null;
             });
+
+            // Sorting logic
+            const sortableColumns = document.querySelectorAll('.sort-btn');
+
+            sortableColumns.forEach(button => {
+                button.addEventListener('click', function() {
+                    const column = this.dataset.column;
+                    const sortDir = this.dataset.sortDir;
+                    const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                    if (!activeTab) return;
+
+                    const tableBody = activeTab.querySelector('tbody');
+                    const rows = Array.from(tableBody.querySelectorAll('tr:not(.no-results-message)'));
+
+                    const headerRow = this.closest('tr');
+                    const colIndex = Array.from(headerRow.children).indexOf(this.closest('th'));
+
+                    if (colIndex === -1) return;
+
+                    rows.sort((a, b) => {
+                        const aText = a.cells[colIndex] ? a.cells[colIndex].innerText.trim() : '';
+                        const bText = b.cells[colIndex] ? b.cells[colIndex].innerText.trim() : '';
+
+                        let valA = aText;
+                        let valB = bText;
+
+                        if (column === 'jadwal') {
+                            const parseDate = (dateStr) => {
+                                if (!dateStr || dateStr === '-') return new Date(0);
+                                const parts = dateStr.split('-'); // m-d-y
+                                return new Date('20' + parts[2], parts[0] - 1, parts[1]);
+                            };
+                            valA = parseDate(aText);
+                            valB = parseDate(bText);
+                        } else if (column === 'status') {
+                            const statusOrder = ['Menunggu', 'Pending', 'Dijadwalkan', 'Berlangsung', 'Selesai', 'Dibatalkan'];
+                            valA = statusOrder.indexOf(aText);
+                            valB = statusOrder.indexOf(bText);
+                        }
+
+                        if (valA < valB) {
+                            return sortDir === 'asc' ? -1 : 1;
+                        }
+                        if (valA > valB) {
+                            return sortDir === 'asc' ? 1 : -1;
+                        }
+                        return 0;
+                    });
+
+                    const newSortDir = sortDir === 'asc' ? 'desc' : 'asc';
+                    this.dataset.sortDir = newSortDir;
+
+                    document.querySelectorAll('.sort-btn').forEach(btn => {
+                        const icon = btn.querySelector('.sort-icon');
+                        if (btn === this) {
+                            icon.style.transform = sortDir === 'asc' ? 'rotate(180deg)' : 'rotate(0deg)';
+                            btn.classList.add('text-gray-900', 'font-bold');
+                        } else {
+                            btn.dataset.sortDir = 'asc';
+                            icon.style.transform = '';
+                            btn.classList.remove('text-gray-900', 'font-bold');
+                        }
+                    });
+
+                    rows.forEach(row => tableBody.appendChild(row));
+                });
+            });
         });
     </script>
 @endsection
+""

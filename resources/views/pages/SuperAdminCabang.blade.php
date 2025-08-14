@@ -22,17 +22,16 @@
 
         {{-- Section Search dan Filter --}}
         <div class="flex items-center justify-between">
-            <div class="flex w-[300px] max-w-2xl">
-                <input type="text" id="search-input" placeholder="Cari nomor id, nama, kota, dll"
-                    class="flex-grow px-4 py-2.5 text-sm border border-gray-300 rounded-l-lg focus:outline-none focus:ring focus:ring-blue-200" />
-                <button onclick="performSearch()"
-                    class="bg-[#469D89] hover:bg-[#378877] text-white px-4 py-2 rounded-r-lg flex items-center justify-center transition-colors">
+             <div class="flex w-full max-w-sm">
+                <input type="text" id="search-input"
+                    class="flex-grow px-4 py-2 rounded-l-lg bg-gray-100 text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-teal-400 placeholder:text-gray-400"
+                    placeholder="Cari cabang...">
+                <button class="bg-teal-400 hover:bg-teal-500 text-white px-4 py-2 rounded-r-lg">
                     <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M8 0.75C12.0041 0.75 15.25 3.99594 15.25 8C15.25 9.7319 14.6427 11.3219 13.6295 12.5688L18.5303 17.4697C18.8232 17.7626 18.8232 18.2374 18.5303 18.5303C18.2641 18.7966 17.8474 18.8208 17.5538 18.6029L17.4697 18.5303L12.5688 13.6295C11.3219 14.6427 9.7319 15.25 8 15.25C3.99594 15.25 0.75 12.0041 0.75 8C0.75 3.99594 3.99594 0.75 8 0.75ZM8 2.25C4.82436 2.25 2.25 4.82436 2.25 8C2.25 11.1756 4.82436 13.75 8 13.75C11.1756 13.75 13.75 11.1756 13.75 8C13.75 4.82436 11.1756 2.25 8 2.25Z"
                             fill="white" />
                     </svg>
-                    <i class="fas fa-search ml-1"></i>
                 </button>
             </div>
         </div>
@@ -43,11 +42,36 @@
                 <thead class="border-b border-gray-300">
                     <tr>
                         <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">#</th>
-                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Kota</th>
-                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Provinsi</th>
-                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Tanggal Peresmian</th>
-                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Status Cabang</th>
-                        <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Alamat Cabang</th>
+                        <th class="sort-btn text-left px-6 py-3 font-semibold break-words min-w-[100px] cursor-pointer" data-column="kota" data-sort-dir="asc">
+                             <div class="flex items-center">
+                                <span>Kota</span>
+                                <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 ml-2 opacity-40 transition-transform duration-200">
+                            </div>
+                        </th>
+                        <th class="sort-btn text-left px-6 py-3 font-semibold break-words min-w-[100px] cursor-pointer" data-column="provinsi" data-sort-dir="asc">
+                             <div class="flex items-center">
+                                <span>Provinsi</span>
+                                <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 ml-2 opacity-40 transition-transform duration-200">
+                            </div>
+                        </th>
+                        <th class="sort-btn text-left px-6 py-3 font-semibold break-words min-w-[100px] cursor-pointer" data-column="tanggal" data-sort-dir="desc">
+                             <div class="flex items-center">
+                                <span>Tanggal Peresmian</span>
+                                <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 ml-2 opacity-40 transition-transform duration-200">
+                            </div>
+                        </th>
+                        <th class="sort-btn text-left px-6 py-3 font-semibold break-words min-w-[100px] cursor-pointer" data-column="status" data-sort-dir="asc">
+                             <div class="flex items-center">
+                                <span>Status Cabang</span>
+                                <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 ml-2 opacity-40 transition-transform duration-200">
+                            </div>
+                        </th>
+                        <th class="sort-btn text-left px-6 py-3 font-semibold break-words min-w-[100px] cursor-pointer" data-column="alamat" data-sort-dir="asc">
+                            <div class="flex items-center">
+                                <span>Alamat Cabang</span>
+                                <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 ml-2 opacity-40 transition-transform duration-200">
+                            </div>
+                        </th>
                         <th class="text-left px-6 py-3 font-semibold break-words min-w-[100px]">Aksi</th>
                     </tr>
                 </thead>
@@ -137,51 +161,115 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const searchInput = document.getElementById('search-input');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('search-input');
 
-            searchInput.addEventListener('input', function () {
-                const filter = this.value.toLowerCase().trim();
-                const rows = document.querySelectorAll('table tbody tr');
+    // Search filter logic
+    function filterTable() {
+        const filter = searchInput.value.toLowerCase().trim();
+        const tableBody = document.querySelector('table tbody');
+        const rows = tableBody.querySelectorAll('tr');
+        let visibleRows = 0;
 
-                rows.forEach(row => {
-                    const textContent = row.textContent.toLowerCase();
-
-                    if (filter === '' || textContent.includes(filter)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none'; 
-                    }
-                });
-
-                const visibleRows = document.querySelectorAll('table tbody tr[style=""], table tbody tr:not([style*="none"])');
-                const tableBody = document.querySelector('table tbody');
-
-                const existingMessage = document.querySelector('.no-results-message');
-                if (existingMessage) {
-                    existingMessage.remove();
-                }
-
-                if (visibleRows.length === 0 && filter !== '') {
-                    const noResultsRow = document.createElement('tr');
-                    noResultsRow.className = 'no-results-message';
-                    noResultsRow.innerHTML = `
-                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                            <div class="flex flex-col items-center space-y-2">
-                                <p class="text-base">Tidak ada data  yang ditemukan untuk pencarian "${filter}"</p>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(noResultsRow);
-                }
-            });
+        rows.forEach(row => {
+            if (row.classList.contains('no-results-message')) {
+                row.remove();
+                return;
+            }
+            const textContent = row.textContent.toLowerCase();
+            if (filter === '' || textContent.includes(filter)) {
+                row.style.display = '';
+                visibleRows++;
+            } else {
+                row.style.display = 'none';
+            }
         });
 
-        function performSearch() {
-            const searchInput = document.getElementById('search-input');
-            searchInput.dispatchEvent(new Event('input'));
+        const existingMessage = tableBody.querySelector('.no-results-message');
+        if (existingMessage) {
+            existingMessage.remove();
         }
-    </script>
+
+        if (visibleRows === 0 && filter !== '') {
+            const noResultsRow = document.createElement('tr');
+            noResultsRow.className = 'no-results-message';
+            noResultsRow.innerHTML = `
+                <td colspan="7" class="px-6 py-8 text-center text-gray-500">
+                    Tidak ada data yang ditemukan untuk pencarian "${filter}"
+                </td>
+            `;
+            tableBody.appendChild(noResultsRow);
+        }
+    }
+
+    searchInput.addEventListener('input', filterTable);
+
+    // Sorting logic
+    const sortableColumns = document.querySelectorAll('.sort-btn');
+    sortableColumns.forEach(th => {
+        th.addEventListener('click', function() {
+            const column = this.dataset.column;
+            const sortDir = this.dataset.sortDir;
+            const tableBody = document.querySelector('table tbody');
+            const rows = Array.from(tableBody.querySelectorAll('tr:not(.no-results-message)'));
+
+            const headerRow = this.closest('tr');
+            const colIndex = Array.from(headerRow.children).indexOf(this);
+
+            if (colIndex === -1) return;
+
+            rows.sort((a, b) => {
+                const aText = a.cells[colIndex] ? a.cells[colIndex].innerText.trim() : '';
+                const bText = b.cells[colIndex] ? b.cells[colIndex].innerText.trim() : '';
+
+                let valA = aText;
+                let valB = bText;
+
+                if (column === 'tanggal') {
+                    const parseDate = (dateStr) => {
+                        if (!dateStr || dateStr === '-') return new Date(0);
+                        const parts = dateStr.split('-'); // d-m-Y
+                        return new Date(parts[2], parts[1] - 1, parts[0]);
+                    };
+                    valA = parseDate(aText);
+                    valB = parseDate(bText);
+                } else if (column === 'status') {
+                    const statusOrder = ['Aktif', 'Tidak Aktif'];
+                    valA = statusOrder.indexOf(aText);
+                    valB = statusOrder.indexOf(bText);
+                }
+
+                if (valA < valB) {
+                    return sortDir === 'asc' ? -1 : 1;
+                }
+                if (valA > valB) {
+                    return sortDir === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+
+            const newSortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            this.dataset.sortDir = newSortDir;
+
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                const icon = btn.querySelector('.sort-icon');
+                if (btn === this) {
+                    icon.style.opacity = '1';
+                    icon.style.transform = sortDir === 'asc' ? 'rotate(180deg)' : 'rotate(0deg)';
+                    btn.classList.add('text-gray-900');
+                } else {
+                    btn.dataset.sortDir = 'asc';
+                    btn.querySelector('.sort-icon').style.opacity = '0.4';
+                    btn.querySelector('.sort-icon').style.transform = '';
+                    btn.classList.remove('text-gray-900');
+                }
+            });
+
+            rows.forEach(row => tableBody.appendChild(row));
+        });
+    });
+});
+</script>
 
 @endsection
