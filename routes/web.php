@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SuspendedAccountController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\AduanController;
@@ -31,10 +32,9 @@ Route::get('/notifikasi', function () {
     return view('pages.SuperAdminNotifikasi');
 })->name('notifikasi');
 
-// Routing Sidebar Super Admin
-Route::get('/dashboard', function () {
-    return view('pages.SuperAdminDashboard');
-})->name('dashboard');
+// Route Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData'])->name('dashboard.chart-data');
 
 // Page Layanan
 Route::get('/layanan', [App\Http\Controllers\LayananController::class, 'index'])->name('layanan');
