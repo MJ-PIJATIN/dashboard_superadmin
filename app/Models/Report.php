@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Pelanggan; // Menambahkan import yang hilang
-use App\Models\Pesanan;
+use App\Models\Pelanggan;
+use App\Models\Terapis;
+use App\Models\Pesanan; // Tambahkan import ini
 
 class Report extends Model
 {
@@ -21,7 +22,8 @@ class Report extends Model
         'target_type', 
         'target_id',
         'reason',
-        'detail_report'
+        'detail_report',
+        'booking_id'
     ];
 
     protected $casts = [
@@ -104,11 +106,11 @@ class Report extends Model
     }
 
     /**
-     * Relasi dengan Pesanan (Order)
+     * Relasi dengan Pesanan (Booking)
      */
-    public function order()
+    public function booking()
     {
-        // Menggunakan foreign key 'booking_id' untuk relasi ke model Pesanan
         return $this->belongsTo(Pesanan::class, 'booking_id');
     }
+    
 }

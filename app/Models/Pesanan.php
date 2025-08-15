@@ -75,8 +75,16 @@ class Pesanan extends Model
         return $this->belongsTo(LayananTambahan::class, 'additional_service_id', 'id');
     }
 
-    public function complaints()
+    public function reports()
     {
-        return $this->hasMany(Complaint::class, 'booking_id');
+        return $this->hasMany(Report::class, 'booking_id');
+    }
+
+    /**
+     * Accessor untuk payment_method (untuk compatibility dengan view lama)
+     */
+    public function getPaymentMethodAttribute()
+    {
+        return $this->payment;
     }
 }

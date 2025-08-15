@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
-use App\Models\Pelanggan; // Menggunakan model Pelanggan yang benar
+use App\Models\Pelanggan;
 use App\Models\Terapis;
+use App\Models\Pesanan; // Tambahkan import ini
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log; // Tambahkan ini untuk logging
+use Illuminate\Support\Facades\Log;
 
 class AduanController extends Controller
 {
@@ -16,8 +17,8 @@ class AduanController extends Controller
      */
     public function index(Request $request)
     {
-        // Menggunakan model Report dengan relasi customer saja
-        $query = Report::with(['customer'])->latest();
+        // Menggunakan model Report dengan relasi customer dan booking
+        $query = Report::with(['customer', 'booking'])->latest();
 
         // Filter berdasarkan pencarian jika ada
         if ($request->filled('search')) {
@@ -49,8 +50,8 @@ class AduanController extends Controller
      */
     public function show($id)
     {
-        // Eager load relasi customer. Relasi 'target' akan di-load saat diakses (lazy-loaded).
-        $report = Report::with(['customer'])->findOrFail($id);
+        // Eager load relasi customer dan booking
+        $report = Report::with(['customer', 'booking'])->findOrFail($id);
         
         return view('pages.SuperAdminDetailAduan', ['detailAduan' => $report]);
     }
@@ -60,8 +61,8 @@ class AduanController extends Controller
      */
     public function showTerapisDetail($aduan_id)
     {
-        // Eager load the order and its therapist for the fallback path.
-        $report = Report::with('order.therapist')->findOrFail($aduan_id);
+        // Eager load the booking and its therapist for the fallback path.
+        $report = Report::with('booking.therapist')->findOrFail($aduan_id);
 
         $therapist = null;
 
@@ -70,9 +71,9 @@ class AduanController extends Controller
         if ($report->target_type === 'therapist' && $report->target instanceof \App\Models\Terapis) {
             $therapist = $report->target;
         } 
-        // Priority 2: If not, get the therapist from the associated order.
-        elseif ($report->order && $report->order->therapist) {
-            $therapist = $report->order->therapist;
+        // Priority 2: If not, get the therapist from the associated booking.
+        elseif ($report->booking && $report->booking->therapist) {
+            $therapist = $report->booking->therapist;
         }
 
         // If no therapist could be found via either method, then we cannot proceed.
@@ -114,7 +115,7 @@ class AduanController extends Controller
      */
     public function search(Request $request): JsonResponse
     {
-        $query = Report::with(['customer'])->latest();
+        $query = Report::with(['customer', 'booking'])->latest();
         $searchTerm = $request->get('q', '');
 
         if (!empty($searchTerm)) {
