@@ -40,13 +40,20 @@
                 <div class="text-right">
                     <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan->created_at->format('H:i, d M Y') }}</p>
                     <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan->customer->addres ?? 'Alamat tidak tersedia' }}</p>
-                    @if($detailAduan->order)
-                    <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan->order->id]) }}" 
-                    class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors
-                            hover:text-white hover:bg-[#2196F3]">
-                    Detail Pesanan
-                    </a>
-                    @endif
+                    
+                    {{-- Buttons Container --}}
+                    <div class="flex gap-2 justify-end">
+                        @if($detailAduan->booking)
+                            <a href="{{ route('pesanan.detail', [
+                                'tipe' => strtolower($detailAduan->booking->payment ?? 'transfer'), 
+                                'id' => $detailAduan->booking->id,
+                                'return' => base64_encode(route('detiladuan', $detailAduan->id))
+                            ]) }}" 
+                            class="px-4 py-[5px] text-sm font-semibold text-white bg-blue-500 rounded-md transition-colors hover:bg-blue-600">
+                                Detail Pesanan
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,6 +75,23 @@
                         <span class="text-gray-500 font-medium mb-2">Status Aduan</span>
                         <span class="text-gray-700 font-bold">{{ Str::ucfirst($detailAduan->reason) }}</span>
                     </div>
+                    
+                    {{-- Show booking status if booking exists --}}
+                    @if($detailAduan->booking)
+                        <div class="flex justify-between py-2 border-b border-gray-300">
+                            <span class="text-gray-500 font-medium mb-2">Status Pesanan</span>
+                            <span class="text-gray-700 font-bold 
+                                @if($detailAduan->booking->status === 'Selesai') text-teal-500
+                                @elseif($detailAduan->booking->status === 'Dibatalkan') text-red-500
+                                @elseif($detailAduan->booking->status === 'Berlangsung') text-green-600
+                                @elseif($detailAduan->booking->status === 'Dijadwalkan') text-cyan-400
+                                @elseif($detailAduan->booking->status === 'Pending') text-amber-500
+                                @elseif($detailAduan->booking->status === 'Menunggu') text-yellow-400
+                                @else text-gray-700 @endif">
+                                {{ $detailAduan->booking->status }}
+                            </span>
+                        </div>
+                    @endif
                     
                     <div class="pt-4">
                         <h4 class="text-gray-500 font-medium mb-3 mt-1">Detail Aduan</h4>
@@ -131,6 +155,10 @@
                 @endif
             </div>
         </div>
+
 <script>
+    // Additional JavaScript if needed
+    console.log('Detail Aduan page loaded');
+</script>
     
 @endsection

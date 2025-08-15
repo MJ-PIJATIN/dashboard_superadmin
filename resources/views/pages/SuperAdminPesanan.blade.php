@@ -1,4 +1,4 @@
-"""@extends('layouts.pesanan')
+@extends('layouts.pesanan')
 @section('navtitle', 'Pesanan')
 
 @section('content')
@@ -549,4 +549,3 @@
         });
     </script>
 @endsection
-""
