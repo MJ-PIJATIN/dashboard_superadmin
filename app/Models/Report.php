@@ -38,6 +38,11 @@ class Report extends Model
         return $this->belongsTo(Pelanggan::class, 'reporter_id', 'id');
     }
 
+    public function therapist()
+    {
+        return $this->belongsTo(Terapis::class, 'reporter_id', 'id');
+    }
+
     /**
      * Relasi dengan reporter (bisa customer atau therapist)
      */

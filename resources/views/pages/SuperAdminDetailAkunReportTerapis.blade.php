@@ -128,7 +128,7 @@
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Tempat Lahir</span>
-                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->address ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold">{{ $detailTerapis->addres ?? '-' }}</span>
                         </div>
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
@@ -143,7 +143,7 @@
                         
                         <div class="flex justify-between py-1 border-b border-gray-400">
                             <span class="text-gray-400 font-medium">Alamat</span>
-                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis->address ?? '-' }}</span>
+                            <span class="py-1 text-gray-700 font-semibold text-right max-w">{{ $detailTerapis->addres ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
