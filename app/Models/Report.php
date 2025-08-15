@@ -104,11 +104,28 @@ class Report extends Model
     }
 
     /**
-     * Relasi dengan Pesanan (Order)
+     * Relasi utama dengan Pesanan via booking_code
      */
-    public function order()
+    public function bookingByCode()
     {
-        // Menggunakan foreign key 'booking_id' untuk relasi ke model Pesanan
+        return $this->belongsTo(Pesanan::class, 'booking_code');
+    }
+
+    /**
+     * Relasi fallback dengan Pesanan via booking_id
+     */
+    public function bookingById()
+    {
         return $this->belongsTo(Pesanan::class, 'booking_id');
+    }
+
+    /**
+     * Accessor kustom untuk mendapatkan pesanan yang terhubung.
+     * Akan mengembalikan pesanan dari booking_code jika ada,
+     * jika tidak, akan mencoba dari booking_id.
+     */
+    public function getBookingAttribute()
+    {
+        return $this->bookingByCode ?? $this->bookingById;
     }
 }

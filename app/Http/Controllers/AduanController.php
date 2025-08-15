@@ -61,7 +61,7 @@ class AduanController extends Controller
     public function showTerapisDetail($aduan_id)
     {
         // Eager load the order and its therapist for the fallback path.
-        $report = Report::with('order.therapist')->findOrFail($aduan_id);
+        $report = Report::with(['bookingByCode.therapist', 'bookingById.therapist'])->findOrFail($aduan_id);
 
         $therapist = null;
 
@@ -71,8 +71,8 @@ class AduanController extends Controller
             $therapist = $report->target;
         } 
         // Priority 2: If not, get the therapist from the associated order.
-        elseif ($report->order && $report->order->therapist) {
-            $therapist = $report->order->therapist;
+        elseif ($report->booking && $report->booking->therapist) {
+            $therapist = $report->booking->therapist;
         }
 
         // If no therapist could be found via either method, then we cannot proceed.
