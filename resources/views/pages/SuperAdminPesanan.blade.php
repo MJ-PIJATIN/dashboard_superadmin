@@ -1,4 +1,4 @@
-@extends('layouts.pesanan')
+"""@extends('layouts.pesanan')
 @section('navtitle', 'Pesanan')
 
 @section('content')
@@ -45,27 +45,27 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="nama" data-sort-dir="asc">
                                     <span>Nama Pemesan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="layanan" data-sort-dir="asc">
                                     <span>Jenis Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="jadwal" data-sort-dir="desc">
                                     <span>Jadwal Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="status" data-sort-dir="asc">
                                     <span>Status Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 text-center w-[100px]">Aksi</th>
@@ -74,7 +74,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($transfer as $booking)
                             <tr class="hover:bg-gray-50">
-                                <td class="py-2 px-4">{{ $transfer->firstItem() + $loop->index }}</td>
+                                <td class="py-2 px-4">{{ $booking->booking_code }}</td>
                                 <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
@@ -149,27 +149,27 @@
                         <tr>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[100px]">#</th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="nama" data-sort-dir="asc">
                                     <span>Nama Pemesan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[240px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="layanan" data-sort-dir="asc">
                                     <span>Jenis Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="jadwal" data-sort-dir="desc">
                                     <span>Jadwal Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 w-[200px]">
-                                <button class="flex items-center space-x-1 hover:text-gray-700">
+                                <button class="sort-btn flex items-center space-x-1 hover:text-gray-700" data-column="status" data-sort-dir="asc">
                                     <span>Status Layanan</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="sort-icon h-4 w-4 transition-transform duration-200">
                                 </button>
                             </th>
                             <th class="px-4 py-2 font-bold border-b border-gray-300 text-center w-[100px]">Aksi</th>
@@ -178,7 +178,7 @@
                     <tbody class="text-gray-700">
                         @foreach ($cash as $booking)
                             <tr class="hover:bg-gray-50">
-                            <td class="py-2 px-4">{{ $cash->firstItem() + $loop->index }}</td>
+                            <td class="py-2 px-4">{{ $booking->booking_code }}</td>
                                <td class="py-2 px-4">
                                     <div class="flex items-center gap-2">
                                         <div class="flex items-center justify-center w-6 h-6 rounded-md 
@@ -336,10 +336,50 @@
 </div>
 
     <script>
-    {{-- Script Tab Switching --}}    
         document.addEventListener('DOMContentLoaded', function () {
             const tabTransferBtn = document.getElementById('tab-transfer-btn');
             const tabCashBtn = document.getElementById('tab-cash-btn');
+            const searchInput = document.getElementById('search-input');
+
+            function filterTable() {
+                const filter = searchInput.value.toLowerCase().trim();
+                const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                if (!activeTab) return;
+
+                const tableBody = activeTab.querySelector('tbody');
+                const rows = tableBody.querySelectorAll('tr');
+                let visibleRows = 0;
+
+                rows.forEach(row => {
+                    if (row.classList.contains('no-results-message')) {
+                        row.remove();
+                        return;
+                    }
+                    const textContent = row.textContent.toLowerCase();
+                    if (filter === '' || textContent.includes(filter)) {
+                        row.style.display = '';
+                        visibleRows++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                const existingMessage = tableBody.querySelector('.no-results-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                if (visibleRows === 0 && filter !== '') {
+                    const noResultsRow = document.createElement('tr');
+                    noResultsRow.className = 'no-results-message';
+                    noResultsRow.innerHTML = `
+                        <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                            Tidak ada data yang ditemukan untuk pencarian "${filter}"
+                        </td>
+                    `;
+                    tableBody.appendChild(noResultsRow);
+                }
+            }
 
             function setActiveTab(tab) {
                 const isTransfer = tab === 'transfer';
@@ -359,108 +399,154 @@
 
                 document.getElementById('pagination-transfer').classList.toggle('hidden', !isTransfer);
                 document.getElementById('pagination-cash').classList.toggle('hidden', isTransfer);
+                
+                filterTable(); // a filter when tab changes
             }
 
             tabTransferBtn.addEventListener('click', () => setActiveTab('transfer'));
             tabCashBtn.addEventListener('click', () => setActiveTab('cash'));
 
-            // Load dari localStorage
             const savedTab = localStorage.getItem('activeTab') || 'transfer';
             setActiveTab(savedTab);
 
-            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', filterTable);
 
-            searchInput.addEventListener('input', function () {
-                const filter = this.value.toLowerCase();
+            const deleteDrawer = document.getElementById('delete-drawer');
+            const deleteServiceName = document.getElementById('delete-service-name');
+            const deleteConfirmBtn = document.getElementById('delete-confirm');
+            const deleteCancelBtn = document.getElementById('delete-cancel');
 
-                ['transfer', 'cash'].forEach(tipe => {
-                    const rows = document.querySelectorAll(`#tab-${tipe} tbody tr`);
-                    rows.forEach(row => {
-                        const textRow = row.textContent.toLowerCase();
-                        row.style.display = textRow.includes(filter) ? '' : 'none';
-                    });
+            let rowToDelete = null;
+            let deleteData = null;
+
+            document.querySelectorAll('.btn-delete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const tipe = this.dataset.tipe;
+                    
+                    deleteServiceName.textContent = name;
+                    rowToDelete = this.closest('tr');
+                    deleteData = { id: id, tipe: tipe };
+                    deleteDrawer.classList.remove('hidden');
                 });
             });
 
-             const deleteDrawer = document.getElementById('delete-drawer');
-    const deleteServiceName = document.getElementById('delete-service-name');
-    const deleteConfirmBtn = document.getElementById('delete-confirm');
-    const deleteCancelBtn = document.getElementById('delete-cancel');
+            deleteConfirmBtn.addEventListener('click', function () {
+                if (deleteData && rowToDelete) {
+                    deleteConfirmBtn.textContent = 'Menghapus...';
+                    deleteConfirmBtn.disabled = true;
 
-    let rowToDelete = null;
-    let deleteData = null; // Menyimpan data untuk delete
+                    fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            rowToDelete.remove();
+                            
+                            alert('Pesanan berhasil dihapus');
+                            
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 500);
+                        } else {
+                            alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat menghapus pesanan');
+                    })
+                    .finally(() => {
+                        deleteConfirmBtn.textContent = 'Hapus';
+                        deleteConfirmBtn.disabled = false;
 
-    // Event listener untuk tombol delete
-    document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', function () {
-            const id = this.dataset.id;
-            const name = this.dataset.name;
-            const tipe = this.dataset.tipe;
-            
-            deleteServiceName.textContent = name;
-            rowToDelete = this.closest('tr');
-            deleteData = { id: id, tipe: tipe }; // Simpan data untuk delete
-            deleteDrawer.classList.remove('hidden');
-        });
-    });
-
-    // Konfirmasi delete - kirim request ke server
-    deleteConfirmBtn.addEventListener('click', function () {
-        if (deleteData && rowToDelete) {
-            // Tampilkan loading state
-            deleteConfirmBtn.textContent = 'Menghapus...';
-            deleteConfirmBtn.disabled = true;
-
-            // Kirim request DELETE ke server
-            fetch(`/pesanan/${deleteData.tipe}/${deleteData.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                        deleteDrawer.classList.add('hidden');
+                        rowToDelete = null;
+                        deleteData = null;
+                    });
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Berhasil dihapus dari server, hapus dari tampilan
-                    rowToDelete.remove();
-                    
-                    // Tampilkan notifikasi sukses (optional)
-                    alert('Pesanan berhasil dihapus');
-                    
-                    // Refresh halaman untuk update pagination
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500);
-                } else {
-                    // Gagal delete
-                    alert('Gagal menghapus pesanan: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat menghapus pesanan');
-            })
-            .finally(() => {
-                // Reset button state
-                deleteConfirmBtn.textContent = 'Hapus';
-                deleteConfirmBtn.disabled = false;
-                
-                // Tutup modal
+            });
+
+            deleteCancelBtn.addEventListener('click', function () {
                 deleteDrawer.classList.add('hidden');
                 rowToDelete = null;
                 deleteData = null;
             });
-        }
-    });
 
-    // Cancel delete
-    deleteCancelBtn.addEventListener('click', function () {
-        deleteDrawer.classList.add('hidden');
-        rowToDelete = null;
-        deleteData = null;
-    });
-});
+            // Sorting logic
+            const sortableColumns = document.querySelectorAll('.sort-btn');
+
+            sortableColumns.forEach(button => {
+                button.addEventListener('click', function() {
+                    const column = this.dataset.column;
+                    const sortDir = this.dataset.sortDir;
+                    const activeTab = document.querySelector('.tab-content:not(.hidden)');
+                    if (!activeTab) return;
+
+                    const tableBody = activeTab.querySelector('tbody');
+                    const rows = Array.from(tableBody.querySelectorAll('tr:not(.no-results-message)'));
+
+                    const headerRow = this.closest('tr');
+                    const colIndex = Array.from(headerRow.children).indexOf(this.closest('th'));
+
+                    if (colIndex === -1) return;
+
+                    rows.sort((a, b) => {
+                        const aText = a.cells[colIndex] ? a.cells[colIndex].innerText.trim() : '';
+                        const bText = b.cells[colIndex] ? b.cells[colIndex].innerText.trim() : '';
+
+                        let valA = aText;
+                        let valB = bText;
+
+                        if (column === 'jadwal') {
+                            const parseDate = (dateStr) => {
+                                if (!dateStr || dateStr === '-') return new Date(0);
+                                const parts = dateStr.split('-'); // m-d-y
+                                return new Date('20' + parts[2], parts[0] - 1, parts[1]);
+                            };
+                            valA = parseDate(aText);
+                            valB = parseDate(bText);
+                        } else if (column === 'status') {
+                            const statusOrder = ['Menunggu', 'Pending', 'Dijadwalkan', 'Berlangsung', 'Selesai', 'Dibatalkan'];
+                            valA = statusOrder.indexOf(aText);
+                            valB = statusOrder.indexOf(bText);
+                        }
+
+                        if (valA < valB) {
+                            return sortDir === 'asc' ? -1 : 1;
+                        }
+                        if (valA > valB) {
+                            return sortDir === 'asc' ? 1 : -1;
+                        }
+                        return 0;
+                    });
+
+                    const newSortDir = sortDir === 'asc' ? 'desc' : 'asc';
+                    this.dataset.sortDir = newSortDir;
+
+                    document.querySelectorAll('.sort-btn').forEach(btn => {
+                        const icon = btn.querySelector('.sort-icon');
+                        if (btn === this) {
+                            icon.style.transform = sortDir === 'asc' ? 'rotate(180deg)' : 'rotate(0deg)';
+                            btn.classList.add('text-gray-900', 'font-bold');
+                        } else {
+                            btn.dataset.sortDir = 'asc';
+                            icon.style.transform = '';
+                            btn.classList.remove('text-gray-900', 'font-bold');
+                        }
+                    });
+
+                    rows.forEach(row => tableBody.appendChild(row));
+                });
+            });
+        });
     </script>
 @endsection
+""

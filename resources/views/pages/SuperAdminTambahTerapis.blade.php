@@ -320,11 +320,16 @@ function showSuccess() {
         hideModal('success-drawer');
         // Redirect to terapis list after success
         window.location.href = "{{ route('terapis') }}";
-    }, 1000);
+    }, 1500);
 }
 
 function showLoading() {
     showModal('loading-drawer');
+    successTimeout = setTimeout(() => {
+        hideModal('loading-drawer');
+        // Redirect to terapis list after success
+        window.location.href = "{{ route('terapis') }}";
+    }, 1500);
 }
 
 function hideLoading() {

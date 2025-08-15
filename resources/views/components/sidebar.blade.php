@@ -6,7 +6,7 @@
     </div>
 
     <nav class="mt-1">
-        <ul class="space-y-1 px-2.5">
+        <ul class="space-y-[5px] px-4">
             <li>
                 <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-teal-400 transition-colors duration-200 {{ request()->routeIs('dashboard') ? 'bg-white text-teal-500' : 'text-white' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="w-5 h-5 fill-current">

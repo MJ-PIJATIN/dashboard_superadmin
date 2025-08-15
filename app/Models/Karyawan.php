@@ -8,29 +8,37 @@ use Illuminate\Database\Eloquent\Model;
 class Karyawan extends Model
 {
     use HasFactory;
-
-    protected $table = 'employees';
+    protected $table = 'karyawans'; 
 
     protected $fillable = [
-        'id',
-        'first_name',
-        'last_name',
-        'joining_date',
-        'birth_place',
-        'birth_date',
-        'gender',
-        'phone',
-        'address',
-        'photo',
-        'branch_id',
+        'nama_depan',
+        'nama_belakang',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'jenis_kelamin',
         'email',
-        'password',
+        'alamat',
+        'provinsi',
+        'kota',
+        'ponsel',
+        'foto',
         'role',
-        'created_at',
-        'updated_at',
+        'password',
     ];
 
+        // Accessor untuk nama lengkap
+    public function getNamaLengkapAttribute()
+    {
+        return "{$this->nama_depan} {$this->nama_belakang}";
+    }
+
+    // Accessor untuk area penempatan
+    public function getAreaPenempatanAttribute()
+    {
+        return "{$this->kota}, {$this->provinsi}";
+    }
+
     protected $casts = [
-        'joining_date' => 'date',
+        'tanggal_bergabung' => 'date',
     ];
 }

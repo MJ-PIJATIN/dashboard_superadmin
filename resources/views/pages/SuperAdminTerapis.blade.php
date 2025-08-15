@@ -39,22 +39,22 @@
             <div class="overflow-x-auto bg-white">
                 <table class="w-full">
                     <thead class="bg-white border-b border-gray-300">
-                        <tr>
+                        <tr data-table-type="terapis">
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
                                 <div class="flex items-center space-x-1 hover:text-gray-800">
                                     <span>#</span>
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800 cursor-pointer sortable-header" data-sort="name">
                                     <span>Nama Lengkap</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5 sort-icon">
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800 cursor-pointer sortable-header" data-sort="joining_date">
                                     <span>Tanggal Bergabung</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5 sort-icon">
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
@@ -63,19 +63,19 @@
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800 cursor-pointer sortable-header" data-sort="gender">
                                     <span>Jenis Kelamin</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5 sort-icon">
                                 </div>
                             </th>
                             <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800">
+                                <div class="flex items-center space-x-1 hover:text-gray-800 cursor-pointer sortable-header" data-sort="area_kerja">
                                     <span>Area Kerja</span>
-                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5">
+                                    <img src="{{ asset('images/sort.svg') }}" alt="Sort" class="h-4.5 w-4.5 sort-icon">
                                 </div>
                             </th>
-                            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-800">
-                                <div class="flex items-center space-x-1 hover:text-gray-800 ml-8">
+                            <th class="px-4 py-2 text-center text-sm font-semibold text-gray-800 w-[100px]">
+                                <div class="flex items-center justify-center space-x-1 hover:text-gray-800">
                                     <span>Aksi</span>
                                 </div>
                             </th>
@@ -85,7 +85,10 @@
                         @forelse($terapis as $index => $item)
                             <tr class="hover:bg-gray-50" 
                                 data-terapis-id="{{ $item->id }}" 
-                                data-terapis-name="{{ $item->name }}">
+                                data-terapis-name="{{ $item->name }}"
+                                data-terapis-joining-date="{{ $item->joining_date }}"
+                                data-terapis-gender="{{ $item->formatted_gender }}"
+                                data-terapis-area-kerja="{{ $item->area_kerja }}">
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
                                     {{ $item->id }}
                                 </td>    
@@ -104,12 +107,12 @@
                                 <td class="px-4 py-1 whitespace-nowrap text-sm font-medium text-gray-600">
                                     {{ $item->area_kerja }}
                                 </td>
-                                <td class="px-4 py-1 text-right">
-                                    <div class="flex items-center justify-end space-x-2">
+                                <td class="px-4 py-1 text-center">
+                                    <div class="flex justify-center items-center gap-3">
                                         <a href="{{ route('detail-terapis', $item->id) }}" 
-                                           class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" 
-                                           data-terapis-id="{{ $item->id }}"
-                                           title="Lihat Detail Terapis">
+                                        class="text-blue-600 hover:text-blue-800 p-1 rounded view-terapis-button" 
+                                        data-terapis-id="{{ $item->id }}"
+                                        title="Lihat Detail Terapis">
                                             <img src="{{ asset('images/isi tabel.svg') }}" alt="View" class="w-4.5 h-4.5">
                                         </a>
                                         <button class="text-red-600 hover:text-red-800 p-1 rounded delete-terapis-button" 
@@ -139,9 +142,8 @@
                     <span class="text-gray-500">
                         @if($terapis->hasPages())
                             Halaman {{ $terapis->currentPage() }} dari {{ $terapis->lastPage() }}
-                            ({{ $terapis->total() }} total data)
                         @else
-                            Halaman 1 dari 1 ({{ $terapis->total() }} total data)
+                            Halaman 1 dari 1
                         @endif
                     </span>
                     <div class="flex space-x-1">
@@ -238,11 +240,30 @@
 </div>
 </div>
 
+<style>
+.sort-icon {
+    opacity: 0.5;
+    transition: all 0.3s ease-in-out;
+}
+
+.sortable-header:hover .sort-icon {
+    opacity: 0.8;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     // Global variables
     let currentDeleteTerapisRow = null;
     let successTerapisTimeout = null;
+    let sortStates = {
+        terapis: {
+            name: 'none',
+            joining_date: 'none',
+            gender: 'none',
+            area_kerja: 'none'
+        }
+    };
 
     // Modal management functions
     const modalTerapisManager = {
@@ -281,6 +302,145 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     };
+
+    // Sorting functions
+    function sortTerapisTable(column, tbody, tableType) {
+        const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => 
+            !row.querySelector('td[colspan]') // Exclude empty state row
+        );
+        let sortDirection = 'asc';
+        
+        // Reset other sort states for current table
+        Object.keys(sortStates[tableType]).forEach(key => {
+            if (key !== column) sortStates[tableType][key] = 'none';
+        });
+        
+        // Determine sort direction
+        if (sortStates[tableType][column] === 'none' || sortStates[tableType][column] === 'desc') {
+            sortStates[tableType][column] = 'asc';
+            sortDirection = 'asc';
+        } else {
+            sortStates[tableType][column] = 'desc';
+            sortDirection = 'desc';
+        }
+
+        rows.sort((a, b) => {
+            let aValue, bValue;
+            
+            switch(column) {
+                case 'name':
+                    aValue = a.getAttribute('data-terapis-name')?.toLowerCase() || '';
+                    bValue = b.getAttribute('data-terapis-name')?.toLowerCase() || '';
+                    break;
+                case 'joining_date':
+                    // Convert date to comparable format (assuming format is DD/MM/YYYY or YYYY-MM-DD)
+                    const aDate = a.getAttribute('data-terapis-joining-date') || '';
+                    const bDate = b.getAttribute('data-terapis-joining-date') || '';
+                    aValue = new Date(aDate);
+                    bValue = new Date(bDate);
+                    break;
+                case 'gender':
+                    aValue = a.getAttribute('data-terapis-gender')?.toLowerCase() || '';
+                    bValue = b.getAttribute('data-terapis-gender')?.toLowerCase() || '';
+                    break;
+                case 'area_kerja':
+                    aValue = a.getAttribute('data-terapis-area-kerja')?.toLowerCase() || '';
+                    bValue = b.getAttribute('data-terapis-area-kerja')?.toLowerCase() || '';
+                    break;
+                default:
+                    return 0;
+            }
+            
+            if (column === 'joining_date') {
+                // Date comparison
+                if (sortDirection === 'asc') {
+                    return aValue - bValue;
+                } else {
+                    return bValue - aValue;
+                }
+            } else {
+                // String comparison
+                if (sortDirection === 'asc') {
+                    return aValue.localeCompare(bValue, 'id', { sensitivity: 'base' });
+                } else {
+                    return bValue.localeCompare(aValue, 'id', { sensitivity: 'base' });
+                }
+            }
+        });
+
+        // Clear tbody and append sorted rows with animation
+        const emptyRow = tbody.querySelector('tr td[colspan]')?.closest('tr');
+        tbody.innerHTML = '';
+        
+        // Add back empty row if it exists
+        if (emptyRow && rows.length === 0) {
+            tbody.appendChild(emptyRow);
+        } else {
+            rows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateY(-10px)';
+                tbody.appendChild(row);
+                
+                setTimeout(() => {
+                    row.style.transition = 'all 0.2s ease-in-out';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateY(0)';
+                }, index * 30);
+            });
+        }
+
+        // Update sort icons for current table
+        updateTerapisSortIcons(tableType);
+    }
+
+    function updateTerapisSortIcons(tableType) {
+        // Reset all sort icons for current table
+        const sortIcons = document.querySelectorAll(`[data-table-type="${tableType}"] .sort-icon`);
+        sortIcons.forEach(icon => {
+            icon.style.transform = 'rotate(0deg)';
+            icon.style.opacity = '0.5';
+        });
+
+        // Update active sort icon for current table
+        Object.keys(sortStates[tableType]).forEach(column => {
+            if (sortStates[tableType][column] !== 'none') {
+                const icon = document.querySelector(`[data-table-type="${tableType}"] [data-sort="${column}"] .sort-icon`);
+                if (icon) {
+                    icon.style.opacity = '1';
+                    if (sortStates[tableType][column] === 'desc') {
+                        icon.style.transform = 'rotate(180deg)';
+                    }
+                }
+            }
+        });
+    }
+
+    // Initialize sorting functionality
+    function initializeTerapisSorting() {
+        const tbody = document.querySelector('tbody.bg-white');
+        
+        if (tbody) {
+            const table = tbody.closest('table');
+            const headerRow = table.querySelector('thead tr');
+            
+            if (headerRow) {
+                const sortableHeaders = headerRow.querySelectorAll('.sortable-header');
+                
+                sortableHeaders.forEach(header => {
+                    const sortColumn = header.getAttribute('data-sort');
+                    if (sortColumn) {
+                        header.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            sortTerapisTable(sortColumn, tbody, 'terapis');
+                        });
+                    }
+                });
+            }
+        }
+
+        // Initialize sort icon styles
+        updateTerapisSortIcons('terapis');
+    }
 
     // Delete management functions
     const deleteTerapisManager = {
@@ -450,7 +610,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize
     function initTerapis() {
         setupTerapisEventListeners();
-        console.log('Terapis functionality initialized (delete only)');
+        initializeTerapisSorting();
+        console.log('Terapis functionality initialized with sorting');
     }
     
     initTerapis();

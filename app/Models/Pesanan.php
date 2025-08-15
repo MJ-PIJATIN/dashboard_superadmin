@@ -18,6 +18,7 @@ class Pesanan extends Model
     
     protected $fillable = [
         'id',
+        'booking_code',
         'customer_id',
         'therapist_id', 
         'main_service_id',
@@ -29,6 +30,30 @@ class Pesanan extends Model
         'created_at',
         'updated_at'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($pesanan) {
+            if (empty($pesanan->booking_code)) {
+                // Prefix beda sesuai payment
+                $prefix = $pesanan->payment === 'Cash' ? 'BKC' : 'BKT';
+
+                $lastBooking = self::where('booking_code', 'like', $prefix . '%')
+                                ->orderBy('booking_code', 'desc')
+                                ->first();
+
+                $nextNumber = 1;
+                if ($lastBooking) {
+                    $lastNumber = (int) substr($lastBooking->booking_code, 3);
+                    $nextNumber = $lastNumber + 1;
+                }
+
+                $pesanan->booking_code = $prefix . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+            }
+        });
+    }
 
     public function customer()
     {

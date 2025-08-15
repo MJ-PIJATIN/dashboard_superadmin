@@ -20,9 +20,10 @@ class Terapis extends Model
         'name',
         'joining_date',
         'birth_date',
+        'birth_place',
         'gender',
         'phone',
-        'photo', // BLOB data
+        'photo',
         'email',
         'NIK',
         'addres',
@@ -42,18 +43,29 @@ class Terapis extends Model
         'photo', // Hide photo BLOB data from JSON serialization by default
     ];
 
+    public static function generateSequentialId()
+    {
+        // Ambil ID terakhir dengan format TRP
+        $lastTerapis = self::where('id', 'like', 'TRP%')
+            ->orderByRaw('CAST(SUBSTRING(id, 4) AS UNSIGNED) DESC')
+            ->first();
+        
+        $nextNumber = 1;
+        
+        if ($lastTerapis) {
+            // Ekstrak nomor dari ID terakhir (contoh: TRP0001 -> 1)
+            $lastNumber = intval(substr($lastTerapis->id, 3));
+            $nextNumber = $lastNumber + 1;
+        }
+        
+        // Format dengan padding 4 digit: TRP0001, TRP0002, dst.
+        return 'TRP' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    // Hapus method generateRandomId() lama dan ganti dengan yang baru
     public static function generateRandomId()
     {
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        
-        do {
-            $randomId = '';
-            for ($i = 0; $i < 6; $i++) {
-                $randomId .= $characters[mt_rand(0, strlen($characters) - 1)];
-            }
-        } while (self::where('id', $randomId)->exists());
-        
-        return $randomId;
+        return self::generateSequentialId();
     }
 
     public function getGenderDisplayAttribute()
@@ -188,6 +200,77 @@ class Terapis extends Model
         return substr($initials, 0, 2);
     }
 
+    /**
+     * Get display area kerja (hanya kota/kabupaten)
+     */
+    public function getDisplayAreaKerjaAttribute()
+    {
+        // Prioritas 1: Gunakan work_area jika tersedia
+        if (!empty($this->work_area)) {
+            // Ambil hanya kota/kabupaten (bagian pertama sebelum koma)
+            $workAreaParts = explode(', ', $this->work_area);
+            return $workAreaParts[0] ?? '-';
+        }
+        
+        // Prioritas 2: Fallback ke parsing addres (untuk data lama)
+        if (!empty($this->addres)) {
+            $addressParts = explode(', ', $this->addres);
+            return isset($addressParts[1]) ? $addressParts[1] : 
+                (isset($addressParts[0]) ? $addressParts[0] : '-');
+        }
+        
+        return '-';
+    }
+
+    /**
+     * Get full work area (kota/kabupaten + provinsi)
+     */
+    public function getFullWorkAreaAttribute()
+    {
+        if (!empty($this->work_area)) {
+            return $this->work_area;
+        }
+        
+        // Fallback ke parsing dari addres
+        if (!empty($this->addres)) {
+            $addressParts = explode(', ', $this->addres);
+            if (count($addressParts) >= 3) {
+                // Ambil kota dan provinsi (skip alamat detail di index 0)
+                return $addressParts[1] . ', ' . $addressParts[2];
+            }
+        }
+        
+        return '-';
+    }
+
+    /**
+     * Get work area parts
+     */
+    public function getWorkAreaPartsAttribute()
+    {
+        if (!empty($this->work_area)) {
+            $parts = explode(', ', $this->work_area);
+            return [
+                'city' => $parts[0] ?? '',
+                'province' => $parts[1] ?? ''
+            ];
+        }
+        
+        // Fallback ke parsing dari addres
+        if (!empty($this->addres)) {
+            $addressParts = explode(', ', $this->addres);
+            return [
+                'city' => $addressParts[1] ?? '',
+                'province' => $addressParts[2] ?? ''
+            ];
+        }
+        
+        return [
+            'city' => '',
+            'province' => ''
+        ];
+    }
+
     public function scopeActive($query)
     {
         return $query->whereNull('suspended_duration')->orWhere('suspended_duration', '');
@@ -235,22 +318,30 @@ class Terapis extends Model
         return $this->name;
     }
 
+    /**
+     * Update parsed address attribute to include work area
+     */
     public function getParsedAddressAttribute()
     {
+        $workAreaParts = $this->work_area_parts;
+        
         if ($this->addres) {
             $parts = explode(', ', $this->addres);
             return [
                 'full' => $this->addres,
                 'street' => $parts[0] ?? '',
-                'city' => $parts[1] ?? '',
-                'province' => $parts[2] ?? '',
+                'city' => $workAreaParts['city'] ?: ($parts[1] ?? ''),
+                'province' => $workAreaParts['province'] ?: ($parts[2] ?? ''),
+                'work_area_display' => $this->display_area_kerja
             ];
         }
+        
         return [
             'full' => '',
             'street' => '',
-            'city' => '',
-            'province' => '',
+            'city' => $workAreaParts['city'],
+            'province' => $workAreaParts['province'],
+            'work_area_display' => $this->display_area_kerja
         ];
     }
 
@@ -272,7 +363,7 @@ class Terapis extends Model
 
         static::creating(function ($therapist) {
             if (empty($therapist->id)) {
-                $therapist->id = self::generateRandomId();
+                $therapist->id = self::generateSequentialId();
             }
             if (empty($therapist->branch_id)) {
                 $therapist->branch_id = null;
@@ -297,7 +388,7 @@ class Terapis extends Model
     }
 
     /**
-     * Override toArray to exclude photo BLOB by default
+     * Override toArray to include area kerja display and exclude photo BLOB
      */
     public function toArray()
     {
@@ -306,9 +397,14 @@ class Terapis extends Model
         // Remove photo BLOB from array representation
         unset($array['photo']);
         
-        // Add useful photo-related attributes instead
+        // Add useful photo-related attributes
         $array['has_photo'] = $this->has_photo;
         $array['photo_url'] = $this->photo_url;
+        
+        // Add area kerja display attributes
+        $array['display_area_kerja'] = $this->display_area_kerja;
+        $array['full_work_area'] = $this->full_work_area;
+        $array['work_area_parts'] = $this->work_area_parts;
         
         return $array;
     }
