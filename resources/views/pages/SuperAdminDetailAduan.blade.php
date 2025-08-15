@@ -39,7 +39,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-sm text-gray-500 font-semibold">{{ $detailAduan->created_at->format('H:i, d M Y') }}</p>
-                    <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan->customer->address ?? 'Alamat tidak tersedia' }}</p>
+                    <p class="text-sm text-gray-500 font-semibold mb-2">{{ $detailAduan->customer->addres ?? 'Alamat tidak tersedia' }}</p>
                     @if($detailAduan->order)
                     <a href="{{ route('pesanan.detail', ['tipe' => 'transfer', 'id' => $detailAduan->order->id]) }}" 
                     class="px-4 py-[5px] text-sm font-semibold text-[#2196F3] ring-1 ring-[#2196F3] rounded-md transition-colors
@@ -100,7 +100,9 @@
                             </div>
                             <div class="flex justify-between py-2 border-b border-gray-100">
                                 <span class="text-gray-500 font-semibold">Jenis Kelamin</span>
-                                <span class="text-gray-700 font-medium">{{ $detailAduan->target->gender ?? '-' }}</span>
+                                <span class="text-gray-700 font-medium">
+                                    {{ $detailAduan->target->gender === 'L' ? 'Laki-laki' : ($detailAduan->target->gender === 'P' ? 'Perempuan' : '-') }}
+                                </span>
                             </div>
                         </div>
                     {{-- Case 2: The reported person is a CUSTOMER --}}
@@ -120,7 +122,7 @@
                             </div>
                             <div class="flex justify-between py-2 border-b border-gray-100">
                                 <span class="text-gray-500 font-semibold">Alamat</span>
-                                <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->target->address ?? '-' }}</span>
+                                <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->target->addres ?? '-' }}</span>
                             </div>
                         </div>
                     @endif
