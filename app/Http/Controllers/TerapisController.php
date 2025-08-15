@@ -13,33 +13,32 @@ class TerapisController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->get('search');
-        $perPage = 10;
+    $search = $request->get('search');
+    $perPage = 10;
 
-        $query = Terapis::query();
+    $query = Terapis::query();
 
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('id', 'like', '%' . $search . '%')
-                    ->orWhere('name', 'like', '%' . $search . '%')
-                    ->orWhere('addres', 'like', '%' . $search . '%');
-            });
-        }
-
-        $terapis = $query->orderBy('joining_date', 'desc')->paginate($perPage);
-
-        $terapis->getCollection()->transform(function ($item) {
-            $item->formatted_joining_date = $item->joining_date ?
-                $item->joining_date->format('d M Y') : '-';
-            $item->formatted_gender = $item->getGenderDisplayAttribute();
-            
-            // MODIFIKASI: Gunakan method helper untuk mendapatkan area kerja
-            $item->area_kerja = $this->getDisplayAreaKerja($item);
-            
-            return $item;
+    if ($search) {
+        $query->where(function ($q) use ($search) {
+            $q->where('id', 'like', '%' . $search . '%')
+                ->orWhere('name', 'like', '%' . $search . '%')
+                ->orWhere('addres', 'like', '%' . $search . '%');
         });
+    }
 
-        return view('pages.SuperAdminTerapis', compact('terapis', 'search'));
+    $terapis = $query->orderByRaw("CAST(SUBSTRING(id, 4) AS UNSIGNED) ASC")->paginate($perPage);
+
+    $terapis->getCollection()->transform(function ($item) {
+        $item->formatted_joining_date = $item->joining_date ?
+            $item->joining_date->format('d M Y') : '-';
+        $item->formatted_gender = $item->getGenderDisplayAttribute();
+        
+        $item->area_kerja = $this->getDisplayAreaKerja($item);
+        
+        return $item;
+    });
+
+    return view('pages.SuperAdminTerapis', compact('terapis', 'search'));
     }
 
     public function store(Request $request)
@@ -85,7 +84,6 @@ class TerapisController extends Controller
         }
 
         try {
-            // MODIFIKASI: Gunakan method dari model untuk generate ID berurutan
             $sequentialId = Terapis::generateSequentialId();
 
             $photoPath = null;
@@ -104,7 +102,7 @@ class TerapisController extends Controller
             $genderValue = $this->processGenderValue($request->jenis_kelamin);
 
             $terapis = new Terapis();
-            $terapis->id = $sequentialId;  // Menggunakan ID berurutan
+            $terapis->id = $sequentialId;
             $terapis->branch_id = null;
             $terapis->name = $request->nama_lengkap;
             $terapis->joining_date = now()->format('Y-m-d');
@@ -117,12 +115,10 @@ class TerapisController extends Controller
             $terapis->NIK = $request->nik;
             $terapis->addres = $request->alamat . ', ' . $request->kota_kabupaten . ', ' . $request->provinsi;
             
-            // TAMBAHAN: Simpan provinsi dan kota/kabupaten ke work_area
             $terapis->work_area = $request->kota_kabupaten . ', ' . $request->provinsi;
             
             $terapis->save();
 
-            // MODIFIKASI: Gunakan work_area untuk area_kerja, fallback ke parsing addres jika work_area kosong
             $area_kerja = $this->getDisplayAreaKerja($terapis);
 
             return response()->json([
@@ -244,7 +240,6 @@ class TerapisController extends Controller
                 ], 404);
             }
 
-            // MODIFIKASI: Gunakan method helper untuk mendapatkan area kerja
             $area_kerja = $this->getDisplayAreaKerja($terapis);
 
             $data = [
@@ -296,8 +291,7 @@ class TerapisController extends Controller
     {
         try {
             $terapis = Terapis::findOrFail($id);
-            
-            // MODIFIKASI: Gunakan method helper untuk mendapatkan area kerja
+
             $terapis->area_kerja = $this->getDisplayAreaKerja($terapis);
             
             $terapis->formatted_gender = $this->getGenderDisplay($terapis->gender);
@@ -315,14 +309,11 @@ class TerapisController extends Controller
         }
     }
 
-    // MODIFIKASI: Method ini sudah tidak digunakan lagi karena diganti dengan generateSequentialId
-    // Tapi tetap disimpan untuk backward compatibility jika ada code lain yang memanggilnya
     private function generateRandomId()
     {
         return Terapis::generateSequentialId();
     }
 
-    // TAMBAHAN: Method helper untuk generate ID berurutan (bisa digunakan dari controller juga)
     private function generateSequentialId()
     {
         return Terapis::generateSequentialId();
@@ -404,17 +395,13 @@ class TerapisController extends Controller
         return response()->file($photoPath);
     }
 
-    // TAMBAHAN: Method helper baru untuk mendapatkan area kerja yang ditampilkan
     private function getDisplayAreaKerja($terapis)
     {
-        // Prioritas 1: Gunakan work_area jika tersedia
         if (!empty($terapis->work_area)) {
-            // Ambil hanya kota/kabupaten (bagian pertama sebelum koma)
             $workAreaParts = explode(', ', $terapis->work_area);
             return $workAreaParts[0] ?? '-';
         }
-        
-        // Prioritas 2: Fallback ke parsing addres (untuk data lama yang belum memiliki work_area)
+
         if (!empty($terapis->addres)) {
             $addressParts = explode(', ', $terapis->addres);
             return isset($addressParts[1]) ? $addressParts[1] : 
