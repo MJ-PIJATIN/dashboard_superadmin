@@ -117,8 +117,11 @@ Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tamba
 Route::get('/terapis/{id}/detail', [TerapisController::class, 'show'])->name('detail-terapis');
 Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
 Route::post('/terapis/{id}/suspend', [SuspendedAccountController::class, 'suspend'])->name('terapis.suspend')->where('id', '[0-9]+');
+Route::post('/terapis/{id}/warn', [TerapisController::class, 'warn'])->name('terapis.warn');
 Route::delete('/terapis/{id}', [TerapisController::class, 'destroy'])->name('terapis.destroy');
 Route::get('/terapis/{id}/photo', [TerapisController::class, 'showPhoto'])->name('terapis.photo');
+Route::post('/terapis/{id}/suspend', [App\Http\Controllers\TerapisController::class, 'suspend'])
+    ->name('terapis.suspend');
 
 // Tambahkan route ini di web.php untuk debugging (hapus setelah masalah selesai)
 Route::get('/debug-terapis/{id}', function($id) {

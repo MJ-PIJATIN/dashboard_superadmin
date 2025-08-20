@@ -63,14 +63,14 @@
                     </thead>
                     <tbody id="tableBody">
                         @forelse($suspendedAccounts ?? [] as $account)
-                        <tr id="account-row-{{ $account['suspension_id'] }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail('{{ $account['suspension_id'] }}', event)">
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['suspension_id'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $account['nama'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['kelamin'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account['area_kerja'] }}</td>
+                        <tr id="account-row-{{ $account->suspension_id }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail('{{ $account->suspension_id }}', event)">
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account->suspension_id }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-900">{{ $account->name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account->gender }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account->work_area }}</td>
                             <td class="px-6 py-4">
                                 @php
-                                    $durasi = $account['durasi'];
+                                    $durasi = $account->duration;
                                     $durasiClass = match($durasi) {
                                         'Permanen' => 'bg-[#ED555433] text-[#ED5554]',
                                         '30 Hari', '14 Hari', '7 Hari' => 'bg-[#FF990033] text-[#FF9900]',
@@ -89,12 +89,12 @@
                                 <div class="flex items-center justify-end">
                                     <!-- Waktu - tampil normal, hilang saat hover -->
                                     <span class="group-hover:opacity-0 transition-opacity duration-200">
-                                        {{ $account['waktu'] }}
+                                        {{ $account->waktu }}
                                     </span>
                                     
                                     <!-- Button - tersembunyi normal, muncul saat hover -->
                                     <div class="absolute inset-y-0 right-4 flex items-center justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-6">
-                                        <button onclick="openModal('{{ $account['suspension_id'] }}', '{{ $account['nama'] }}'); event.stopPropagation();"
+                                        <button onclick="openModal('{{ $account->suspension_id }}', '{{ $account->name }}'); event.stopPropagation();"
                                             title="Pulihkan"
                                             class="flex items-center justify-center transition duration-200 hover:bg-green-100 rounded-md p-1">
                                             <img src="/images/pemulihan.svg" alt="Pulihkan" class="w-5 h-5" />

@@ -111,10 +111,6 @@
                     @if($detailAduan->target_type === 'therapist')
                         <div class="space-y-4">
                             <div class="flex justify-between py-2 border-b border-gray-100">
-                                <span class="text-gray-500 font-semibold">Tipe</span>
-                                <span class="text-gray-700 font-medium">Terapis</span>
-                            </div>
-                            <div class="flex justify-between py-2 border-b border-gray-100">
                                 <span class="text-gray-500 font-semibold">Nama Lengkap</span>
                                 <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
                             </div>
@@ -128,14 +124,13 @@
                                     {{ $detailAduan->target->gender === 'L' ? 'Laki-laki' : ($detailAduan->target->gender === 'P' ? 'Perempuan' : '-') }}
                                 </span>
                             </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500 font-semibold">Alamat</span>
+                                <span class="text-gray-700 font-medium text-right max-w-xs">{{ $detailAduan->target->addres ?? '-' }}</span>
                         </div>
                     {{-- Case 2: The reported person is a CUSTOMER --}}
                     @elseif($detailAduan->target_type === 'customer')
                         <div class="space-y-4">
-                             <div class="flex justify-between py-2 border-b border-gray-100">
-                                <span class="text-gray-500 font-semibold">Tipe</span>
-                                <span class="text-gray-700 font-medium">Pelanggan</span>
-                            </div>
                             <div class="flex justify-between py-2 border-b border-gray-100">
                                 <span class="text-gray-500 font-semibold">Nama Lengkap</span>
                                 <span class="text-gray-700 font-medium">{{ $detailAduan->target->name ?? 'Data tidak tersedia' }}</span>
