@@ -236,19 +236,19 @@
                 </style>
 
                 <label class="flex items-center">
-                    <input type="radio" name="duration" value="1" class="mr-2">
+                    <input type="radio" name="warning_duration" value="1" class="mr-2">
                     <span class="text-sm text-gray-700">1 Hari</span>
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" name="duration" value="7" class="mr-2">
+                    <input type="radio" name="warning_duration" value="7" class="mr-2">
                     <span class="text-sm text-gray-700">7 Hari</span>
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" name="duration" value="14" class="mr-2">
+                    <input type="radio" name="warning_duration" value="14" class="mr-2">
                     <span class="text-sm text-gray-700">14 Hari</span>
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" name="duration" value="30" class="mr-2">
+                    <input type="radio" name="warning_duration" value="30" class="mr-2">
                     <span class="text-sm text-gray-700">30 Hari</span>
                 </label>
             </div>
@@ -355,19 +355,19 @@
             <p class="text-gray-700 font-medium mb-4">Pilih durasi penangguhan</p>
             <div id="durationOptions" class="flex flex-wrap gap-4">
                 <label class="inline-flex items-center gap-2">
-                <input type="radio" name="duration" value="1" class="text-blue-600">
+                <input type="radio" name="suspend_duration" value="1" class="text-blue-600">
                 <span class="text-sm text-gray-700">7 Hari</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                <input type="radio" name="duration" value="7" class="text-blue-600">
+                <input type="radio" name="suspend_duration" value="7" class="text-blue-600">
                 <span class="text-sm text-gray-700">14 Hari</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                <input type="radio" name="duration" value="14" class="text-blue-600">
+                <input type="radio" name="suspend_duration" value="14" class="text-blue-600">
                 <span class="text-sm text-gray-700">30 Hari</span>
                 </label>
                 <label class="inline-flex items-center gap-2">
-                <input type="radio" name="duration" value="30" class="text-blue-600">
+                <input type="radio" name="suspend_duration" value="30" class="text-blue-600">
                 <span class="text-sm text-gray-700">Permanen</span>
                 </label>
             </div>
@@ -376,9 +376,12 @@
 
                 <!-- Submit Button -->
                 <div class="pt-4">
-                    <button onclick="submitSuspension()" class="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition-colors">
-                        Tangguhkan
-                    </button>
+                    <button onclick="submitSuspension()" 
+        data-terapis-id="{{ $detailTerapis->id ?? '' }}"
+        data-suspend-url="{{ route('terapis.suspend', ['id' => $detailTerapis->id ?? '']) }}"
+        class="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition-colors">
+    Tangguhkan
+</button>
                 </div>
             </div>
         </div>
@@ -465,10 +468,10 @@ function sendWarning() {
     drawer.classList.add('flex');
     
     // Reset form
-    document.getElementById('warningReason').value = '';
-    document.getElementById('warningCharCount').textContent = '0';
-    document.getElementById('suspendDuration').checked = false;
-    document.querySelectorAll('input[name="duration"]').forEach(radio => {
+    drawer.querySelector('#warningReason').value = '';
+    drawer.querySelector('#warningCharCount').textContent = '0';
+    drawer.querySelector('#suspendDuration').checked = false;
+    drawer.querySelectorAll('input[name="warning_duration"]').forEach(radio => {
         radio.checked = false;
         radio.disabled = true;
     });
@@ -481,19 +484,18 @@ function closeWarningDrawer() {
 }
 
 function submitWarning() {
-    const reason = document.getElementById('warningReason').value;
-    const hasSuspension = document.getElementById('suspendDuration').checked;
+    const drawer = document.getElementById('warningDrawer');
+    const reason = drawer.querySelector('#warningReason').value;
+    const hasSuspension = drawer.querySelector('#suspendDuration').checked;
     let duration = null;
     
-    // Validasi alasan wajib diisi
     if (!reason.trim()) {
         alert('Mohon isi alasan peringatan!');
         return;
     }
     
-    // Validasi jika checkbox durasi dicentang, harus pilih hari
     if (hasSuspension) {
-        const selectedDuration = document.querySelector('input[name="duration"]:checked');
+        const selectedDuration = drawer.querySelector('input[name="warning_duration"]:checked');
         if (!selectedDuration) {
             alert('Mohon pilih durasi penangguhan!');
             return;
@@ -504,19 +506,34 @@ function submitWarning() {
     closeWarningDrawer();
     showLoadingDrawer();
 
-    // Simulate API call
-    setTimeout(() => {
-        hideLoadingDrawer();
+    const formData = new FormData();
+    formData.append('reason', reason);
+    if (duration) {
+        formData.append('duration', duration);
+    }
+    formData.append('_token', '{{ csrf_token() }}');
 
-        let message = `Peringatan Berhasil dikirimkan kepada {{ $detailTerapis->nama ?? '' }}`;
-        if (hasSuspension && duration) {
-            const truncatedReason = truncateString(reason, 70); // Truncate reason for suspension message
-            message = `Akun berhasil ditangguhkan dengan alasan ${truncatedReason}`;
+    fetch(`{{ route('terapis.warn', ['id' => $detailTerapis->id ?? '']) }}`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
         }
-        
-        showSuccessDrawer(message);
-
-    }, 2000); // Simulate 2 second delay
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoadingDrawer();
+        if (data.success) {
+            showSuccessDrawer(data.message || 'Peringatan berhasil dikirim.');
+        } else {
+            alert(data.message || 'Gagal mengirim peringatan.');
+        }
+    })
+    .catch(error => {
+        hideLoadingDrawer();
+        console.error('Error:', error);
+        alert('Terjadi kesalahan. Silakan coba lagi.');
+    });
 }
 
 // Suspend Drawer functions
@@ -526,10 +543,10 @@ function openSuspendModal() {
     drawer.classList.add('flex');
     
     // Reset form
-    document.getElementById('suspendDescription').value = '';
-    document.getElementById('suspendCharCount').textContent = '0';
-    document.querySelectorAll('input[name="suspendReason"]').forEach(radio => radio.checked = false);
-    document.querySelectorAll('input[name="duration"]').forEach(radio => radio.checked = false);
+    drawer.querySelector('#suspendDescription').value = '';
+    drawer.querySelector('#suspendCharCount').textContent = '0';
+    drawer.querySelectorAll('input[name="suspendReason"]').forEach(radio => radio.checked = false);
+    drawer.querySelectorAll('input[name="suspend_duration"]').forEach(radio => radio.checked = false);
 }
 
 function closeSuspendDrawer() {
@@ -538,10 +555,13 @@ function closeSuspendDrawer() {
     drawer.classList.remove('flex');
 }
 
+<!-- Tambahkan data attribute pada button atau container -->
+
 function submitSuspension() {
-    const reason = document.querySelector('input[name="suspendReason"]:checked');
-    const description = document.getElementById('suspendDescription').value;
-    const duration = document.querySelector('input[name="duration"]:checked');
+    const drawer = document.getElementById('suspendDrawer');
+    const reason = drawer.querySelector('input[name="suspendReason"]:checked');
+    const description = drawer.querySelector('#suspendDescription').value;
+    const duration = drawer.querySelector('input[name="suspend_duration"]:checked');
     
     if (!reason) {
         alert('Mohon pilih alasan penangguhan!');
@@ -558,7 +578,13 @@ function submitSuspension() {
 
     const reasonValue = reason.value;
     const durationValue = duration.value;
-    const terapisId = {{ $detailTerapis->id ?? 'null' }};
+    
+    console.log('Data yang akan dikirim:', {
+        reason: reasonValue,
+        description: description,
+        duration: durationValue,
+        terapisId: '{{ $detailTerapis->id ?? "" }}'
+    });
 
     const formData = new FormData();
     formData.append('reason', reasonValue);
@@ -569,29 +595,81 @@ function submitSuspension() {
     closeSuspendDrawer();
     showLoadingDrawer();
 
-    fetch(`{{ route('terapis.suspend', ['id' => $detailTerapis->id ?? '']) }}`, {
+    const suspendUrl = '{{ route("terapis.suspend", ["id" => $detailTerapis->id ?? ""]) }}';
+    console.log('URL yang digunakan:', suspendUrl);
+
+    fetch(suspendUrl, {
         method: 'POST',
         body: formData,
         headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
         }
     })
-    .then(response => response.json())
-    .then(data => {
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        // Untuk error 500, kita tetap coba parse response
+        return response.text().then(text => {
+            console.log('Response text:', text);
+            
+            // Coba parse sebagai JSON
+            try {
+                const jsonData = JSON.parse(text);
+                return { 
+                    status: response.status,
+                    ok: response.ok,
+                    data: jsonData 
+                };
+            } catch (e) {
+                // Jika bukan JSON, kembalikan sebagai HTML/text error
+                return { 
+                    status: response.status,
+                    ok: response.ok,
+                    text: text,
+                    isHtml: text.includes('<html') || text.includes('<!DOCTYPE')
+                };
+            }
+        });
+    })
+    .then(result => {
         hideLoadingDrawer();
-        if (data.success) {
-            showSuccessDrawer(data.message || 'Akun berhasil ditangguhkan.');
-            setTimeout(() => {
-                window.location.href = "{{ route('penangguhan') }}";
-            }, 3000);
+        
+        console.log('Parsed result:', result);
+        
+        if (result.status === 500) {
+            // Error 500 - Server Error
+            if (result.isHtml) {
+                console.error('Server returned HTML error page');
+                alert('Error 500: Server mengalami masalah internal. Cek log Laravel untuk detail.');
+            } else if (result.data) {
+                console.error('Server error with JSON:', result.data);
+                alert(`Error 500: ${result.data.message || 'Server error'}`);
+            } else {
+                console.error('Server error with text:', result.text);
+                alert('Error 500: Server error. Cek console dan log Laravel.');
+            }
+            return;
+        }
+        
+        if (result.ok && result.data) {
+            if (result.data.success) {
+                showSuccessDrawer(result.data.message || 'Akun berhasil ditangguhkan.');
+                setTimeout(() => {
+                    window.location.href = "{{ route('penangguhan') }}";
+                }, 3000);
+            } else {
+                alert(result.data.message || 'Gagal menangguhkan akun.');
+            }
         } else {
-            alert(data.message || 'Gagal menangguhkan akun.');
+            alert(`HTTP ${result.status}: Request tidak berhasil`);
         }
     })
     .catch(error => {
         hideLoadingDrawer();
-        console.error('Error:', error);
-        alert('Terjadi kesalahan. Silakan coba lagi.');
+        console.error('Fetch error:', error);
+        alert(`Network error: ${error.message}`);
     });
 }
 
@@ -732,7 +810,7 @@ document.addEventListener('keydown', function(e) {
 
 // Checkbox untuk durasi penangguhan di warning modal
 const checkbox = document.getElementById('suspendDuration');
-const radios = document.querySelectorAll('input[name="duration"]');
+const radios = document.querySelectorAll('input[name="warning_duration"]');
 
 checkbox.addEventListener('change', () => {
     radios.forEach(radio => {

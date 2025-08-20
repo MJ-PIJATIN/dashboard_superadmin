@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\JsonResponse;
+use Exception;
 
 class TerapisController extends Controller
 {
@@ -395,6 +397,32 @@ class TerapisController extends Controller
         return response()->file($photoPath);
     }
 
+    public function warn(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'reason' => 'required|string|max:500',
+            'duration' => 'nullable|string',
+        ]);
+
+        $terapis = Terapis::findOrFail($id);
+
+        // Logic to send a warning notification should be implemented here.
+        // For now, we'll just log it.
+        Log::info("Warning sent to therapist {$terapis->name} (ID: {$terapis->id}) with reason: {$validated['reason']}");
+
+        if (!empty($validated['duration'])) {
+            $suspendRequest = new Request([
+                'reason' => 'warning', // Or a more specific reason
+                'description' => $validated['reason'],
+                'duration' => $validated['duration'],
+            ]);
+            app(SuspendedAccountController::class)->suspend($suspendRequest, $id);
+            return response()->json(['success' => true, 'message' => 'Peringatan berhasil dikirimkan dan akun ditangguhkan.']);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Peringatan berhasil dikirimkan.']);
+    }
+
     private function getDisplayAreaKerja($terapis)
     {
         if (!empty($terapis->work_area)) {
@@ -409,5 +437,157 @@ class TerapisController extends Controller
         }
         
         return '-';
+    }
+
+    public function suspend(Request $request, $id): JsonResponse
+    {
+        // Log semua yang masuk untuk debugging
+        \Log::info('=== SUSPEND REQUEST START ===');
+        \Log::info('ID received: ' . $id);
+        \Log::info('Request method: ' . $request->method());
+        \Log::info('Request data: ', $request->all());
+        \Log::info('Headers: ', $request->headers->all());
+        
+        try {
+            // Validasi dasar input
+            if (empty($request->reason)) {
+                throw new Exception('Reason is required');
+            }
+            if (empty($request->description)) {
+                throw new Exception('Description is required');
+            }
+            if (empty($request->duration)) {
+                throw new Exception('Duration is required');
+            }
+
+            \Log::info('Basic validation passed');
+
+            // Coba validasi Laravel
+            $validatedData = $request->validate([
+                'reason' => 'required|string|in:sexual,threats,inappropriate,violence,warning',
+                'description' => 'required|string|max:500',
+                'duration' => 'required|string|in:1,7,14,30'
+            ]);
+
+            \Log::info('Laravel validation passed: ', $validatedData);
+
+            // Cek apakah model Terapis exists
+            $modelClass = 'App\\Models\\Terapis';
+            if (!class_exists($modelClass)) {
+                \Log::error('Model Terapis tidak ditemukan');
+                throw new Exception('Model Terapis tidak ditemukan');
+            }
+
+            \Log::info('Model exists, trying to find terapis...');
+
+            // Cari terapis - gunakan beberapa cara berbeda
+            try {
+                // Cara 1: Langsung dengan model
+                $terapis = \App\Models\Terapis::find($id);
+                \Log::info('Method 1 result: ' . ($terapis ? 'found' : 'not found'));
+                
+                // Cara 2: Jika tidak ada, coba dengan where
+                if (!$terapis) {
+                    $terapis = \App\Models\Terapis::where('id', $id)->first();
+                    \Log::info('Method 2 result: ' . ($terapis ? 'found' : 'not found'));
+                }
+                
+                // Cara 3: Coba lihat semua data
+                $allTerapis = \App\Models\Terapis::all(['id', 'name']);
+                \Log::info('All terapis IDs: ', $allTerapis->pluck('id')->toArray());
+                
+            } catch (Exception $e) {
+                \Log::error('Database error: ' . $e->getMessage());
+                throw new Exception('Database error: ' . $e->getMessage());
+            }
+
+            if (!$terapis) {
+                \Log::error('Terapis not found with ID: ' . $id);
+                return response()->json([
+                    'success' => false,
+                    'message' => "Terapis dengan ID '{$id}' tidak ditemukan"
+                ], 404);
+            }
+
+            \Log::info('Terapis found: ' . $terapis->name);
+
+            // Mapping durasi
+            $durationMapping = [
+                '1' => '7 hari',
+                '7' => '14 hari', 
+                '14' => '30 hari',
+                '30' => 'Permanen'
+            ];
+
+            $suspendDuration = $durationMapping[$request->duration] ?? $request->duration . ' hari';
+
+            \Log::info('Mapped duration: ' . $suspendDuration);
+
+            // Update terapis - hati-hati dengan nama kolom
+            try {
+                $updateData = [
+                    'suspended_duration' => $suspendDuration,
+                    'updated_at' => now(),
+                ];
+
+                // Cek kolom mana yang ada di tabel
+                $tableColumns = \Schema::getColumnListing('terapis');
+                \Log::info('Available columns: ', $tableColumns);
+
+                // Tambahkan kolom tambahan jika ada
+                if (in_array('suspend_reason', $tableColumns)) {
+                    $updateData['suspend_reason'] = $request->reason;
+                }
+                if (in_array('suspend_description', $tableColumns)) {
+                    $updateData['suspend_description'] = $request->description;
+                }
+                if (in_array('suspended_at', $tableColumns)) {
+                    $updateData['suspended_at'] = now();
+                }
+
+                \Log::info('Update data: ', $updateData);
+
+                $updated = $terapis->update($updateData);
+                \Log::info('Update result: ' . ($updated ? 'success' : 'failed'));
+
+            } catch (Exception $e) {
+                \Log::error('Update error: ' . $e->getMessage());
+                throw new Exception('Gagal update database: ' . $e->getMessage());
+            }
+
+            \Log::info('=== SUSPEND REQUEST SUCCESS ===');
+
+            return response()->json([
+                'success' => true,
+                'message' => "Akun terapis '{$terapis->name}' berhasil ditangguhkan untuk {$suspendDuration}",
+                'debug' => [
+                    'id' => $id,
+                    'duration_mapped' => $suspendDuration,
+                    'columns_available' => $tableColumns ?? []
+                ]
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation error: ', $e->errors());
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak valid',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (Exception $e) {
+            \Log::error('=== SUSPEND REQUEST ERROR ===');
+            \Log::error('Error message: ' . $e->getMessage());
+            \Log::error('Error trace: ' . $e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+                'debug' => [
+                    'id' => $id,
+                    'request_data' => $request->all()
+                ]
+            ], 500);
+        }
     }
 }
