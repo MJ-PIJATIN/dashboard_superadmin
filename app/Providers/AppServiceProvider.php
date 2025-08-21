@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +20,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::morphMap([
+            'SuperAdmin' => 'App\Models\SuperAdmin',
+            'Karyawan' => 'App\Models\Karyawan',
+            'Terapis' => 'App\Models\Terapis',
+            'Pelanggan' => 'App\Models\Pelanggan',
+            // Tambahkan model lain di sini jika diperlukan
+        ]);
     }
 }

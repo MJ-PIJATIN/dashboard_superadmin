@@ -13,6 +13,7 @@ use App\Http\Controllers\CabangController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\NotifikasiController;
 
 // Routing ke Landing Page
 Route::get('/', function () {
@@ -28,9 +29,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Routing Notifikasi
-Route::get('/notifikasi', function () {
-    return view('pages.SuperAdminNotifikasi');
-})->name('notifikasi');
+Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi');
 
 // Route Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
