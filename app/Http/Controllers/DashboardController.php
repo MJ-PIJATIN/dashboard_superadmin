@@ -138,32 +138,59 @@ class DashboardController extends Controller
     }
     
     /**
-     * Ambil layanan terpopuler
+     * Ambil layanan terpopuler dari tabel bookings
      */
     private function getPopularServices()
     {
-        // Asumsi bahwa ada relasi dengan layanan utama
-        $popularServices = Pesanan::join('main_services', 'bookings.main_service_id', '=', 'main_services.id')
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        
+        // Query untuk menghitung layanan utama dari tabel bookings
+        $popularServices = DB::table('bookings')
+            ->join('main_services', 'bookings.main_service_id', '=', 'main_services.id')
             ->select(
                 'main_services.name as service_name',
                 DB::raw('COUNT(*) as booking_count')
             )
             ->where('bookings.status', 'Selesai')
-            ->whereMonth('bookings.bookings_date', Carbon::now()->month)
-            ->whereYear('bookings.bookings_date', Carbon::now()->year)
+            ->whereMonth('bookings.bookings_date', $currentMonth)
+            ->whereYear('bookings.bookings_date', $currentYear)
             ->groupBy('main_services.id', 'main_services.name')
             ->orderBy('booking_count', 'desc')
             ->limit(3)
             ->get();
         
-        // Jika tidak ada data, gunakan data dummy
-        if ($popularServices->isEmpty()) {
-            return [
-                ['name' => 'Full Body Massage', 'rank' => '#1'],
-                ['name' => 'Hot Stone Massage', 'rank' => '#2'],
-                ['name' => 'Traditional Massage', 'rank' => '#3']
-            ];
-        }
+        // Jika ada kolom additional_service_id di tabel bookings (one-to-one)
+        // Uncomment kode di bawah ini dan sesuaikan dengan struktur tabel Anda
+        $additionalServices = DB::table('bookings')
+            ->join('additional_services', 'bookings.additional_service_id', '=', 'additional_services.id')
+            ->select(
+                'additional_services.name as service_name',
+                DB::raw('COUNT(*) as booking_count')
+            )
+            ->where('bookings.status', 'Selesai')
+            ->whereMonth('bookings.bookings_date', $currentMonth)
+            ->whereYear('bookings.bookings_date', $currentYear)
+            ->whereNotNull('bookings.additional_service_id')
+            ->groupBy('additional_services.id', 'additional_services.name')
+            ->orderBy('booking_count', 'desc')
+            ->limit(3)
+            ->get();
+        
+        // Gabungkan dan urutkan ulang jika ada layanan tambahan
+        $allServices = $popularServices->concat($additionalServices)
+            ->groupBy('service_name')
+            ->map(function ($group) {
+                return (object) [
+                    'service_name' => $group->first()->service_name,
+                    'booking_count' => $group->sum('booking_count')
+                ];
+            })
+            ->sortByDesc('booking_count')
+            ->take(3)
+            ->values();
+        
+        $popularServices = $allServices;
         
         // Format data dengan ranking
         $formatted = [];
@@ -175,7 +202,86 @@ class DashboardController extends Controller
             ];
         }
         
+        // Jika tidak ada data, gunakan data default
+        if (empty($formatted)) {
+            return [
+                ['name' => 'Belum ada pesanan bulan ini', 'rank' => '#1', 'count' => 0],
+                ['name' => 'Belum ada pesanan bulan ini', 'rank' => '#2', 'count' => 0],
+                ['name' => 'Belum ada pesanan bulan ini', 'rank' => '#3', 'count' => 0]
+            ];
+        }
+        
+        // Tambahkan item kosong jika kurang dari 3
+        while (count($formatted) < 3) {
+            $formatted[] = [
+                'name' => '-',
+                'rank' => '#' . (count($formatted) + 1),
+                'count' => 0
+            ];
+        }
+        
         return $formatted;
+    }
+    
+    /**
+     * Ambil layanan terpopuler termasuk layanan tambahan jika ada di kolom terpisah
+     * Method ini bisa digunakan jika ada kolom additional_service_id langsung di tabel bookings
+     */
+    private function getPopularServicesWithAdditional()
+    {
+        $currentMonth = Carbon::now()->month;
+        $currentYear = Carbon::now()->year;
+        
+        // Cek apakah ada kolom additional_service_id di tabel bookings
+        $hasAdditionalColumn = Schema::hasColumn('bookings', 'additional_service_id');
+        
+        if ($hasAdditionalColumn) {
+            // Query untuk layanan utama
+            $mainServices = DB::table('bookings')
+                ->join('main_services', 'bookings.main_service_id', '=', 'main_services.id')
+                ->select(
+                    'main_services.name as service_name',
+                    DB::raw('COUNT(*) as booking_count')
+                )
+                ->where('bookings.status', 'Selesai')
+                ->whereMonth('bookings.bookings_date', $currentMonth)
+                ->whereYear('bookings.bookings_date', $currentYear)
+                ->groupBy('main_services.id', 'main_services.name');
+            
+            // Query untuk layanan tambahan
+            $additionalServices = DB::table('bookings')
+                ->join('additional_services', 'bookings.additional_service_id', '=', 'additional_services.id')
+                ->select(
+                    'additional_services.name as service_name',
+                    DB::raw('COUNT(*) as booking_count')
+                )
+                ->where('bookings.status', 'Selesai')
+                ->whereMonth('bookings.bookings_date', $currentMonth)
+                ->whereYear('bookings.bookings_date', $currentYear)
+                ->whereNotNull('bookings.additional_service_id')
+                ->groupBy('additional_services.id', 'additional_services.name');
+            
+            // Gabungkan hasil dengan UNION
+            $allServices = $mainServices->union($additionalServices)
+                ->orderBy('booking_count', 'desc')
+                ->limit(3)
+                ->get();
+            
+            // Format data
+            $formatted = [];
+            foreach ($allServices as $index => $service) {
+                $formatted[] = [
+                    'name' => $service->service_name,
+                    'rank' => '#' . ($index + 1),
+                    'count' => $service->booking_count
+                ];
+            }
+            
+            return $formatted;
+        }
+        
+        // Jika tidak ada kolom additional, gunakan method getPopularServices()
+        return $this->getPopularServices();
     }
     
     /**

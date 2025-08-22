@@ -12,7 +12,6 @@
 <div class="" style="margin-left: 50px; margin-right: 50px; padding-top: 100px; padding-bottom: 100px;">
     <h1 class="text-xl font-bold text-gray-700 mb-4">Ringkasan</h1>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-    {{-- Gunakan data cards dari controller --}}
     @foreach ($cards as $card)
         <div class="bg-white rounded-md p-4 shadow-md border text-sm">
             <div class="flex items-center justify-between">
