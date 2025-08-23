@@ -82,7 +82,7 @@ trait Notifiable
     protected function getIdentifier()
     {
         // Urutan prioritas untuk nama identifier
-        $attributes = ['name', 'nama', 'title', 'city', 'email', 'username'];
+        $attributes = ['booking_code', 'name', 'nama', 'title', 'city', 'email', 'username'];
         $modelAttributes = $this->getAttributes();
 
         foreach ($attributes as $attribute) {

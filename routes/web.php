@@ -78,7 +78,7 @@ Route::prefix('pesanan')->group(function () {
 });
 
 // Halaman Cabang
-Route::prefix('cabang')->group(function () {
+Route::prefix('cabang')->middleware(['auth'])->group(function () {
     Route::get('/', [CabangController::class, 'index'])->name('cabang');
 
     Route::get('/tambah', fn () => view('pages.SuperAdminTambahCabang'))->name('cabang.tambah');
