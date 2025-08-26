@@ -71,74 +71,74 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-md p-4 shadow-md border mt-6 text-sm">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">
-            Pesanan Hari Ini 
-        </h3>
-        <div class="overflow-x-auto">
-        <table class="min-w-full table-auto border border-gray-400 text-sm">
-                <thead>
-                    <tr class="bg-gray-50 text-left text-xs text-gray-800 uppercase">
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">#</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Waktu</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Customer</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Status</th>
-                        <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Aksi</th>
+<div class="bg-white rounded-md p-4 shadow-md border mt-6 text-sm">
+    <h3 class="text-xl font-semibold text-gray-700 mb-4">
+        Tabel Pesanan Terkini 
+    </h3>
+    <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border border-gray-400 text-sm">
+            <thead>
+                <tr class="bg-gray-50 text-left text-xs text-gray-800 uppercase">
+                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">#</th>
+                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Tanggal Pesanan</th>
+                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Customer</th>
+                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Status</th>
+                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-400">
+                @forelse($recentOrders as $index => $order)
+                    <tr>
+                        <td class="px-3 py-2">{{ $index + 1 }}</td>
+                        <td class="px-3 py-2">{{ $order['date'] }}</td>
+                        <td class="px-3 py-2">{{ $order['customer_name'] }}</td>
+                        <td class="px-3 py-2">
+                            <div class="flex items-center justify-start">
+                                @if($order['status'] == 'Selesai')
+                                    <span class="flex items-center justify-start gap-2 bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-[4px] w-[104px]">
+                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                        Selesai
+                                    </span>
+                                @elseif($order['status'] == 'Dibatalkan')
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold" style="border-radius: 5px;">
+                                        <span class="w-2 h-2 bg-red-500" style="border-radius: 5px;"></span>
+                                        Dibatalkan
+                                    </span>
+                                @elseif($order['status'] == 'Berlangsung')
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold" style="border-radius: 5px;">
+                                        <span class="w-2 h-2 bg-blue-500" style="border-radius: 5px;"></span>
+                                        Berlangsung
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold" style="border-radius: 5px;">
+                                        <span class="w-2 h-2 bg-gray-500" style="border-radius: 5px;"></span>
+                                        {{ $order['status'] }}
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-3 py-2">
+                            <button class="text-blue-600 hover:text-blue-900">
+                            <div class="flex justify-center">
+                                <img src="{{ asset('images/isi tabel.svg') }}" alt="Logo" class="h-5 w-5 mt-1">
+                            </div>
+                            </button>
+                        </td>
                     </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-400">
-                    @forelse($recentOrders as $index => $order)
-                        <tr>
-                            <td class="px-3 py-2">{{ $index + 1 }}</td>
-                            <td class="px-3 py-2">{{ $order['time'] }}</td>
-                            <td class="px-3 py-2">{{ $order['customer_name'] }}</td>
-                            <td class="px-3 py-2">
-                                <div class="flex items-center justify-start">
-                                    @if($order['status'] == 'Selesai')
-                                        <span class="flex items-center justify-start gap-2 bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-[4px] w-[104px]">
-                                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                            Selesai
-                                        </span>
-                                    @elseif($order['status'] == 'Dibatalkan')
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 text-red-700 text-xs font-semibold" style="border-radius: 5px;">
-                                            <span class="w-2 h-2 bg-red-500" style="border-radius: 5px;"></span>
-                                            Dibatalkan
-                                        </span>
-                                    @elseif($order['status'] == 'Berlangsung')
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold" style="border-radius: 5px;">
-                                            <span class="w-2 h-2 bg-blue-500" style="border-radius: 5px;"></span>
-                                            Berlangsung
-                                        </span>
-                                    @else
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-gray-100 text-gray-700 text-xs font-semibold" style="border-radius: 5px;">
-                                            <span class="w-2 h-2 bg-gray-500" style="border-radius: 5px;"></span>
-                                            {{ $order['status'] }}
-                                        </span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-3 py-2">
-                                <button class="text-blue-600 hover:text-blue-900">
-                                <div class="flex justify-center">
-                                    <img src="{{ asset('images/isi tabel.svg') }}" alt="Logo" class="h-5 w-5 mt-1">
-                                </div>
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-3 py-4 text-center text-gray-500">
-                                Belum ada pesanan hari ini
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-3 text-right">
-            <a href="{{ route('pesanan') }}" class="text-xs text-blue-600 cursor-pointer hover:underline">Lihat Selengkapnya</a>
-        </div>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-3 py-4 text-center text-gray-500">
+                            Belum ada pesanan terkini
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+    <div class="mt-3 text-right">
+        <a href="{{ route('pesanan') }}" class="text-xs text-blue-600 cursor-pointer hover:underline">Lihat Selengkapnya</a>
+    </div>
+</div>
 </div>
 
 @push('scripts')
