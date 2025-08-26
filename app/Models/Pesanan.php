@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Complaint;
+use App\Models\Traits\Notifiable;
+use App\Models\Terapis;
 
 class Pesanan extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'bookings';
     
@@ -86,5 +88,45 @@ class Pesanan extends Model
     public function getPaymentMethodAttribute()
     {
         return $this->payment;
+    }
+
+    protected function getNotificationMessage(string $action)
+    {
+        $user = auth()->user();
+        $role = $user ? class_basename($user) : 'System';
+        $modelName = class_basename($this);
+        $identifier = $this->getIdentifier();
+
+        $actionVerb = [
+            'created' => 'Menambahkan',
+            'updated' => 'Memperbarui',
+            'deleted' => 'Menghapus',
+        ];
+
+        $message = "{$role} {$actionVerb[$action]} {$modelName} {$identifier}";
+
+        if ($action === 'updated') {
+            $changes = $this->getChanges();
+            unset($changes['updated_at']);
+
+            $details = [];
+            if (array_key_exists('therapist_id', $changes)) {
+                $newTherapist = Terapis::find($this->therapist_id);
+                $newTherapistName = $newTherapist ? $newTherapist->name . '-' . $newTherapist->id : 'Tidak ada';
+                $details[] = "Menugaskan Terapis {$newTherapistName}";
+            }
+
+            if (array_key_exists('status', $changes)) {
+                $oldStatus = $this->getOriginal('status');
+                $newStatus = $this->status;
+                $details[] = "Status {$oldStatus} menjadi {$newStatus}";
+            }
+
+            if (!empty($details)) {
+                $message = "{$role} Memperbarui Pesanan {$identifier}: " . implode(', ', $details);
+            }
+        }
+
+        return $message;
     }
 }

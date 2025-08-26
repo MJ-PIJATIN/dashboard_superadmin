@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
 use App\Models\LayananUtama;
 use App\Models\LayananTambahan;
 
@@ -12,35 +10,34 @@ class LayananController extends Controller
 {
     public function index()
     {
-        $layananUtama = \App\Models\LayananUtama::all();
-        $layananTambahan = \App\Models\LayananTambahan::all();
+        $layananUtama = LayananUtama::all();
+        $layananTambahan = LayananTambahan::all();
         return view('pages.SuperAdminLayanan', compact('layananUtama', 'layananTambahan'));
     }
 
     public function update(Request $request)
     {
-    $request->validate([
-        'id' => 'required',
-        'name' => 'required|max:50',
-        'price' => 'required|numeric',
-        'duration' => 'required|in:60 Menit,90 Menit,120 Menit',
-        'description' => 'required|max:512',
-    ]);
+        $request->validate([
+            'id' => 'required',
+            'name' => 'required|max:50',
+            'price' => 'required|numeric',
+            'duration' => 'required|in:60 Menit,90 Menit,120 Menit',
+            'description' => 'required|max:512',
+        ]);
 
-    $layanan = \DB::table('main_services')->where('id', $request->id)->first();
-    if (!$layanan) {
-        return response()->json(['success' => false, 'message' => 'Layanan tidak ditemukan.'], 404);
-    }
+        $layanan = LayananUtama::find($request->id);
+        if (!$layanan) {
+            return response()->json(['success' => false, 'message' => 'Layanan tidak ditemukan.'], 404);
+        }
 
-    \DB::table('main_services')->where('id', $request->id)->update([
-        'name' => $request->name,
-        'price' => $request->price,
-        'duration' => $request->duration,
-        'description' => $request->description,
-        'updated_at' => now(),
-    ]);
+        $layanan->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'duration' => $request->duration,
+            'description' => $request->description,
+        ]);
 
-    return response()->json(['success' => true]);
+        return response()->json(['success' => true]);
     }
 
     public function updateStatus(Request $request)
@@ -52,14 +49,13 @@ class LayananController extends Controller
 
         $status = strtolower($request->status);
 
-        $layanan = \DB::table('main_services')->where('id', $request->id)->first();
+        $layanan = LayananUtama::find($request->id);
         if (!$layanan) {
             return response()->json(['success' => false, 'message' => 'Layanan tidak ditemukan.'], 404);
         }
 
-        \DB::table('main_services')->where('id', $request->id)->update([
+        $layanan->update([
             'status' => $status,
-            'updated_at' => now(),
         ]);
 
         return response()->json(['success' => true]);
@@ -75,17 +71,16 @@ class LayananController extends Controller
             'description' => 'required|max:512',
         ]);
 
-        $layanan = \DB::table('additional_services')->where('id', $request->id)->first();
+        $layanan = LayananTambahan::find($request->id);
         if (!$layanan) {
             return response()->json(['success' => false, 'message' => 'Layanan tambahan tidak ditemukan.'], 404);
         }
 
-        \DB::table('additional_services')->where('id', $request->id)->update([
+        $layanan->update([
             'name' => $request->name,
             'price' => $request->price,
             'duration' => $request->duration,
             'description' => $request->description,
-            'updated_at' => now(),
         ]);
 
         return response()->json(['success' => true]);
@@ -102,21 +97,19 @@ class LayananController extends Controller
 
         $id = $this->generateRandomId(6);
 
-        \DB::table('main_services')->insert([
+        LayananUtama::create([
             'id' => $id,
             'name' => $request->name,
             'price' => $request->price,
             'duration' => $request->duration,
             'description' => $request->description,
             'status' => 'aktif',
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return response()->json(['success' => true, 'id' => $id]);
     }
 
-        public function storeTambahan(Request $request)
+    public function storeTambahan(Request $request)
     {
         $request->validate([
             'name' => 'required|max:50',
@@ -127,14 +120,12 @@ class LayananController extends Controller
 
         $id = $this->generateRandomId(6);
 
-        \DB::table('additional_services')->insert([
+        LayananTambahan::create([
             'id' => $id,
             'name' => $request->name,
             'price' => $request->price,
             'duration' => $request->duration,
             'description' => $request->description,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return response()->json(['success' => true, 'id' => $id]);
@@ -159,9 +150,10 @@ class LayananController extends Controller
             'id' => 'required'
         ]);
 
-        $deleted = \DB::table('main_services')->where('id', $request->id)->delete();
+        $layanan = LayananUtama::find($request->id);
 
-        if ($deleted) {
+        if ($layanan) {
+            $layanan->delete();
             return response()->json([
                 'success' => true
             ]);
@@ -173,15 +165,16 @@ class LayananController extends Controller
         ], 404);
     }
 
-        public function destroyTambahan(Request $request)
+    public function destroyTambahan(Request $request)
     {
         $request->validate([
             'id' => 'required'
         ]);
 
-        $deleted = \DB::table('additional_services')->where('id', $request->id)->delete();
+        $layanan = LayananTambahan::find($request->id);
 
-        if ($deleted) {
+        if ($layanan) {
+            $layanan->delete();
             return response()->json([
                 'success' => true
             ]);
