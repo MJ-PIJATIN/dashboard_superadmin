@@ -608,68 +608,91 @@ function submitSuspension() {
     })
     .then(response => {
         console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
+        console.log('Response headers:', [...response.headers.entries()]);
         
-        // Untuk error 500, kita tetap coba parse response
+        // Langsung return response.json() untuk response yang berhasil
+        if (response.ok) {
+            return response.json();
+        }
+        
+        // Untuk response error, coba parse sebagai JSON dulu
         return response.text().then(text => {
-            console.log('Response text:', text);
-            
-            // Coba parse sebagai JSON
+            console.log('Error response text:', text);
             try {
                 const jsonData = JSON.parse(text);
-                return { 
+                return Promise.reject({
                     status: response.status,
-                    ok: response.ok,
-                    data: jsonData 
-                };
+                    message: jsonData.message || `HTTP ${response.status} Error`,
+                    data: jsonData
+                });
             } catch (e) {
-                // Jika bukan JSON, kembalikan sebagai HTML/text error
-                return { 
+                // Jika tidak bisa di-parse sebagai JSON, anggap sebagai HTML error
+                return Promise.reject({
                     status: response.status,
-                    ok: response.ok,
-                    text: text,
-                    isHtml: text.includes('<html') || text.includes('<!DOCTYPE')
-                };
+                    message: `HTTP ${response.status}: Server Error`,
+                    isHtml: text.includes('<html') || text.includes('<!DOCTYPE'),
+                    text: text.substring(0, 500) // Ambil 500 karakter pertama untuk debugging
+                });
             }
         });
     })
-    .then(result => {
+    .then(data => {
         hideLoadingDrawer();
+        console.log('Success response:', data);
         
-        console.log('Parsed result:', result);
-        
-        if (result.status === 500) {
-            // Error 500 - Server Error
-            if (result.isHtml) {
-                console.error('Server returned HTML error page');
-                alert('Error 500: Server mengalami masalah internal. Cek log Laravel untuk detail.');
-            } else if (result.data) {
-                console.error('Server error with JSON:', result.data);
-                alert(`Error 500: ${result.data.message || 'Server error'}`);
-            } else {
-                console.error('Server error with text:', result.text);
-                alert('Error 500: Server error. Cek console dan log Laravel.');
-            }
-            return;
-        }
-        
-        if (result.ok && result.data) {
-            if (result.data.success) {
-                showSuccessDrawer(result.data.message || 'Akun berhasil ditangguhkan.');
-                setTimeout(() => {
-                    window.location.href = "{{ route('penangguhan') }}";
-                }, 3000);
-            } else {
-                alert(result.data.message || 'Gagal menangguhkan akun.');
-            }
+        if (data.success) {
+            showSuccessDrawer(data.message || 'Akun berhasil ditangguhkan.');
+            
+            // Redirect ke halaman penangguhan setelah 3 detik
+            setTimeout(() => {
+                // Gunakan POST request untuk mengirim success message
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('penangguhan') }}";
+                form.style.display = 'none';
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}';
+                form.appendChild(csrfInput);
+
+                const messageInput = document.createElement('input');
+                messageInput.type = 'hidden';
+                messageInput.name = 'success_message';
+                messageInput.value = data.message || 'Akun berhasil ditangguhkan.';
+                form.appendChild(messageInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            }, 3000);
         } else {
-            alert(`HTTP ${result.status}: Request tidak berhasil`);
+            alert(data.message || 'Gagal menangguhkan akun.');
         }
     })
     .catch(error => {
         hideLoadingDrawer();
-        console.error('Fetch error:', error);
-        alert(`Network error: ${error.message}`);
+        console.error('Error details:', error);
+        
+        if (error.status === 500) {
+            if (error.isHtml) {
+                console.error('Server returned HTML error page:', error.text);
+                alert('Server error (500). Silakan cek Laravel log untuk detail. Error mungkin terkait database atau konfigurasi.');
+            } else {
+                alert(`Error 500: ${error.message}`);
+            }
+        } else if (error.status === 422) {
+            // Validation error
+            alert(`Validation Error: ${error.message}`);
+            if (error.data && error.data.errors) {
+                console.error('Validation errors:', error.data.errors);
+            }
+        } else if (error.status) {
+            alert(`HTTP ${error.status}: ${error.message}`);
+        } else {
+            // Network error atau error lainnya
+            alert(`Network error: ${error.message || 'Terjadi kesalahan jaringan'}`);
+        }
     });
 }
 

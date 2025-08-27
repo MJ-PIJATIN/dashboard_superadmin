@@ -34,10 +34,16 @@ class SuspendedAccountController extends Controller
             'total_pages' => $paginator->lastPage(),
         ];
 
-        return view('pages.SuperAdminPenangguhan', [
+        $view = view('pages.SuperAdminPenangguhan', [
             'suspendedAccounts' => $suspendedAccounts,
             'paginationData' => $paginationData,
         ]);
+
+        if ($request->isMethod('post') && $request->has('success_message')) {
+            $view->with('success_message', $request->input('success_message'));
+        }
+
+        return $view;
     }
 
     /**
@@ -126,6 +132,11 @@ class SuspendedAccountController extends Controller
     public function suspend(Request $request, $id): JsonResponse // $id is terapis_id
     {
         try {
+            Log::info('Suspend request received', [
+                'terapis_id' => $id,
+                'request_data' => $request->all()
+            ]);
+
             $validatedData = $request->validate([
                 'reason' => 'required|string',
                 'description' => 'required|string|max:500',
@@ -134,7 +145,15 @@ class SuspendedAccountController extends Controller
 
             $terapis = Terapis::find($id);
             if (!$terapis) {
+                Log::error('Terapis not found', ['terapis_id' => $id]);
                 return response()->json(['success' => false, 'message' => 'Data terapis tidak ditemukan.'], 404);
+            }
+
+            // Cek apakah sudah ada penangguhan aktif
+            $existingSuspension = SuspendedAccount::where('therapist_id', $id)->first();
+            if ($existingSuspension) {
+                Log::warning('Therapist already suspended', ['terapis_id' => $id]);
+                return response()->json(['success' => false, 'message' => 'Akun terapis sudah dalam penangguhan.'], 400);
             }
 
             $durationDaysMap = ['1' => 7, '7' => 14, '14' => 30, '30' => -1];
@@ -142,42 +161,87 @@ class SuspendedAccountController extends Controller
             $durationMap = ['1' => '7 Hari', '7' => '14 Hari', '14' => '30 Hari', '30' => 'Permanen'];
             $durasi = $durationMap[$validatedData['duration']] ?? $validatedData['duration'];
 
+            // Generate ID penangguhan
             $lastSuspension = SuspendedAccount::orderBy('id', 'desc')->first();
             $maxId = $lastSuspension ? $lastSuspension->id : 0;
             $newId = 'SUSP-' . str_pad($maxId + 1, 5, '0', STR_PAD_LEFT);
 
             $isPermanent = ($durasi === 'Permanen');
 
-            $suspendedAccount = SuspendedAccount::create([
+            // Pastikan kolom sesuai dengan yang ada di database dan model
+            $suspendedAccountData = [
                 'suspension_id' => $newId,
                 'therapist_id' => $id,
-                'name' => $terapis->name,
-                'gender' => $terapis->gender,
-                'national_id_number' => $terapis->NIK,
-                'email' => $terapis->email,
-                'phone_number' => $terapis->phone,
-                'address' => $terapis->addres,
-                'work_area' => $terapis->work_area,
-                'photo_url' => $terapis->photo,
+                'name' => $terapis->name ?? '',
+                'gender' => $terapis->gender ?? '',
+                'national_id_number' => $terapis->NIK ?? '',
+                'email' => $terapis->email ?? '',
+                'phone_number' => $terapis->phone ?? '',
+                'address' => $terapis->addres ?? '', // Sesuaikan dengan kolom di tabel terapis
+                'work_area' => $terapis->work_area ?? '',
+                'photo_url' => $terapis->photo ?? '',
                 'duration' => $durasi,
                 'reason' => $validatedData['reason'],
                 'reason_description' => $validatedData['description'],
                 'suspended_at' => now(),
                 'suspension_ends_at' => !$isPermanent ? now()->addDays($days) : null,
+            ];
+
+            Log::info('Creating suspended account with data:', $suspendedAccountData);
+
+            // Buat record penangguhan
+            $suspendedAccount = SuspendedAccount::create($suspendedAccountData);
+            DB::enableQueryLog();
+            Log::info('Database queries:', DB::getQueryLog());
+            $check = SuspendedAccount::find($suspendedAccount->id);
+            Log::info('Verification check:', ['found' => $check ? 'yes' : 'no', 'data' => $check]);
+
+            if (!$suspendedAccount) {
+                Log::error('Failed to create suspended account record');
+                return response()->json(['success' => false, 'message' => 'Gagal membuat record penangguhan.'], 500);
+            }
+
+            Log::info('Created suspended account successfully:', ['suspension_id' => $newId, 'record_id' => $suspendedAccount->id]);
+
+            // Update status terapis
+            $terapisUpdated = $terapis->update(['suspended_duration' => $durasi]);
+            
+            if (!$terapisUpdated) {
+                Log::warning('Failed to update therapist suspended_duration', ['terapis_id' => $id]);
+            }
+
+            Log::info('Account suspended and stored in DB successfully', [
+                'terapis_id' => $id, 
+                'new_suspension_id' => $newId,
+                'database_id' => $suspendedAccount->id
             ]);
 
-            Log::info('Created suspended account:', $suspendedAccount->toArray());
-
-            $terapis->update(['suspended_duration' => $durasi]);
-
-            Log::info('Account suspended and stored in DB', ['terapis_id' => $id, 'new_suspension_id' => $newId]);
-            return response()->json(['success' => true, 'message' => 'Akun berhasil ditangguhkan.']);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Akun berhasil ditangguhkan.',
+                'suspension_id' => $newId,
+                'data' => $suspendedAccount
+            ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json(['success' => false, 'message' => 'Data tidak valid.', 'errors' => $e->errors()], 422);
+            Log::error('Validation failed', ['errors' => $e->errors()]);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Data tidak valid.', 
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
-            Log::error('Suspend failed', ['terapis_id' => $id, 'error' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem.'], 500);
+            Log::error('Suspend failed with exception', [
+                'terapis_id' => $id, 
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false, 
+                'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()
+            ], 500);
         }
     }
 }

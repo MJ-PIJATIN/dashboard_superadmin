@@ -116,7 +116,9 @@ Route::get('/terapis', [TerapisController::class, 'index'])->name('terapis');
 Route::get('/tambah-terapis', [TerapisController::class, 'create'])->name('tambah-terapis');
 Route::get('/terapis/{id}/detail', [TerapisController::class, 'show'])->name('detail-terapis');
 Route::post('/terapis/store', [TerapisController::class, 'store'])->name('terapis.store');
-Route::post('/terapis/{id}/suspend', [SuspendedAccountController::class, 'suspend'])->name('terapis.suspend')->where('id', '[0-9]+');
+Route::post('/terapis/{id}/suspend', [SuspendedAccountController::class, 'suspend'])
+    ->name('terapis.suspend')
+    ->where('id', '[0-9]+');
 Route::post('/terapis/{id}/warn', [TerapisController::class, 'warn'])->name('terapis.warn');
 Route::delete('/terapis/{id}', [TerapisController::class, 'destroy'])->name('terapis.destroy');
 Route::get('/terapis/{id}/photo', [TerapisController::class, 'showPhoto'])->name('terapis.photo');
@@ -146,7 +148,7 @@ Route::match(['GET', 'DELETE'], '/test-delete-terapis/{id}', function($id) {
 
 
 //Halaman Penangguhan
-Route::get('/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
+Route::match(['get', 'post'], '/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
 Route::delete('/superadmin/penangguhan/{id}/pulihkan', [SuspendedAccountController::class, 'restore'])->name('penangguhan.restore');
 Route::prefix('admin')->group(function () {
     
