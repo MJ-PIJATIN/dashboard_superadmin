@@ -3,6 +3,12 @@
 @section('navsubtitle', 'Data Akun Ditangguhkan')
 
 @section('content')
+@if(session('success_message'))
+<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+  <strong class="font-bold">Success!</strong>
+  <span class="block sm:inline">{{ session('success_message') }}</span>
+</div>
+@endif
 <div class="bg-gray-100 min-h-screen">
     <div class="mbg-gray-100 ml-[50px] pt-[100px] pb-[100px] pr-[25px] mr-[26px]">
         <h1 class="text-lg sm:text-xl font-bold text-gray-700 mb-4 sm:mb-6">Data Akun Ditangguhkan</h1>
