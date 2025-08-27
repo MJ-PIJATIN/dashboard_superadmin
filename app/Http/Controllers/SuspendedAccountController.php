@@ -34,16 +34,14 @@ class SuspendedAccountController extends Controller
             'total_pages' => $paginator->lastPage(),
         ];
 
-        $view = view('pages.SuperAdminPenangguhan', [
+        if ($request->isMethod('post') && $request->has('success_message')) {
+            return redirect()->route('penangguhan')->with('success_message', $request->input('success_message'));
+        }
+
+        return view('pages.SuperAdminPenangguhan', [
             'suspendedAccounts' => $suspendedAccounts,
             'paginationData' => $paginationData,
         ]);
-
-        if ($request->isMethod('post') && $request->has('success_message')) {
-            $view->with('success_message', $request->input('success_message'));
-        }
-
-        return $view;
     }
 
     /**
