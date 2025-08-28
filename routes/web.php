@@ -34,6 +34,9 @@ Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifik
 // Route Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/dashboard/chart-data', [DashboardController::class, 'getChartData'])->name('dashboard.chart-data');
+Route::get('/dashboard/order/{id}', [DashboardController::class, 'getOrderDetail'])
+     ->where('id', '[A-Za-z0-9]+')
+     ->name('dashboard.order.detail');
 
 // Page Layanan
 Route::get('/layanan', [App\Http\Controllers\LayananController::class, 'index'])->name('layanan');

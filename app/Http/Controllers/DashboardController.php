@@ -76,6 +76,76 @@ class DashboardController extends Controller
         ));
     }
     
+    // NEW METHOD: Get dashboard order detail
+    public function getOrderDetail($id)
+    {
+        try {
+            Log::info("Dashboard detail pesanan - ID: {$id}");
+
+            $pesanan = Pesanan::with(['customer', 'therapist', 'mainService', 'additionalService'])
+                ->where('id', $id)
+                ->first();
+
+            if (!$pesanan) {
+                Log::error("Pesanan tidak ditemukan - ID: {$id}");
+                abort(404, 'Pesanan tidak ditemukan');
+            }
+
+            // Get IDs of therapists assigned to active orders
+            $busyTherapistIds = Pesanan::whereNotIn('status', ['Selesai', 'Dibatalkan'])
+                                       ->whereNotNull('therapist_id')
+                                       ->pluck('therapist_id')
+                                       ->unique();
+
+            // Get all available therapists
+            $terapisList = Terapis::whereNotIn('id', $busyTherapistIds)->get();
+            $totalTerapisCount = Terapis::count();
+
+            $pesananData = [
+                'id' => $pesanan->id,
+                'layanan' => $pesanan->mainService->name ?? 'N/A',
+                'nama' => $pesanan->customer->name ?? 'N/A',
+                'harga' => $pesanan->mainService->price ?? 0,
+                'jadwal' => ($pesanan->bookings_date ?? '') . ', ' . ($pesanan->bookings_time ?? ''),
+                'tanggal_pemesanan' => $pesanan->created_at ? $pesanan->created_at->format('d M Y') : 'N/A',
+                'alamat' => $pesanan->customer->address ?? 'N/A',
+                'gender' => $pesanan->customer->gender ?? 'N/A',
+                'ponsel' => $pesanan->customer->phone ?? 'N/A',
+                'layanan_tambahan' => $pesanan->additionalService ? [$pesanan->additionalService->name] : [],
+                'durasi' => ($pesanan->mainService->duration ?? 0) . ' Menit',
+                'total_layanan' => ($pesanan->mainService->price ?? 0) + ($pesanan->additionalService ? ($pesanan->additionalService->price ?? 0) : 0),
+                'metode' => $pesanan->payment ?? 'N/A',
+                'total_harga' => ($pesanan->mainService->price ?? 0) + ($pesanan->additionalService ? ($pesanan->additionalService->price ?? 0) : 0),
+                'status' => $pesanan->status ?? 'N/A',
+                'therapist_id' => $pesanan->therapist_id,
+                'therapist_name' => $pesanan->therapist->name ?? '',
+                'therapist_phone' => $pesanan->therapist->phone ?? '',
+                'therapist_gender' => $pesanan->therapist->gender ?? '',
+            ];
+
+            $terapisListData = $terapisList->map(function ($terapis) {
+                return [
+                    'id' => $terapis->id,
+                    'nama_terapis' => $terapis->name ?? 'N/A',
+                    'ponsel_terapis' => $terapis->phone ?? 'N/A',
+                    'gender' => $terapis->gender ?? 'N/A',
+                ];
+            });
+
+            return view('pages.SuperAdminDetailPesanan', [
+                'pesanan' => $pesananData,
+                'terapisList' => $terapisListData,
+                'tipe' => $pesanan->payment ?? 'transfer', // Determine tipe from payment method
+                'totalTerapisCount' => $totalTerapisCount,
+                'source' => 'dashboard' // Add source parameter to distinguish from regular detail page
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Error dalam detail pesanan dashboard: " . $e->getMessage());
+            abort(500, 'Terjadi kesalahan server');
+        }
+    }
+    
     private function formatNumber($number)
     {
         if ($number >= 1000000) {
