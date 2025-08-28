@@ -83,7 +83,7 @@
                     <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Tanggal Pesanan</th>
                     <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Customer</th>
                     <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Status</th>
-                    <th class="px-3 py-2 text-left text-gray-700 border-b border-gray-400 bg-gray-50">Aksi</th>
+                    <th class="px-3 py-2 text-center text-gray-700 border-b border-gray-400 bg-gray-50">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-400">
@@ -117,17 +117,15 @@
                                 @endif
                             </div>
                         </td>
-                        <td class="px-3 py-2">
-                            <button class="text-blue-600 hover:text-blue-900">
-                            <div class="flex justify-center">
-                                <img src="{{ asset('images/isi tabel.svg') }}" alt="Logo" class="h-5 w-5 mt-1">
-                            </div>
-                            </button>
+                        <td class="px-3 py-2 text-center">
+                            <a href="{{ route('dashboard.order.detail', $order['id']) }}" class="text-blue-600 hover:text-blue-900 inline-flex items-center justify-center">
+                                <img src="{{ asset('images/isi tabel.svg') }}" alt="Detail Pesanan" class="h-5 w-5">
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-3 py-4 text-center text-gray-500">
+                        <td colspan="5" class="px-3 py-4 text-center text-gray-500">
                             Belum ada pesanan terkini
                         </td>
                     </tr>
@@ -261,8 +259,6 @@
     }
 
     function loadChartData(year) {
-        // Tampilkan loading indicator jika diperlukan
-        
         fetch(`{{ route('dashboard') }}/chart-data?year=${year}`)
             .then(response => response.json())
             .then(data => {
