@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Terapis extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $table = 'therapists';
     protected $primaryKey = 'id';

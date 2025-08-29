@@ -70,8 +70,34 @@ trait Notifiable
             'updated' => 'Memperbarui',
             'deleted' => 'Menghapus',
         ];
+        $verb = $actionVerb[$action] ?? $action; // Fallback to action name
 
-        return "{$role} {$actionVerb[$action]} {$modelName} {$identifier}";
+        $message = "{$role} {$verb} {$modelName}"; // Default fallback
+
+        switch ($modelName) {
+            case 'Faq':
+                $message = "{$role} {$verb} FAQ";
+                break;
+            case 'Cabang':
+                $message = "{$role} {$verb} Cabang {$identifier}";
+                break;
+            case 'Pesanan':
+                $message = "{$role} {$verb} Pesanan {$identifier}";
+                break;
+            case 'LayananUtama':
+            case 'LayananTambahan':
+                $message = "{$role} {$verb} Layanan {$identifier}";
+                break;
+            case 'Terapis':
+                $message = "{$role} {$verb} Terapis {$identifier}";
+                break;
+            default:
+                // Fallback for other models not explicitly handled
+                $message = "{$role} {$verb} {$modelName} {$identifier}";
+                break;
+        }
+
+        return $message;
     }
 
     /**
