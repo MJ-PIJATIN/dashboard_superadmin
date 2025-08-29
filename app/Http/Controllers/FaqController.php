@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faq;
-use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,10 +38,7 @@ class FaqController extends Controller
                 'deskripsi' => $request->deskripsi,
             ]);
 
-            // Membuat notifikasi
-            Notification::create([
-                'message' => 'Super admin berhasil membuat pertanyaan baru di halaman FAQ',
-            ]);
+            // Notifikasi sekarang ditangani oleh Notifiable trait di model Faq.
 
             return response()->json([
                 'success' => true,
@@ -82,10 +78,7 @@ class FaqController extends Controller
                 'deskripsi' => $request->deskripsi,
             ]);
 
-            // Membuat notifikasi
-            Notification::create([
-                'message' => 'Super admin berhasil mengupdate pertanyaan di halaman FAQ',
-            ]);
+            // Notifikasi sekarang ditangani oleh Notifiable trait di model Faq.
 
             return response()->json([
                 'success' => true,
@@ -106,10 +99,7 @@ class FaqController extends Controller
         try {
             $faq->delete();
 
-            // Membuat notifikasi
-            Notification::create([
-                'message' => 'Super admin berhasil menghapus pertanyaan di halaman FAQ',
-            ]);
+            // Notifikasi sekarang ditangani oleh Notifiable trait di model Faq.
 
             return response()->json([
                 'success' => true,

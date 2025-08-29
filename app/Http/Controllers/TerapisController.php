@@ -17,32 +17,32 @@ class TerapisController extends Controller
 {
     public function index(Request $request)
     {
-    $search = $request->get('search');
-    $perPage = 10;
+        $search = $request->get('search');
+        $perPage = 10;
 
-    $query = Terapis::query();
+        $query = Terapis::query();
 
-    if ($search) {
-        $query->where(function ($q) use ($search) {
-            $q->where('id', 'like', '%' . $search . '%')
-                ->orWhere('name', 'like', '%' . $search . '%')
-                ->orWhere('addres', 'like', '%' . $search . '%');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id', 'like', '%' . $search . '%')
+                    ->orWhere('name', 'like', '%' . $search . '%')
+                    ->orWhere('addres', 'like', '%' . $search . '%');
+            });
+        }
+
+        $terapis = $query->orderByRaw("CAST(SUBSTRING(id, 4) AS UNSIGNED) ASC")->paginate($perPage);
+
+        $terapis->getCollection()->transform(function ($item) {
+            $item->formatted_joining_date = $item->joining_date ?
+                $item->joining_date->format('d M Y') : '-';
+            $item->formatted_gender = $item->getGenderDisplayAttribute();
+            
+            $item->area_kerja = $this->getDisplayAreaKerja($item);
+            
+            return $item;
         });
-    }
 
-    $terapis = $query->orderByRaw("CAST(SUBSTRING(id, 4) AS UNSIGNED) ASC")->paginate($perPage);
-
-    $terapis->getCollection()->transform(function ($item) {
-        $item->formatted_joining_date = $item->joining_date ?
-            $item->joining_date->format('d M Y') : '-';
-        $item->formatted_gender = $item->getGenderDisplayAttribute();
-        
-        $item->area_kerja = $this->getDisplayAreaKerja($item);
-        
-        return $item;
-    });
-
-    return view('pages.SuperAdminTerapis', compact('terapis', 'search'));
+        return view('pages.SuperAdminTerapis', compact('terapis', 'search'));
     }
 
     public function store(Request $request)
@@ -111,7 +111,7 @@ class TerapisController extends Controller
             $terapis->name = $request->nama_lengkap;
             $terapis->joining_date = now()->format('Y-m-d');
             $terapis->birth_date = $birthDate;
-            $terapis->birth_place = $birthPlace = $request->tempat_lahir;
+            $terapis->birth_place = $request->tempat_lahir;
             $terapis->gender = $genderValue;
             $terapis->phone = $request->no_ponsel;
             $terapis->photo = $photoPath;
@@ -432,8 +432,8 @@ class TerapisController extends Controller
             return $workAreaParts[0] ?? '-';
         }
 
-        if (!empty($terapis->addres)) {
-            $addressParts = explode(', ', $terapis->addres);
+        if (!empty($this->addres)) {
+            $addressParts = explode(', ', $this->addres);
             return isset($addressParts[1]) ? $addressParts[1] : 
                 (isset($addressParts[0]) ? $addressParts[0] : '-');
         }
