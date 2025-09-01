@@ -49,7 +49,7 @@ class SuspendedAccountController extends Controller
      */
     public function detail($suspension_id) // $id is suspension_id
     {
-        $account = SuspendedAccount::where('suspension_id', $suspension_id)->first();
+        $account = SuspendedAccount::with('therapist')->where('suspension_id', $suspension_id)->first();
 
         if (!$account) {
             abort(404, 'Akun penangguhan tidak ditemukan');

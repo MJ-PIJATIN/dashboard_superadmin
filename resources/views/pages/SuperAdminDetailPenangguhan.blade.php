@@ -32,129 +32,142 @@
                 <!-- Profile Photo & Basic Info -->
                 <div class="text-center mb-8">
                     <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200">
-                <img src="/images/orang.svg"
-                    alt="Foto Profil"
-                    class="w-full h-full object-cover" />
-                </div>
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Kamarina Mandasari</h2>
-                    <p class="text-gray-600">Pelanggan</p>
+                        @if ($account->therapist && $account->therapist->photo)
+                            <img src="{{ Storage::url($account->therapist->photo) }}" alt="Foto Profil"
+                                class="w-full h-full object-cover" />
+                        @else
+                            <img src="/images/orang.svg" alt="Foto Profil" class="w-full h-full object-cover" />
+                        @endif
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $account->name }}</h2>
+                    <p class="text-gray-600">Terapis</p>
                 </div>
 
                 <!-- Informasi Akun -->
                 <div class="space-y-6">
                     <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-2">Informasi Akun</h3>
-                    
+
                     <div class="grid grid-cols-1 gap-4">
                         <div class="flex justify-between py-2">
                             <span class="text-gray-600 font-medium">Status Akun</span>
-                            <span class="px-3 py-1 text-[#FF9900] text-sm font-medium">Penangguhan Sementara</span>
+                            <span
+                                class="px-3 py-1 text-sm font-medium {{ $account->duration === 'Permanen' ? 'text-red-600' : 'text-[#FF9900]' }}">
+                                {{ $account->duration === 'Permanen' ? 'Penangguhan Permanen' : 'Penangguhan Sementara' }}
+                            </span>
                         </div>
-                        
+
                         <div class="flex justify-between py-2">
                             <span class="text-gray-600 font-medium">Alamat Email</span>
-                            <span class="text-gray-800">kamarinda23@gmail.com</span>
+                            <span class="text-gray-800">{{ $account->email }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-2">
                             <span class="text-gray-600 font-medium">Ponsel</span>
-                            <span class="text-gray-800">082954627818</span>
+                            <span class="text-gray-800">{{ $account->phone_number }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-2">
                             <span class="text-gray-600 font-medium">Area Kerja</span>
-                            <span class="text-gray-800">Jebres, Surakarta</span>
+                            <span class="text-gray-800">{{ $account->work_area }}</span>
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-2 pt-4">
-                    <a href="{{ route('aduan-pelanggan') }}"
-                    class="px-3 py-1 text-sm border border-[#3FC1C0] text-[#3FC1C0] rounded hover:bg-[#E6FAFA] transition-colors font-medium">
-                    Lihat Aduan
-                    </a>
-                    <button onclick="openRestoreModal('{{ $account->suspension_id }}', '{{ $account->name }}')" class="px-3 py-1 text-sm bg-lime-600 text-white rounded hover:bg-lime-700 transition-colors font-medium">
-                        Pulihkan Akun
-                    </button>
-                </div>
+                        <a href="{{ route('aduan-pelanggan') }}"
+                            class="px-3 py-1 text-sm border border-[#3FC1C0] text-[#3FC1C0] rounded hover:bg-[#E6FAFA] transition-colors font-medium">
+                            Lihat Aduan
+                        </a>
+                        <button onclick="openRestoreModal('{{ $account->suspension_id }}', '{{ $account->name }}')"
+                            class="px-3 py-1 text-sm bg-lime-600 text-white rounded hover:bg-lime-700 transition-colors font-medium">
+                            Pulihkan Akun
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Card Kanan - Identitas & Informasi Penangguhan -->
             <div class="space-y-6">
-                
+
                 <!-- Identitas Diri -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-800">Identitas Diri</h3>
                         <div class="flex gap-2">
-                            <button onclick="showKTPModal()"  
-                            class="px-3 py-1 bg-white border border-blue-500 text-blue-500 text-sm font-semibold rounded-md hover:bg-blue-500 hover:text-white transition-colors">
-                            Lihat KTP
-                        </button>
+                            <button onclick="showKTPModal()"
+                                class="px-3 py-1 bg-white border border-blue-500 text-blue-500 text-sm font-semibold rounded-md hover:bg-blue-500 hover:text-white transition-colors">
+                                Lihat KTP
+                            </button>
 
-                        <button onclick="showSKCKModal()"  
-                            class="px-3 py-1 bg-white border border-blue-500 text-blue-500 text-sm font-semibold rounded-md hover:bg-blue-500 hover:text-white transition-colors">
-                            Lihat SKCK
-                        </button>
+                            <button onclick="showSKCKModal()"
+                                class="px-3 py-1 bg-white border border-blue-500 text-blue-500 text-sm font-semibold rounded-md hover:bg-blue-500 hover:text-white transition-colors">
+                                Lihat SKCK
+                            </button>
                         </div>
                     </div>
-                    
+
                     <div class="space-y-3">
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">NIK</span>
-                            <span class="text-gray-800 font-medium">3171895833200123</span>
+                            <span class="text-gray-800 font-medium">{{ $account->national_id_number }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Nama Lengkap</span>
-                            <span class="text-gray-800 font-medium">Kamarina Mandasari</span>
+                            <span class="text-gray-800 font-medium">{{ $account->name }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Tempat Lahir</span>
-                            <span class="text-gray-800 font-medium">Surakarta</span>
+                            <span
+                                class="text-gray-800 font-medium">{{ $account->therapist->birth_place ?? '-' }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Tanggal Lahir</span>
-                            <span class="text-gray-800 font-medium">20 Mei 1998</span>
+                            <span
+                                class="text-gray-800 font-medium">{{ $account->therapist ? $account->therapist->birth_date->format('d F Y') : '-' }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Jenis Kelamin</span>
-                            <span class="text-gray-800 font-medium">Perempuan</span>
+                            <span
+                                class="text-gray-800 font-medium">{{ $account->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Alamat</span>
-                            <span class="text-gray-800 font-medium text-right max-w-xs">Jl Guntur, Ngasrinon, Jebres, Surakarta, Jawa Tengah</span>
+                            <span class="text-gray-800 font-medium text-right max-w-xs">{{ $account->address }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Informasi Penangguhan -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-4">Informasi Penangguhan</h3>
-                    
+                    <h3 class="text-lg font-semibold text-gray-800 border-b border-gray-200 pb-3 mb-4">Informasi
+                        Penangguhan</h3>
+
                     <div class="space-y-3">
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Tanggal Ditangguhkan</span>
-                            <span class="text-gray-800 font-medium">20 Oktober 2023</span>
+                            <span
+                                class="text-gray-800 font-medium">{{ \Carbon\Carbon::parse($account->suspended_at)->format('d F Y') }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Tanggal Selesai Penangguhan</span>
-                            <span class="text-gray-800 font-medium">03 November 2023</span>
+                            <span
+                                class="text-gray-800 font-medium">{{ $account->suspension_ends_at ? \Carbon\Carbon::parse($account->suspension_ends_at)->format('d F Y') : 'Permanen' }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Durasi Penangguhan</span>
-                            <span class="px-3 py-1 text-gray-800 text-sm font-medium">14 Hari</span>
+                            <span class="px-3 py-1 text-gray-800 text-sm font-medium">{{ $account->duration }}</span>
                         </div>
-                        
+
                         <div class="flex justify-between py-1">
                             <span class="text-gray-600">Sisa Durasi Penangguhan</span>
-                            <span class="text-[#FF9900] font-semibold">8 Hari, 16 Jam</span>
+                            <span class="text-[#FF9900] font-semibold">{{ $account->sisa_durasi }}</span>
                         </div>
                     </div>
                 </div>
@@ -164,6 +177,7 @@
     <div class="bg-white p-6 rounded-md shadow-lg relative max-w-2xl w-full mx-2">
         <div class="mb-2 relative">
             <h2 id="ktpModalTitle" class="text-lg font-semibold text-gray-700 text-center w-full">Foto KTP</h2>
+            <p class="text-xs text-gray-500 text-center w-full">(Contoh Tampilan)</p>
         </div>
         <div class="relative w-full bg-white rounded-lg overflow-hidden">
             <div class="relative h-96">
@@ -193,6 +207,7 @@
         <div class="flex justify-between items-center mb-4">
             <h4 class="text-lg font-semibold text-gray-700 text-center w-full">Foto SKCK</h4>
         </div>
+        <p class="text-xs text-gray-500 text-center w-full mb-2">(Contoh Tampilan)</p>
         <div class="text-center">
             <img id="skckImage" src="{{ asset('images/skck.jpg') }}" alt="SKCK" class="rounded w-full h-auto object-contain max-h-96">
         </div>
@@ -257,6 +272,31 @@
 </div>
 
 <script>
+// Helper functions for drawers
+function showLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.remove('hidden');
+}
+
+function hideLoadingDrawer() {
+    document.getElementById('loading-drawer').classList.add('hidden');
+}
+
+function showSuccessDrawer(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-drawer').classList.remove('hidden');
+    
+    // Auto hide after 2 seconds, then redirect
+    setTimeout(() => {
+        hideSuccessDrawer();
+        window.location.href = "{{ route('penangguhan') }}";
+    }, 2000);
+}
+
+function hideSuccessDrawer() {
+    document.getElementById('success-drawer').classList.add('hidden');
+}
+
+
 // KTP Modal functions
 let currentModalSlide = 1;
 const totalModalSlides = 2;
@@ -330,27 +370,19 @@ function closeSKCKModal() {
     document.getElementById('skckModal').classList.remove('flex');
 }
 
-// Carousel functionality - Removed since we're using pop-ups now
-
 // Fungsi untuk kembali ke halaman sebelumnya
 function goBack() {
-    // Option 1: Kembali ke halaman sebelumnya
     window.history.back();
-    
-    // Option 2: Redirect ke halaman daftar akun ditangguhkan
-    // window.location.href = '/akun-ditangguhkan';
 }
 
 // Modal functions
 function openRestoreModal(suspensionId, accountName) {
     document.getElementById('restoreModal').classList.remove('hidden');
     document.getElementById('restoreModal').classList.add('flex');
-    // Optionally update modal text
     const modalMessage = document.getElementById('modalMessage');
     if (modalMessage) {
         modalMessage.textContent = `Apakah anda yakin ingin memulihkan akun ${accountName}?`;
     }
-    // Store the id for the confirm function
     const confirmBtn = document.getElementById('confirmRestoreBtn');
     if (confirmBtn) {
         confirmBtn.dataset.id = suspensionId;
@@ -392,9 +424,7 @@ function confirmRestore() {
     .then(data => {
         if (data.success) {
             showSuccessDrawer(data.message || 'Akun berhasil dipulihkan!');
-            setTimeout(() => {
-                window.location.href = "{{ route('penangguhan') }}";
-            }, 2000);
+            // The redirect is now handled within showSuccessDrawer
         } else {
             throw new Error(data.message || 'Operasi gagal.');
         }
@@ -402,86 +432,39 @@ function confirmRestore() {
     .catch(error => {
         hideLoadingDrawer();
         console.error('Fetch error:', error);
-        // You might want to show an error drawer here instead of an alert
         alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
     });
 }
 
-// Close modal when clicking outside
-document.getElementById('restoreModal')?.addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeRestoreModal();
-    }
-});
-
-document.getElementById('skckModal')?.addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeSKCKModal();
-    }
-});
-
-document.getElementById('ktpModal')?.addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeKTPModal();
-    }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        closeRestoreModal();
-        closeSKCKModal();
-        closeKTPModal();
-    }
-});
-
-// Dynamic data loading (untuk sinkronisasi dengan data dari tabel)
-function loadAccountDetail(accountData) {
-    if (accountData) {
-        // Update data di halaman berdasarkan parameter yang diterima
-        console.log('Loading account detail for:', accountData);
-        
-        // Contoh update DOM elements
-        // document.querySelector('.profile-name').textContent = accountData.nama;
-        // document.querySelector('.profile-gender').textContent = accountData.kelamin;
-        // document.querySelector('.profile-city').textContent = accountData.kota;
-        // dst...
-    }
-}
-
-// Check if data passed via URL parameters
+// Event listeners for closing modals
 document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('data')) {
-        try {
-            const accountData = JSON.parse(decodeURIComponent(urlParams.get('data')));
-            loadAccountDetail(accountData);
-        } catch (e) {
-            console.error('Error parsing account data:', e);
+    document.getElementById('restoreModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeRestoreModal();
         }
-    }
+    });
+
+    document.getElementById('skckModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSKCKModal();
+        }
+    });
+
+    document.getElementById('ktpModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeKTPModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeRestoreModal();
+            closeSKCKModal();
+            closeKTPModal();
+        }
+    });
 });
-
-function showImageModal(imageUrl) {
-    document.getElementById('modalImage').src = imageUrl;
-    document.getElementById('imageModal').classList.remove('hidden');
-}
-
-function closeImageModal() {
-    document.getElementById('modalImage').src = '';
-    document.getElementById('imageModal').classList.add('hidden');
-}
-
-document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-        closeImageModal();
-    }
-});
-
-// Optional: klik luar untuk tutup
-document.getElementById('imageModal').addEventListener('click', function (e) {
-    if (e.target === this) {
-        closeImageModal();
+</script>odal();
     }
 });
 </script>
