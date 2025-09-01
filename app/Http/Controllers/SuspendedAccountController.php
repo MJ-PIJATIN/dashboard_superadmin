@@ -63,12 +63,12 @@ class SuspendedAccountController extends Controller
     /**
      * Restore suspended account.
      */
-    public function restore($id): JsonResponse // $id is suspension_id
+    public function restore($suspension_id): JsonResponse
     {
         try {
-            Log::info('Attempting to restore account with suspension_id: ' . $id);
+            Log::info('Attempting to restore account with suspension_id: ' . $suspension_id);
             
-            $suspendedAccount = SuspendedAccount::where('suspension_id', $id)->first();
+            $suspendedAccount = SuspendedAccount::where('suspension_id', $suspension_id)->first();
 
             if ($suspendedAccount) {
                 $therapist = Terapis::find($suspendedAccount->therapist_id);
@@ -76,14 +76,14 @@ class SuspendedAccountController extends Controller
                     $therapist->update(['suspended_duration' => null]);
                 }
                 $suspendedAccount->delete();
-                Log::info('Account restored successfully', ['suspension_id' => $id]);
+                Log::info('Account restored successfully', ['suspension_id' => $suspension_id]);
                 return response()->json(['success' => true, 'message' => 'Penangguhan akun berhasil dihapus']);
             } else {
-                Log::warning('Account to restore not found', ['suspension_id' => $id]);
+                Log::warning('Account to restore not found', ['suspension_id' => $suspension_id]);
                 return response()->json(['success' => false, 'message' => 'Akun tidak ditemukan'], 404);
             }
         } catch (\Exception $e) {
-            Log::error('Restore failed', ['suspension_id' => $id, 'error' => $e->getMessage()]);
+            Log::error('Restore failed', ['suspension_id' => $suspension_id, 'error' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan sistem: ' . $e->getMessage()], 500);
         }
     }

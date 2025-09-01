@@ -72,7 +72,7 @@
                     class="px-3 py-1 text-sm border border-[#3FC1C0] text-[#3FC1C0] rounded hover:bg-[#E6FAFA] transition-colors font-medium">
                     Lihat Aduan
                     </a>
-                    <button onclick="openRestoreModal()" class="px-3 py-1 text-sm bg-lime-600 text-white rounded hover:bg-lime-700 transition-colors font-medium">
+                    <button onclick="openRestoreModal('{{ $account->suspension_id }}', '{{ $account->name }}')" class="px-3 py-1 text-sm bg-lime-600 text-white rounded hover:bg-lime-700 transition-colors font-medium">
                         Pulihkan Akun
                     </button>
                 </div>
@@ -216,7 +216,7 @@
         </div>
         
         <!-- Message -->
-        <p class="text-gray-600 mb-8">Apakah anda yakin ingin memulihkan akun Kamarina Mandasari?</p>
+        <p class="text-gray-600 mb-8" id="modalMessage">Apakah anda yakin ingin memulihkan akun?</p>
         
         <!-- Buttons -->
         <div class="flex gap-4 justify-center">
@@ -224,7 +224,7 @@
                     class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium">
                 Batal
             </button>
-            <button onclick="confirmRestore()" 
+            <button id="confirmRestoreBtn" onclick="confirmRestore()" 
                     class="px-6 py-2 bg-[#3FC1C0] text-white rounded-lg hover:bg-[#3AB3B2] transition-colors font-medium">
                 Pulihkan
             </button>
@@ -342,63 +342,69 @@ function goBack() {
 }
 
 // Modal functions
-function openRestoreModal() {
+function openRestoreModal(suspensionId, accountName) {
     document.getElementById('restoreModal').classList.remove('hidden');
+    document.getElementById('restoreModal').classList.add('flex');
+    // Optionally update modal text
+    const modalMessage = document.getElementById('modalMessage');
+    if (modalMessage) {
+        modalMessage.textContent = `Apakah anda yakin ingin memulihkan akun ${accountName}?`;
+    }
+    // Store the id for the confirm function
+    const confirmBtn = document.getElementById('confirmRestoreBtn');
+    if (confirmBtn) {
+        confirmBtn.dataset.id = suspensionId;
+    }
 }
 
 function closeRestoreModal() {
     document.getElementById('restoreModal').classList.add('hidden');
-}
-
-let currentUserId = null;
-let currentUserName = null;
-
-// CSRF Token
-const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-// Fungsi untuk menampilkan loading drawer
-function showLoadingDrawer() {
-    document.getElementById('loading-drawer').classList.remove('hidden');
-}
-
-// Fungsi untuk menyembunyikan loading drawer
-function hideLoadingDrawer() {
-    document.getElementById('loading-drawer').classList.add('hidden');
-}
-
-// Fungsi untuk menampilkan success drawer
-function showSuccessDrawer(message) {
-    document.getElementById('success-message').textContent = message;
-    document.getElementById('success-drawer').classList.remove('hidden');
-    
-    // Auto hide after 3 seconds
-    setTimeout(() => {
-        hideSuccessDrawer();
-    }, 3000);
-}
-
-// Fungsi untuk menyembunyikan success drawer
-function hideSuccessDrawer() {
-    document.getElementById('success-drawer').classList.add('hidden');
+    document.getElementById('restoreModal').classList.remove('flex');
 }
 
 function confirmRestore() {
-    // Logic untuk memulihkan akun
-    console.log('Memulihkan akun Kamarina Mandasari');
-    
+    const restoreBtn = document.getElementById('confirmRestoreBtn');
+    const suspensionId = restoreBtn.dataset.id;
+
+    if (!suspensionId) {
+        console.error('No suspension ID found for restore operation.');
+        return;
+    }
+
     closeRestoreModal();
     showLoadingDrawer();
 
-    // Simulate an asynchronous operation
-    setTimeout(() => {
+    fetch(`{{ route('penangguhan.restore', ['suspension_id' => ':id']) }}`.replace(':id', suspensionId), {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
         hideLoadingDrawer();
-        showSuccessDrawer('Akun Kamarina Mandasari berhasil dipulihkan!');
-        
-        // Redirect kembali ke daftar setelah berhasil
-        setTimeout(() => {
-            window.location.href = '/akun-ditangguhkan';
-        }, 1000);
-    }, 1500); // Simulate a 1.5 second delay
+        if (response.ok) {
+            return response.json();
+        } else {
+            return response.json().then(err => { throw new Error(err.message || 'Gagal memulihkan akun.'); }).catch(() => { throw new Error('Gagal memulihkan akun.'); });
+        }
+    })
+    .then(data => {
+        if (data.success) {
+            showSuccessDrawer(data.message || 'Akun berhasil dipulihkan!');
+            setTimeout(() => {
+                window.location.href = "{{ route('penangguhan') }}";
+            }, 2000);
+        } else {
+            throw new Error(data.message || 'Operasi gagal.');
+        }
+    })
+    .catch(error => {
+        hideLoadingDrawer();
+        console.error('Fetch error:', error);
+        // You might want to show an error drawer here instead of an alert
+        alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
+    });
 }
 
 // Close modal when clicking outside
