@@ -151,7 +151,7 @@ Route::match(['GET', 'DELETE'], '/test-delete-terapis/{id}', function($id) {
 
 //Halaman Penangguhan
 Route::match(['get', 'post'], '/penangguhan', [SuspendedAccountController::class, 'index'])->name('penangguhan');
-Route::delete('/superadmin/penangguhan/{id}/pulihkan', [SuspendedAccountController::class, 'restore'])->name('penangguhan.restore');
+Route::post('/penangguhan/{suspension_id}/restore', [SuspendedAccountController::class, 'restore'])->name('penangguhan.restore');
 Route::prefix('admin')->group(function () {
     
     // Routes untuk akun ditangguhkan
@@ -160,10 +160,6 @@ Route::prefix('admin')->group(function () {
         // Halaman detail akun ditangguhkan
         Route::get('/{id}/detail', [SuspendedAccountController::class, 'detail'])
             ->name('detail');
-        
-        // API untuk memulihkan akun (AJAX)
-        Route::post('/{id}/restore', [SuspendedAccountController::class, 'restore'])
-            ->name('restore');
         
         // API untuk pencarian akun
         Route::get('/search', [SuspendedAccountController::class, 'search'])
@@ -177,7 +173,7 @@ Route::get('/aduan-pelanggan', [App\Http\Controllers\AduanController::class, 'in
 Route::get('/detail-aduan/{id}', [App\Http\Controllers\AduanController::class, 'show'])->name('detiladuan');
 Route::get('/aduan/search', [App\Http\Controllers\AduanController::class, 'search'])->name('aduan.search');
 Route::get('/detail-report-terapis/{aduan_id}', [App\Http\Controllers\AduanController::class, 'showTerapisDetail'])->name('detail.report.terapis');
-Route::delete('/suspended-accounts/{id}/restore', [SuspendedAccountController::class, 'restore'])->name('suspended-account.restore');
+
 
 // Halaman FAQ
 Route::resource('faqs', FaqController::class);

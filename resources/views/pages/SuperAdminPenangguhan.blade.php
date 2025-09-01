@@ -295,6 +295,8 @@ function confirmRestore() {
         console.error('No user ID available');
         return;
     }
+
+    const restoreId = currentUserId; // Simpan ID sebelum modal ditutup
     
     // Close modal first
     closeModal();
@@ -303,11 +305,11 @@ function confirmRestore() {
     showLoadingDrawer();
     
     // Debug log
-    console.log('Attempting to restore account ID:', currentUserId);
+    console.log('Attempting to restore account ID:', restoreId);
     
-    // AJAX request untuk memulihkan akun - menggunakan hanya ID dari URL parameter
-    fetch("{{ route('suspended-account.restore', ['id' => ':id']) }}".replace(':id', currentUserId), {
-        method: 'DELETE',
+    // AJAX request untuk memulihkan akun
+    fetch("{{ route('penangguhan.restore', ['suspension_id' => ':id']) }}".replace(':id', restoreId), {
+        method: 'POST',
         headers: {
             'X-CSRF-TOKEN': csrfToken,
             'Accept': 'application/json'
@@ -326,7 +328,7 @@ function confirmRestore() {
         if (data.success) {
             showSuccessDrawer(data.message || 'Akun berhasil dipulihkan!');
             // Hapus baris dari tabel tanpa reload halaman
-            const row = document.getElementById(`account-row-${currentUserId}`);
+            const row = document.getElementById(`account-row-${restoreId}`);
             if (row) row.remove();
             // Optional: refresh setelah beberapa saat jika diperlukan untuk update data lain
             setTimeout(() => {
