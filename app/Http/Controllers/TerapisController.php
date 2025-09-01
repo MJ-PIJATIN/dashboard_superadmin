@@ -408,9 +408,8 @@ class TerapisController extends Controller
 
         $terapis = Terapis::findOrFail($id);
 
-        // Logic to send a warning notification should be implemented here.
-        // For now, we'll just log it.
-        Log::info("Warning sent to therapist {$terapis->name} (ID: {$terapis->id}) with reason: {$validated['reason']}");
+        // Create notification
+        $terapis->createWarningNotification($terapis);
 
         if (!empty($validated['duration'])) {
             $suspendRequest = new Request([
@@ -509,6 +508,9 @@ class TerapisController extends Controller
                 return response()->json(['success' => false, 'message' => 'Gagal membuat record penangguhan.'], 500);
             }
 
+            // Membuat notifikasi
+            $terapis->createSuspensionNotification($terapis);
+
             Log::info('Created suspended account successfully:', ['suspension_id' => $newId, 'record_id' => $suspendedAccount->id]);
 
             // Update status terapis
@@ -517,12 +519,6 @@ class TerapisController extends Controller
             if (!$terapisUpdated) {
                 Log::warning('Failed to update therapist suspended_duration', ['terapis_id' => $id]);
             }
-
-            Log::info('Account suspended and stored in DB successfully', [
-                'terapis_id' => $id, 
-                'new_suspension_id' => $newId,
-                'database_id' => $suspendedAccount->id
-            ]);
 
             return response()->json([
                 'success' => true, 
