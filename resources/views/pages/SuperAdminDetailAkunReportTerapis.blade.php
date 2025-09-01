@@ -237,19 +237,19 @@
 
                 <label class="flex items-center">
                     <input type="radio" name="warning_duration" value="1" class="mr-2">
-                    <span class="text-sm text-gray-700">1 Hari</span>
-                </label>
-                <label class="flex items-center">
-                    <input type="radio" name="warning_duration" value="7" class="mr-2">
                     <span class="text-sm text-gray-700">7 Hari</span>
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" name="warning_duration" value="14" class="mr-2">
+                    <input type="radio" name="warning_duration" value="7" class="mr-2">
                     <span class="text-sm text-gray-700">14 Hari</span>
                 </label>
                 <label class="flex items-center">
-                    <input type="radio" name="warning_duration" value="30" class="mr-2">
+                    <input type="radio" name="warning_duration" value="14" class="mr-2">
                     <span class="text-sm text-gray-700">30 Hari</span>
+                </label>
+                <label class="flex items-center">
+                    <input type="radio" name="warning_duration" value="30" class="mr-2">
+                    <span class="text-sm text-gray-700">Permanen</span>
                 </label>
             </div>
 
