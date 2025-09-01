@@ -3,6 +3,7 @@
 namespace App\Models\Traits;
 
 use App\Models\Notification;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 trait Notifiable
@@ -35,7 +36,6 @@ trait Notifiable
      */
     protected function createNotification(string $action)
     {
-        // Jangan buat notifikasi jika tidak ada yang berubah saat update
         if ($action === 'updated' && !$this->wasChanged()) {
             return;
         }
@@ -107,9 +107,20 @@ trait Notifiable
      */
     protected function getIdentifier()
     {
+        return $this->getModelIdentifier($this);
+    }
+
+    /**
+     * Get a descriptive identifier for a given model instance.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @return string
+     */
+    protected function getModelIdentifier(Model $model)
+    {
         // Urutan prioritas untuk nama identifier
         $attributes = ['booking_code', 'name', 'nama', 'title', 'city', 'email', 'username'];
-        $modelAttributes = $this->getAttributes();
+        $modelAttributes = $model->getAttributes();
 
         foreach ($attributes as $attribute) {
             // Cek apakah atribut ada di model sebelum mengaksesnya
@@ -119,6 +130,52 @@ trait Notifiable
         }
 
         // Fallback ke ID jika tidak ada atribut yang cocok
-        return $this->getKey();
+        return $model->getKey();
+    }
+
+    /**
+     * Create a notification for a suspension action.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $suspendedModel
+     * @return void
+     */
+    public function createSuspensionNotification(Model $suspendedModel)
+    {
+        $user = auth()->user();
+        $role = $user ? class_basename($user) : 'System';
+        $suspendedRole = class_basename($suspendedModel);
+        $suspendedIdentifier = $this->getModelIdentifier($suspendedModel);
+
+        $message = "{$role} Menangguhkan {$suspendedRole} {$suspendedIdentifier}";
+
+        Notification::create([
+            'message' => $message,
+            'action' => 'suspended',
+            'target_type' => $user ? class_basename($user) : null,
+            'target_id' => $user ? $user->id : null,
+        ]);
+    }
+
+    /**
+     * Create a notification for a warning action.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $warnedModel
+     * @return void
+     */
+    public function createWarningNotification(Model $warnedModel)
+    {
+        $user = auth()->user();
+        $role = $user ? class_basename($user) : 'System';
+        $warnedRole = class_basename($warnedModel);
+        $warnedIdentifier = $this->getModelIdentifier($warnedModel);
+
+        $message = "{$role} Mengirim Peringatan kepada {$warnedRole} {$warnedIdentifier}";
+
+        Notification::create([
+            'message' => $message,
+            'action' => 'warned',
+            'target_type' => $user ? class_basename($user) : null,
+            'target_id' => $user ? $user->id : null,
+        ]);
     }
 }
