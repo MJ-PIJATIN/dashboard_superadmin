@@ -18,7 +18,7 @@ class SuspendedAccountController extends Controller
      */
     public function index(Request $request)
     {
-        $query = SuspendedAccount::orderBy('id', 'desc');
+        $query = SuspendedAccount::orderBy('id', 'asc');
         $paginator = $query->paginate(10);
 
         $suspendedAccounts = $paginator->getCollection()->transform(function ($item) {
@@ -77,7 +77,7 @@ class SuspendedAccountController extends Controller
                 }
                 $suspendedAccount->delete();
                 Log::info('Account restored successfully', ['suspension_id' => $suspension_id]);
-                return response()->json(['success' => true, 'message' => 'Penangguhan akun berhasil dihapus']);
+                return response()->json(['success' => true, 'message' => 'Akun berhasil dipulihkan']);
             } else {
                 Log::warning('Account to restore not found', ['suspension_id' => $suspension_id]);
                 return response()->json(['success' => false, 'message' => 'Akun tidak ditemukan'], 404);

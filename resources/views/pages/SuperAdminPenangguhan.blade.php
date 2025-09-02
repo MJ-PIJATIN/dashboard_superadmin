@@ -70,7 +70,7 @@
                     <tbody id="tableBody">
                         @forelse($suspendedAccounts ?? [] as $account)
                         <tr id="account-row-{{ $account->suspension_id }}" class="group cursor-pointer transition-transform duration-200 transform hover:scale-[1.01] hover:bg-gray-50 hover:ring-[0.5px] hover:ring-gray-200 hover:ring-offset-0 hover:shadow-sm hover:rounded-md" onclick="navigateToDetail('{{ $account->suspension_id }}', event)">
-                            <td class="px-6 py-4 text-sm text-gray-700">{{ $account->suspension_id }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">{{ '' . str_pad($account->suspension_id, 4, '0', STR_PAD_LEFT) }}</td>
                             <td class="px-6 py-4 text-sm text-gray-900">{{ $account->name }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account->gender }}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">{{ $account->work_area }}</td>
