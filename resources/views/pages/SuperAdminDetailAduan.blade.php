@@ -27,10 +27,24 @@
         <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div class="flex items-center justify-between">
                 <div class="flex justify-center items-center">
-                    <div class="w-16 h-16 rounded-full overflow-hidden mr-4 flex items-center justify-center">
-                    <img src="{{ asset('images/orang.svg') }}" 
-                        alt="Profile Photo" 
-                        class="w-full h-full object-cover" />
+                    <div class="w-16 h-16 rounded-full overflow-hidden mr-4 flex items-center justify-center {{ ($detailAduan->customer->profile_photo ?? null) ? '' : 'bg-gray-200' }}">
+                        @if (($detailAduan->customer->profile_photo ?? null))
+                            <img src="{{ $detailAduan->customer->profile_photo }}" alt="Foto Profil" class="w-full h-full object-cover">
+                        @else
+                            @php
+                                $name = $detailAduan->customer->name ?? '';
+                                $initials = '';
+                                if ($name) {
+                                    $parts = explode(' ', $name);
+                                    if (count($parts) >= 2) {
+                                        $initials = strtoupper(substr($parts[0], 0, 1) . substr(end($parts), 0, 1));
+                                    } elseif (!empty($parts[0])) {
+                                        $initials = strtoupper(substr($parts[0], 0, 2));
+                                    }
+                                }
+                            @endphp
+                            <span class="text-gray-600 font-bold text-xl">{{ $initials }}</span>
+                        @endif
                     </div>
                     <div>
                         <h2 class="text-xl font-semibold text-gray-700">{{ $detailAduan->customer->name ?? 'Pelanggan tidak ditemukan' }}</h2>

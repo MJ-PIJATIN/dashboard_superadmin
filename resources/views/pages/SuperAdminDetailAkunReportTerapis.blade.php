@@ -31,10 +31,24 @@
                 
                 <!-- Profile Photo & Basic Info -->
                 <div class="text-center mb-8">
-                    <div class="w-52 h-52 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200">
-                        <img src="/images/karsa.svg"
-                            alt="Foto Profil"
-                            class="w-full h-full object-cover" />
+                    <div class="w-52 h-52 mx-auto mb-4 rounded-full overflow-hidden flex items-center justify-center {{ ($detailTerapis->profile_photo ?? null) ? '' : 'bg-gray-200' }}">
+                        @if (($detailTerapis->profile_photo ?? null))
+                            <img src="{{ $detailTerapis->profile_photo }}" alt="Foto Profil" class="w-full h-full object-cover">
+                        @else
+                            @php
+                                $name = $detailTerapis->name ?? '';
+                                $initials = '';
+                                if ($name) {
+                                    $parts = explode(' ', $name);
+                                    if (count($parts) >= 2) {
+                                        $initials = strtoupper(substr($parts[0], 0, 1) . substr(end($parts), 0, 1));
+                                    } elseif (!empty($parts[0])) {
+                                        $initials = strtoupper(substr($parts[0], 0, 2));
+                                    }
+                                }
+                            @endphp
+                            <span class="text-gray-600 font-bold text-5xl">{{ $initials }}</span>
+                        @endif
                     </div>
                     <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $detailTerapis->name ?? '-' }}</h2>
                     <div class="flex justify-center">
