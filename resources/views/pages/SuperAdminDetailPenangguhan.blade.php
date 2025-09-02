@@ -31,12 +31,23 @@
                 
                 <!-- Profile Photo & Basic Info -->
                 <div class="text-center mb-8">
-                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden bg-gray-200">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden flex items-center justify-center {{ ($account->therapist && $account->therapist->photo) ? '' : 'bg-gray-200' }}">
                         @if ($account->therapist && $account->therapist->photo)
-                            <img src="{{ Storage::url($account->therapist->photo) }}" alt="Foto Profil"
-                                class="w-full h-full object-cover" />
+                            <img src="{{ Storage::url($account->therapist->photo) }}" alt="Foto Profil" class="w-full h-full object-cover" />
                         @else
-                            <img src="/images/orang.svg" alt="Foto Profil" class="w-full h-full object-cover" />
+                            @php
+                                $name = $account->name ?? '';
+                                $initials = '';
+                                if ($name) {
+                                    $parts = explode(' ', $name);
+                                    if (count($parts) >= 2) {
+                                        $initials = strtoupper(substr($parts[0], 0, 1) . substr(end($parts), 0, 1));
+                                    } elseif (!empty($parts[0])) {
+                                        $initials = strtoupper(substr($parts[0], 0, 2));
+                                    }
+                                }
+                            @endphp
+                            <span class="text-gray-600 font-bold text-4xl">{{ $initials }}</span>
                         @endif
                     </div>
                     <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ $account->name }}</h2>
@@ -464,9 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-</script>odal();
-    }
-});
+</script>
 </script>
 
 @endsection
