@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Illuminate\Support\Facades\DB;
+
 class SuspendedAccount extends Model
 {
     use HasFactory;
@@ -34,6 +36,15 @@ class SuspendedAccount extends Model
         'suspended_at' => 'datetime',
         'suspension_ends_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::deleted(function ($suspendedAccount) {
+            if (static::count() === 0) {
+                DB::statement('ALTER TABLE suspended_accounts AUTO_INCREMENT = 1;');
+            }
+        });
+    }
 
     public function therapist()
     {
